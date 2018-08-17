@@ -7,12 +7,13 @@ class Settings
 		return $settings[$tag];
 	}
 	//Database
-	public static function Host() { return self::GetSettings("Host"); }
-    public static function Port() { return self::GetSettings("Port"); }
-    public static function Database() { return self::GetSettings("Database"); }
-    public static function User() { return self::GetSettings("User"); }
-	public static function Password() { return self::GetSettings("Password"); }
-	public static function ConnectionString()
+	public static function Host() : string { return self::GetSettings("Host"); }
+    public static function Port() : string { return self::GetSettings("Port"); }
+    public static function Database() : string { return self::GetSettings("Database"); }
+    public static function User() : string { return self::GetSettings("User"); }
+	public static function Password() : string { return self::GetSettings("Password"); }
+	public static function Migrate() : bool { return self::GetSettings("Migrate"); }
+	public static function ConnectionString() : string
 	{
 		return 
 			"host=".self::Host()." ".
@@ -22,10 +23,10 @@ class Settings
 			"password=".self::Password()." ";
 	}
 	//Site
-	public static function SiteUrl() { return self::GetSettings("SiteUrl"); }
-	public static function SiteUrlSSL() { return self::GetSettings("SiteUrlSSL"); }
+	public static function SiteUrl() : string { return self::GetSettings("SiteUrl"); }
+	public static function SiteUrlSSL() : string { return self::GetSettings("SiteUrlSSL"); }
 }
-function GetMessage($tag, $value)
+function GetMessage(string $tag, string $value) : string
 {
 	$message = parse_ini_file(".messages.ini");
 	return sprintf($message[$tag], $value);

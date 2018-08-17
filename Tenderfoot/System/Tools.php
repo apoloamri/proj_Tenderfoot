@@ -1,5 +1,16 @@
 <?php
-function IsNullOrEmpty($value)
+function GenerateRandomString($length = 10) : string
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) 
+    {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+function IsNullOrEmpty($value) : bool
 {
     if (strlen($value) == 0)
     {
@@ -10,11 +21,11 @@ function IsNullOrEmpty($value)
         return false;
     }
 }
-function Now()
+function Now() : date
 {
     return date("Y/m/d H:i:s");
 }
-function OverwriteModel($model, $values)
+function OverwriteModel($model, $values) : void
 {
     $modelReflect = new ReflectionClass($model);
     $valuesReflect = new ReflectionClass($values);

@@ -4,16 +4,16 @@ class Model extends BaseModel
 {
     public $IsValid = true;
     public $Messages = null, $URI = null;
-    function SiteUrl() { return Settings::SiteUrl(); }
-    function SiteUrlSSL() { return Settings::SiteUrlSSL(); }
-    function Get() { return ($_SERVER['REQUEST_METHOD'] == "GET"); }
-    function Post() { return ($_SERVER['REQUEST_METHOD'] == "POST"); }
-    function Put() { return ($_SERVER['REQUEST_METHOD'] == "PUT"); }
-    function Delete() { return ($_SERVER['REQUEST_METHOD'] == "DELETE"); }
-    function Validate() { yield null; }
-    function Map() { }
-    function Handle() { }
-    function Required(string $propertyName)
+    function SiteUrl() : string { return Settings::SiteUrl(); }
+    function SiteUrlSSL() : string { return Settings::SiteUrlSSL(); }
+    function Get() : bool { return ($_SERVER['REQUEST_METHOD'] == "GET"); }
+    function Post() : bool { return ($_SERVER['REQUEST_METHOD'] == "POST"); }
+    function Put() : bool { return ($_SERVER['REQUEST_METHOD'] == "PUT"); }
+    function Delete() : bool { return ($_SERVER['REQUEST_METHOD'] == "DELETE"); }
+    function Validate() : iterable { yield null; }
+    function Map() : void { }
+    function Handle() : void { }
+    function Required(string $propertyName) : string
     {
         $reflect = new ReflectionClass($this);
         $property = $reflect->getProperty($propertyName)->getValue($this);
@@ -23,12 +23,12 @@ class Model extends BaseModel
         }
     }
     private $ControllerName, $ViewName;
-    function InitiatePage(string $controller, string $viewName)
+    function InitiatePage(string $controller, string $viewName) : void
     {
         $this->ControllerName = str_replace("Controller", "", $controller);
         $this->ViewName = $viewName;
     }
-    function RenderPage()
+    function RenderPage() : void
     {
         $view = "Views/$this->ControllerName/$this->ViewName.php";
         if (file_exists($view))
@@ -37,7 +37,7 @@ class Model extends BaseModel
 			require_once $view;
 		}
     }
-    function Partial(string $partialView)
+    function Partial(string $partialView) : void
     {
         $view = "Views/$this->ControllerName/$partialView.php";
         if (file_exists($view))
@@ -55,7 +55,7 @@ class Model extends BaseModel
             }
         }
     }
-    static function AddSchema(string $schemaName)
+    static function AddSchema(string $schemaName) : void
     {
         require_once "Schemas/$schemaName.php";
     }

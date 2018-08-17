@@ -6,7 +6,7 @@ class BaseModel
         $this->BindModel();
     }
 
-    private function BindModel()
+    private function BindModel() : void
     {
         $reflect = new ReflectionClass($this);
         foreach ($_REQUEST as $key => $value)

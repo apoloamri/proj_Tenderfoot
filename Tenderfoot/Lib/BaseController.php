@@ -2,7 +2,7 @@
 class BaseController
 {
     public $Model = null;
-    protected function Validate()
+    protected function Validate() : void
     {
         $errorList = $this->Model->Validate();
         $errorList = iterator_to_array($errorList, true);

@@ -7,7 +7,7 @@ class Routing
 		$this->RequestMethod = $_SERVER["REQUEST_METHOD"];
 		$this->RequestUri = explode("?", $_SERVER["REQUEST_URI"])[0];
 	}
-	function Map(string $route, string $controller, string $action, ...$params)
+	function Map(string $route, string $controller, string $action, ...$params) : void
 	{
 		if (!$this->Routed)
 		{

@@ -3,7 +3,7 @@ class Items extends Schema
 {
     function __construct()
     {
-        parent::__construct("items", true);
+        parent::__construct("items");
     }
     public $str_code;
     public $str_brand;

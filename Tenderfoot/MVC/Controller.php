@@ -2,7 +2,7 @@
 require_once "Tenderfoot/Lib/BaseController.php";
 class Controller extends BaseController
 {
-	protected function Initiate($model)
+	protected function Initiate($model) : void
 	{
 		$controller = str_replace("Controller", "", get_class($this));
 		require_once "Models/$controller/$model.php";
@@ -17,7 +17,7 @@ class Controller extends BaseController
 		$this->Model->URI = explode("/", $_SERVER["REQUEST_URI"]);
 		$this->Validate();
 	}
-	protected function Execute(string $method)
+	protected function Execute(string $method) : void
 	{
 		if ($this->Model->IsValid)
 		{
@@ -34,7 +34,7 @@ class Controller extends BaseController
 			}
 		}
 	}
-	protected function View(string $viewName)
+	protected function View(string $viewName) : void
 	{
 		$layout = "Views/app.php";
 		if ($this->Model == null)
@@ -52,7 +52,7 @@ class Controller extends BaseController
 			require_once $layout;
 		}
 	}
-	protected function Json(string ...$fields)
+	protected function Json(string ...$fields) : void
 	{
 		array_push($fields, "IsValid");
 		array_push($fields, "Messages");

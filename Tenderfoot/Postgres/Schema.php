@@ -2,18 +2,18 @@
 require_once "Tenderfoot/Lib/BaseSchema.php";
 class Schema extends BaseSchema
 {
-    function __construct(string $tableName, $createTable = false)
+    function __construct(string $tableName, bool $createTable = true)
     {
         $reflect = new ReflectionClass($this);
         $this->Columns = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
         $this->TableName = $tableName;
-        if ($createTable)
+        if (Settings::Migrate() && $createTable)
         {
             $this->CreateTable();
             $this->UpdateColumns();
         }
     }
-    function Select(string ...$columns)
+    function Select(string ...$columns) : array
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
         $where = $this->GetWhere();
@@ -28,15 +28,16 @@ class Schema extends BaseSchema
         }
         return array_filter($return);
     }
-    function SelectSingle(string ...$columns)
+    function SelectSingle(string ...$columns) : array
     {
         $result = $this->Select(...$columns);
         if (count($result) == 1)
         {
             return $result[0];
         }
+        return array();
     }
-    function Count(string ...$columns)
+    function Count(string ...$columns) : int
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
         $where = $this->GetWhere();
@@ -44,20 +45,20 @@ class Schema extends BaseSchema
         $result = $this->Execute($query);
         return intval(pg_fetch_assoc($result)["count"]);
     }
-    function AddWhere(string $column, $value, string $expression = DB::Equal, string $condition = DB::AND)
+    function AddWhere(string $column, $value, string $expression = DB::Equal, string $condition = DB::AND) : void
     {
         $count = count($this->Parameters) + 1;
         $this->AddParameterValue($value, "$column $expression %s $condition");
     }
-    function AddOrderBy(string $column, string $order = DB::ASC)
+    function AddOrderBy(string $column, string $order = DB::ASC) : void
     {
         $this->Orders[] = "$column $order";
     }
-    function Limit($limit)
+    function Limit(int $limit) : void
     {
         $this->Limit = $limit;
     }
-    function Insert()
+    function Insert() : void
     {
         $columns = array();
         foreach ($this->Columns as $column)
@@ -78,7 +79,7 @@ class Schema extends BaseSchema
             $this->id = pg_fetch_assoc($result)["currval"];
         }
     }
-    function Update()
+    function Update() : void
     {
         $isUpdate = false;
         foreach ($this->Columns as $column)
@@ -97,13 +98,13 @@ class Schema extends BaseSchema
             $this->Execute($query);
         }
     }
-    function Delete()
+    function Delete() : void
     {
         $where = $this->GetWhere();
         $query = "DELETE FROM $this->TableName $where;";
         $this->Execute($query);
     }
-    function OverwriteWithModel($model)
+    function OverwriteWithModel($model) : void
     {
         $modelReflect = new ReflectionClass($this);
         $valuesReflect = new ReflectionClass($model);
@@ -129,7 +130,7 @@ class Schema extends BaseSchema
             }
         }
     }
-    private function CreateTable()
+    private function CreateTable() : void
     {
         $table = new InformationSchemaTables();
         $table->AddWhere("table_name", $this->TableName);
@@ -145,7 +146,7 @@ class Schema extends BaseSchema
             $this->Execute($query);
         }
     }
-    private function UpdateColumns()
+    private function UpdateColumns() : void
     {
         $alterColumns = array();
         foreach ($this->Columns as $property)
@@ -172,7 +173,7 @@ class InformationSchemaTables extends Schema
 {
     function __construct()
     {
-        parent::__construct("information_schema.tables");
+        parent::__construct("information_schema.tables", false);
     }
     public $table_catalog;
     public $table_schema;
@@ -189,7 +190,7 @@ class InformationSchemaColumns extends Schema
 {
     function __construct()
     {
-        parent::__construct("information_schema.columns");
+        parent::__construct("information_schema.columns", false);
     }
     public $table_catalog;
     public $table_schema;
@@ -206,7 +207,7 @@ class Sessions extends Schema
 {
     function __construct()
     {
-        parent::__construct("sessions", true);
+        parent::__construct("sessions");
     }
     public $str_session_id;
     public $str_session_key;

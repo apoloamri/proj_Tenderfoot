@@ -3,7 +3,7 @@ class Users extends Schema
 {
     function __construct()
     {
-        parent::__construct("users", true);
+        parent::__construct("users");
     }
     public $str_username;
     public $str_password;

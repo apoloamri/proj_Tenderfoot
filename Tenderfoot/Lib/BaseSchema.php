@@ -6,7 +6,7 @@ class BaseSchema
     protected $Orders = array();
     protected $Parameters = array();
     protected $ParameterValues = array();
-    protected function Execute(string $query, $useParams = true)
+    protected function Execute(string $query, bool $useParams = true)
     {
         $pgConnect = pg_connect(Settings::ConnectionString());
         if ($useParams)
@@ -18,7 +18,7 @@ class BaseSchema
             return pg_query($pgConnect, $query);
         }
     }
-    protected function GetColumnType($column)
+    protected function GetColumnType(property $column) : string
     {
         $returnString;
         $name = $column->getName();
@@ -60,7 +60,7 @@ class BaseSchema
         }
         return $returnString.$isArray;
     }
-    protected function GetWhere()
+    protected function GetWhere() : string
     {
         if (count($this->Parameters) > 0)
         {
@@ -74,23 +74,26 @@ class BaseSchema
             }
             return "WHERE $where";
         }
+        return "";
     }
-    protected function GetOrders()
+    protected function GetOrders() : string
     {
         if (count($this->Orders) > 0)
         {
             $order = join(", ", $this->Orders);
             return "ORDER BY $order";
         }
+        return "";
     }
-    protected function GetLimit()
+    protected function GetLimit() : string
     {
         if (!IsNullOrEmpty($this->Limit))
         {
             return "LIMIT $this->Limit";
         }
+        return "";
     }
-    protected function AddParameterValue($value, string $statement)
+    protected function AddParameterValue($value, string $statement) : void
     {
         $count = count($this->Parameters) + 1;
         $statement = sprintf($statement, "$".$count);
