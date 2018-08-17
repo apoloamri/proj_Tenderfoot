@@ -1,135 +1,133 @@
 body {
     margin: auto;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 11px;
-    background-color: #292C32;
-  }
-  button {
+    font-size: 15px;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+    transition: 200ms;
+}
+    a:hover {
+        color: gray;
+    }
+
+button {
+    cursor: pointer;
+    margin: 10px 0px;
+    border-radius: 5px;
+    text-decoration: none;
+    padding: 10px;
+    transition: 300ms;
+    display: inline-block;
+    color: dimgray;
+    border: 2px dimgray solid;
+    background-color: transparent;
+}
+    button:hover {
+        color: green;
+        border-color: green;
+    }
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: lightgray;
+}
+
+input[type="text"] {
+    border: solid;
+    border-width: 1px;
+    border-color: lightgray;
+    font-size: 15px;
+    margin: 20px 0px;
     padding: 10px;
     width: 100%;
-    background-color: #286090;
-    color: #ffffff;
-    border: none;
-    transition: 0.2s;
-  }
-    button:hover {
-      background-color: rgb(21, 66, 80);
-      box-shadow: 0px 0px 3px 1px #000000;
-    }
-    button.pager {
-      width: 30px !important;
-      margin: 0px 10px;
-    }
-    button.selected {
-      background-color: rgb(21, 66, 80);
-      box-shadow: 0px 0px 3px 1px #000000;
-    }
-  h3 {
-    padding: 20px 0px 0px 0px;
-    text-align: center;
-  }
-  input[type='date'],
-  input[type='number'], 
-  input[type='password'],
-  input[type='text'],
-  textarea, 
-  select {
-    width: 100%;
-    padding: 10px 5px;
-    margin: 5px 0px;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.font-17 {
+    font-size: 17px;
+}
+
+.font-13 {
+    font-size: 13px;
+}
+
+.itemImage {
+    width: 150px;
+    height: 250px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.items {
     display: inline-block;
-    border: 1px solid #cccccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  textarea {
-    width: 90%;
-    height: 100px;
-  }
-  table {
-    width: 100%;
-  }
-  td, th {
-    border: 1px solid #cfcfcf;
-    padding: 8px;
-  }
-  tr:nth-child(even){ background-color: #cfcfcf; }
-  tr:hover { background-color: #afafaf; }
-  th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #286090;
-    color: #ffffff;
-    font-weight: 500;
-  }
-  #body {
-    margin: 10px;
-  }
-  #innerContent {
-    background-color: #ffffff;
-    box-shadow: 0px 0px 15px 1px #000000;
-    border-radius: 10px;
-    color: #000000;
-    padding: 0px 10px 10px 10px;
-    margin: 20px;
-  }
-  /*MODAL*/
-  #modalShadow {
-    background-color: #000000;
-    opacity: 0.8;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 1000 !important;
-  }
-  #modalLoading {
-    background: url('./assets/loading.gif');
-    background-size: cover;
-    box-shadow: none;
-    width: 100px;
-    height: 100px;
-    z-index: 1100 !important;
-  }
-  .modal {
-    background-color: #ffffff;
-    box-shadow: 0px 0px 15px 1px #000000;
+    margin: 0px 60px;
+    text-align: center;
+    width: 200px;
+}
+
+.margin-15 {
+    margin: 15px;
+}
+
+#container {
+    width: 1300px;
     margin: auto;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1200 !important;
-  }
-  .modalMessage {
-    bottom: inherit;
-    width: 400px;
+    position: absolute;
+    left: 0; right: 0; top: 30px
+}
+
+#headingText {
+    font-size: 25px;
+    font-weight: bolder;
+    margin: 30px 0px;
+    text-align: center;
+}
+
+#itemDetail {
     padding: 30px;
-    z-index: 1300;
-  }
-  .modalMessage button {
-    margin-top: 30px;
-  }
-  .unshow {
-    display: none;
-  }
-  /*MODAL*/
-  @media screen and (max-width: 900px) {
-    #innerContent {
-      border-radius: 0px;
-      padding: 0px;
-      margin: 0px;
+}
+
+#itemImageDetail {
+    width: 500px;
+    height: 500px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+}
+
+#mainContent {
+    float: left;
+    margin: 30px;
+    width: 1000px;
+}
+
+#navigation {
+    position: relative;
+    width: 200px;
+    top: 30px;
+}
+
+#globalSearch {
+    border: none;
+    margin: 0px;
+    width: 70%;
+}
+
+@media screen and (max-width: 900px) {
+    body {
+        margin: auto;
     }
-    .hideWhenSmall {
-      display: none;
-    }
-    table {
-      font-size: 8px;
-    }
-    .modalMessage {
-      width: 200px;
-    }
-  }
+}

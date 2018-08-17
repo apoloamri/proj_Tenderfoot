@@ -2,7 +2,8 @@
 require_once "Tenderfoot/Lib/BaseModel.php";
 class Model extends BaseModel
 {
-    public $IsValid = true, $Messages = null;
+    public $IsValid = true;
+    public $Messages = null, $URI = null;
     function SiteUrl() { return Settings::SiteUrl(); }
     function SiteUrlSSL() { return Settings::SiteUrlSSL(); }
     function Get() { return ($_SERVER['REQUEST_METHOD'] == "GET"); }
@@ -22,12 +23,12 @@ class Model extends BaseModel
         }
     }
     private $ControllerName, $ViewName;
-    public function InitiatePage(string $controller, string $viewName)
+    function InitiatePage(string $controller, string $viewName)
     {
         $this->ControllerName = str_replace("Controller", "", $controller);
         $this->ViewName = $viewName;
     }
-    public function RenderPage()
+    function RenderPage()
     {
         $view = "Views/$this->ControllerName/$this->ViewName.php";
         if (file_exists($view))
@@ -36,7 +37,25 @@ class Model extends BaseModel
 			require_once $view;
 		}
     }
-    public static function AddSchema(string $schemaName)
+    function Partial(string $partialView)
+    {
+        $view = "Views/$this->ControllerName/$partialView.php";
+        if (file_exists($view))
+		{
+			header("Content-Type: text/html");
+			require_once $view;
+        }
+        else
+        {
+            $view = "Views/Partial/$partialView.php";
+            if (file_exists($view))
+            {
+                header("Content-Type: text/html");
+                require_once $view;
+            }
+        }
+    }
+    static function AddSchema(string $schemaName)
     {
         require_once "Schemas/$schemaName.php";
     }

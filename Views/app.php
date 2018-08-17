@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="/Resources/css/style.css">
 </head>
 <body>
-    <?php $model->RenderPage(); ?>
+    <div id="container">
+        <?php $model->RenderPage(); ?>
+    </div>
 </body>
 </html>

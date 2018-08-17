@@ -2,8 +2,8 @@
 class BaseSchema
 {
     public $id;
-    protected $TableName;
-    protected $Columns;
+    protected $TableName, $Columns, $Limit;
+    protected $Orders = array();
     protected $Parameters = array();
     protected $ParameterValues = array();
     protected function Execute(string $query, $useParams = true)
@@ -20,39 +20,45 @@ class BaseSchema
     }
     protected function GetColumnType($column)
     {
+        $returnString;
         $name = $column->getName();
-        $type = substr($name, 0, 4);
+        $value = $column->getValue($this);
+        $isArray = is_array($value) ? "[]" : "";
         if ($name == "id")
         {
             return "id serial NOT NULL PRIMARY KEY";
         }
         else
         {
-            switch ($type)
+            switch (substr($name, 0, 4))
             {
                 case "str_":
-                    return "$name character varying";
+                    $returnString =  "$name character varying";
                     break;
                 case "num_":
-                    return "$name integer";
+                    $returnString =  "$name integer";
+                    break;
+                case "dbl_":
+                    $returnString =  "$name double precision";
                     break;
                 case "sml_":
-                    return "$name smallint";
+                    $returnString =  "$name smallint";
                     break;
                 case "big_":
-                    return "$name bigint";
+                    $returnString =  "$name bigint";
                     break;
                 case "dat_":
-                    return "$name timestamp without time zone";
+                    $returnString =  "$name timestamp without time zone";
                     break;
                 case "txt_":
-                    return "$name text";
+                    $returnString =  "$name text";
                     break;
                 default:
-                    return "$name character varying";
+                    $returnString = "$name character varying";
                     break;
             }
         }
+        return $returnString.$isArray;
     }
     protected function GetWhere()
     {
@@ -67,6 +73,21 @@ class BaseSchema
                 $where = chop($where, $constant);
             }
             return "WHERE $where";
+        }
+    }
+    protected function GetOrders()
+    {
+        if (count($this->Orders) > 0)
+        {
+            $order = join(", ", $this->Orders);
+            return "ORDER BY $order";
+        }
+    }
+    protected function GetLimit()
+    {
+        if (!IsNullOrEmpty($this->Limit))
+        {
+            return "LIMIT $this->Limit";
         }
     }
     protected function AddParameterValue($value, string $statement)
@@ -89,5 +110,7 @@ class DB
     const LessThanEqual = "<=";
     const Like = "LIKE";
     const NotLike = "NOT LIKE";
+    const ASC = "ASC";
+    const DESC = "DESC";
 }
 ?>

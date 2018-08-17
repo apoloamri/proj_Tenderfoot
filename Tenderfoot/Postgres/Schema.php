@@ -10,13 +10,16 @@ class Schema extends BaseSchema
         if ($createTable)
         {
             $this->CreateTable();
+            $this->UpdateColumns();
         }
     }
     function Select(string ...$columns)
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
         $where = $this->GetWhere();
-        $query = "SELECT $columns FROM $this->TableName $where;";
+        $orders = $this->GetOrders();
+        $limit = $this->GetLimit();
+        $query = "SELECT $columns FROM $this->TableName $where $orders $limit;";
         $return = array();
         $result = $this->Execute($query);
         while ($data = pg_fetch_assoc($result))
@@ -25,11 +28,19 @@ class Schema extends BaseSchema
         }
         return array_filter($return);
     }
+    function SelectSingle(string ...$columns)
+    {
+        $result = $this->Select(...$columns);
+        if (count($result) == 1)
+        {
+            return $result[0];
+        }
+    }
     function Count(string ...$columns)
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
         $where = $this->GetWhere();
-        $query = "SELECT COUNT($columns) FROM $this->Tablename $where;";
+        $query = "SELECT COUNT($columns) FROM $this->TableName $where;";
         $result = $this->Execute($query);
         return intval(pg_fetch_assoc($result)["count"]);
     }
@@ -37,6 +48,14 @@ class Schema extends BaseSchema
     {
         $count = count($this->Parameters) + 1;
         $this->AddParameterValue($value, "$column $expression %s $condition");
+    }
+    function AddOrderBy(string $column, string $order = DB::ASC)
+    {
+        $this->Orders[] = "$column $order";
+    }
+    function Limit($limit)
+    {
+        $this->Limit = $limit;
     }
     function Insert()
     {
@@ -126,12 +145,51 @@ class Schema extends BaseSchema
             $this->Execute($query);
         }
     }
+    private function UpdateColumns()
+    {
+        $alterColumns = array();
+        foreach ($this->Columns as $property)
+        {
+            $columnName = $property->getName();
+            $table = new InformationSchemaColumns();
+            $table->AddWhere("table_name", $this->TableName);
+            $table->AddWhere("column_name", $columnName);
+            if ($table->Count("column_name") == 0)
+            {
+                $column = $this->GetColumnType($property);
+                $alterColumns[] = "ADD COLUMN $column;";
+            }
+        }
+        if (count($alterColumns) > 0)
+        {
+            $alterColumns = join(" ", $alterColumns);
+            $query = "ALTER TABLE $this->TableName $alterColumns";
+            $this->Execute($query);
+        }
+    }
 }
 class InformationSchemaTables extends Schema
 {
     function __construct()
     {
-        parent::__construct("sessions");
+        parent::__construct("information_schema.tables");
+    }
+    public $table_catalog;
+    public $table_schema;
+    public $table_name;
+    public $table_type;
+    public $column_name;
+    public $ordinal_position;
+    public $column_default;
+    public $is_nullable;
+    public $data_type;
+    public $character_maximum_length;
+}
+class InformationSchemaColumns extends Schema
+{
+    function __construct()
+    {
+        parent::__construct("information_schema.columns");
     }
     public $table_catalog;
     public $table_schema;

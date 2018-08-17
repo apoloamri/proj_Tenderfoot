@@ -14,6 +14,7 @@ class Controller extends BaseController
 		{
 			$this->Model = new $model;
 		}
+		$this->Model->URI = explode("/", $_SERVER["REQUEST_URI"]);
 		$this->Validate();
 	}
 	protected function Execute(string $method)
