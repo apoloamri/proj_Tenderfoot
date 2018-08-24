@@ -23,10 +23,11 @@ class Settings
 			"password=".self::Password()." ";
 	}
 	//Site
+	public static function Session() : string { return self::GetSettings("Session"); }
 	public static function SiteUrl() : string { return self::GetSettings("SiteUrl"); }
 	public static function SiteUrlSSL() : string { return self::GetSettings("SiteUrlSSL"); }
 }
-function GetMessage(string $tag, string $value) : string
+function GetMessage(string $tag, string $value = "") : string
 {
 	$message = parse_ini_file(".messages.ini");
 	return sprintf($message[$tag], $value);

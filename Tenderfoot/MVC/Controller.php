@@ -2,7 +2,7 @@
 require_once "Tenderfoot/Lib/BaseController.php";
 class Controller extends BaseController
 {
-	protected function Initiate($model) : void
+	protected function Initiate(string $model) : void
 	{
 		$controller = str_replace("Controller", "", get_class($this));
 		require_once "Models/$controller/$model.php";

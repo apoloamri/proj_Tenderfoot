@@ -21,6 +21,7 @@ class Model extends BaseModel
         {
             return GetMessage("RequiredField", $propertyName);
         }
+        return "";
     }
     private $ControllerName, $ViewName;
     function InitiatePage(string $controller, string $viewName) : void

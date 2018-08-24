@@ -11,7 +11,7 @@ class ItemModel extends Model
     public function Map() : void
     {
         $items = new Items();
-        $items->AddWhere("str_code", $this->code);
+        $items->str_code = $this->code;
         $this->result = $items->SelectSingle();
     }
 }

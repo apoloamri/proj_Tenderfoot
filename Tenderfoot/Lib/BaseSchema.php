@@ -2,23 +2,12 @@
 class BaseSchema
 {
     public $id;
-    protected $TableName, $Columns, $Limit;
-    protected $Orders = array();
-    protected $Parameters = array();
-    protected $ParameterValues = array();
-    protected function Execute(string $query, bool $useParams = true)
+    protected $Connect, $TableName, $Columns;
+    protected function Execute(string $query)
     {
-        $pgConnect = pg_connect(Settings::ConnectionString());
-        if ($useParams)
-        {
-            return pg_query_params($pgConnect, $query, $this->ParameterValues);
-        }
-        else
-        {
-            return pg_query($pgConnect, $query);
-        }
+        return pg_query($this->Connect, $query);
     }
-    protected function GetColumnType(property $column) : string
+    protected function GetColumnType(ReflectionProperty $column) : string
     {
         $returnString;
         $name = $column->getName();
@@ -60,11 +49,24 @@ class BaseSchema
         }
         return $returnString.$isArray;
     }
-    protected function GetWhere() : string
+    protected $Where = array();
+    protected function GetWhere(bool $isSelect = false) : string
     {
-        if (count($this->Parameters) > 0)
+        $entityValues = array();
+        if ($isSelect)
         {
-            $where = join(" ", $this->Parameters);
+            foreach ($this->Columns as $column)
+            {
+                $value = $column->getValue($this);
+                if ($value != null)
+                {
+                    $entityValues[] = $column->getName()." = ".$this->PgEscapeLiteral($value)." ".DB::AND;
+                }
+            }
+        }
+        if (count($this->Where) > 0 || count($entityValues) > 0)
+        {
+            $where = trim(join(" ", $entityValues)." ".join(" ", $this->Where));
             $constants = new DB();
             $constants = new ReflectionClass(get_class($constants));
             $constants = $constants->getConstants();
@@ -76,15 +78,17 @@ class BaseSchema
         }
         return "";
     }
-    protected function GetOrders() : string
+    protected $Order = array();
+    protected function GetOrder() : string
     {
-        if (count($this->Orders) > 0)
+        if (count($this->Order) > 0)
         {
-            $order = join(", ", $this->Orders);
+            $order = join(", ", $this->Order);
             return "ORDER BY $order";
         }
         return "";
     }
+    protected $Limit;
     protected function GetLimit() : string
     {
         if (!IsNullOrEmpty($this->Limit))
@@ -93,12 +97,9 @@ class BaseSchema
         }
         return "";
     }
-    protected function AddParameterValue($value, string $statement) : void
+    protected function PgEscapeLiteral($value) : string 
     {
-        $count = count($this->Parameters) + 1;
-        $statement = sprintf($statement, "$".$count);
-        array_push($this->Parameters, $statement);
-        array_push($this->ParameterValues, $value);
+        return pg_escape_literal($this->Connect, $value);
     }
 }
 class DB

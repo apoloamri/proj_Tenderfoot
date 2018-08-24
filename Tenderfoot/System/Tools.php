@@ -21,9 +21,10 @@ function IsNullOrEmpty($value) : bool
         return false;
     }
 }
-function Now() : date
+function Now(int $minutes = 0) : string
 {
-    return date("Y/m/d H:i:s");
+    $minutes = $minutes * 60;
+    return date("Y/m/d H:i:s", time() + $minutes);
 }
 function OverwriteModel($model, $values) : void
 {
