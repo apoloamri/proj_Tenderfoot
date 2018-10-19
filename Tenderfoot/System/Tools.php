@@ -10,15 +10,19 @@ function GenerateRandomString($length = 10) : string
     }
     return $randomString;
 }
-function IsNullOrEmpty($value) : bool
+function HasValue($value) : bool
 {
-    if (strlen($value) == 0)
+    if (!isset($value))
     {
-        return true;
+        return false;
+    }
+    else if (strlen($value) == 0)
+    {
+        return false;
     }
     else
     {
-        return false;
+        return true;
     }
 }
 function Now(int $minutes = 0) : string
@@ -26,18 +30,27 @@ function Now(int $minutes = 0) : string
     $minutes = $minutes * 60;
     return date("Y/m/d H:i:s", time() + $minutes);
 }
-function OverwriteModel($model, $values) : void
+function ModelOverwrite($model, $values) : void
 {
     $modelReflect = new ReflectionClass($model);
-    $valuesReflect = new ReflectionClass($values);
-    foreach ($valuesReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
+    foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
     {
         $name = $property->getName();
-        if (property_exists($model, $name))
+        if (array_key_exists($name, $values))
         {
-            $modelReflect
-                ->getProperty($name)
-                ->setValue($model, $property->getValue($values));
+            $property->setValue($model, $values->$name);
+        }
+    }
+}
+function ArrayOverwrite($model, $values) : void
+{
+    $modelReflect = new ReflectionClass($model);
+    foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
+    {
+        $name = $property->getName();
+        if (array_key_exists($name, $values))
+        {
+            $property->setValue($model, $values[$name]);
         }
     }
 }

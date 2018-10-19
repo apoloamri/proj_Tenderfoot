@@ -1,11 +1,25 @@
 <?php 
-class BaseSchema
+class BaseMySqlSchema
 {
     public $id;
-    protected $Connect, $TableName, $Columns;
+    protected $Columns, $Connect, $Join, $TableName;
+    protected function InitializeConnection()
+    {
+        $connection = Settings::ConnectionString();
+        if (!array_key_exists(".settings.connection", $GLOBALS))
+		{
+			$cachedConnection = mysqli_connect(Settings::Host(), Settings::User(), Settings::Password(), Settings::Database());
+			$GLOBALS[".settings.connection"] = $cachedConnection;
+			$this->Connect = $cachedConnection;
+		}
+		else
+		{
+			$this->Connect = $GLOBALS[".settings.connection"];
+		}
+    }
     protected function Execute(string $query)
     {
-        return pg_query($this->Connect, $query);
+        return mysqli_query($this->Connect, $query);
     }
     protected function GetColumnType(ReflectionProperty $column) : string
     {
@@ -60,7 +74,7 @@ class BaseSchema
                 $value = $column->getValue($this);
                 if ($value != null)
                 {
-                    $entityValues[] = $column->getName()." = ".$this->PgEscapeLiteral($value)." ".DB::AND;
+                    $entityValues[] = $column->getName()." = ".$this->MySqliEscapeLiteral($value)." ".DB::AND;
                 }
             }
         }
@@ -91,15 +105,15 @@ class BaseSchema
     protected $Limit;
     protected function GetLimit() : string
     {
-        if (!IsNullOrEmpty($this->Limit))
+        if (HasValue($this->Limit))
         {
             return "LIMIT $this->Limit";
         }
         return "";
     }
-    protected function PgEscapeLiteral($value) : string 
+    protected function MySqliEscapeLiteral($value) : string 
     {
-        return pg_escape_literal($this->Connect, $value);
+        return mysqli_escape_string($this->Connect, $value);
     }
 }
 class DB

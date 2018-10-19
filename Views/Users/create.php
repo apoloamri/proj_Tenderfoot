@@ -7,7 +7,7 @@
 </div>
 
 <script type="module">
-    import Common from "/Resources/js/script.js";
+    import Lib from "/Resources/js/lib.js";
     new Vue({
         el: "#create",
         data: {
@@ -19,7 +19,7 @@
         methods: {
             Submit: function () {
                 var self = this;
-                Common.Post("/assets",
+                Lib.Post("/assets",
                 {
                     "AssetTag": self.AssetTag,
                     "Model": self.Model,

@@ -1,11 +1,18 @@
 <?php
 class ApiSessionController extends Controller
 {
-    public function GetSession()
+    function GetSession() : void
     {   
         $this->Initiate("SessionModel");
 		$this->Execute("GET");
-		$this->Json("session");
+		$this->Json("session", "loggedIn");
+    }
+
+    function PostSession() : void 
+    {
+        $this->Initiate("SessionModel");
+		$this->Execute("POST");
+		$this->Json("session", "loggedIn");
     }
 }
 ?>

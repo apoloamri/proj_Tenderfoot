@@ -1,7 +1,7 @@
 <?php
 class ErrorsController extends Controller
 {
-    public function Error404()
+    function Error404() : void
     {   
         http_response_code(404);
         $this->View("404");

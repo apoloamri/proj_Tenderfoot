@@ -1,16 +1,21 @@
 <?php
 class HomeController extends Controller
 {
-    public function Index()
+    function Index() : void
     {   
         $this->View("index");
     }
 
-    public function Item()
+    function Item() : void
     {   
         $this->Initiate("ItemModel");
 		$this->Execute("GET");
         $this->View("item");
+    }
+
+    function Cart() : void
+    {
+        $this->View("cart");
     }
 }
 ?>

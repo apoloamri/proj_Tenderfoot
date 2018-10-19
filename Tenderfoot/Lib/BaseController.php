@@ -9,7 +9,7 @@ class BaseController
         $errorList = array_filter($errorList);
         if (count($errorList) > 0)
         {
-            http_response_code(404);
+            http_response_code(400);
             $this->Model->IsValid = false;
             $this->Model->Messages = $errorList;
         }

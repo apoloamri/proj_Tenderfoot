@@ -4,7 +4,7 @@ class ItemsModel extends Model
 {   
     public $count;
     public $result;
-    public function Map() : void
+    function Map() : void
     {
         $items = new Items();
         $items->OrderBy("dat_insert_time", DB::DESC);

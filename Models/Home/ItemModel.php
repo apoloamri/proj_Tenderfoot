@@ -4,11 +4,11 @@ class ItemModel extends Model
 {   
     public $code;
     public $result;
-    public function Validate() : iterable
+    function Validate() : iterable
     {
         yield "code" => $this->Required("code");
     }
-    public function Map() : void
+    function Map() : void
     {
         $items = new Items();
         $items->str_code = $this->code;

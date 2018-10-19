@@ -1,14 +1,14 @@
 <?php
 class UsersController extends Controller
 {
-    public function GetUsers()
+    function GetUsers() : void
     {
         $this->Initiate("UsersModel");
 		$this->Execute("GET");
 		$this->Json("Result");
 	}
 	
-	public function PostUsers()
+	function PostUsers() : void
 	{
 		$this->Initiate("UsersModel");
 		$this->Execute("POST");

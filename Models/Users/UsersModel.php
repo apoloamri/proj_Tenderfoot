@@ -7,7 +7,7 @@ class UsersModel extends Model
     public $last_name;
     public $first_name;
     public $Result;
-    public function Validate()
+    function Validate()
     {
         if ($this->Post())
         {
@@ -17,16 +17,16 @@ class UsersModel extends Model
             yield "first_name" => $this->Required("first_name");
         }
     }
-    public function Map()
+    function Map()
     {
         $users = new Users();
-        if (!IsNullOrEmpty($this->username))
+        if (HasValue($this->username))
         {
             $users->AddWhere("str_username", $this->username);
         }
         $this->Result = $users->Select("str_username", "str_last_name", "str_first_name");
     }
-    public function Handle()
+    function Handle()
     {
         $users = new Users();
         $users->OverwriteWithModel($this);

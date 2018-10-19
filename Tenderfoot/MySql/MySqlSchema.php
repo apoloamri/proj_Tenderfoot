@@ -1,11 +1,11 @@
 <?php 
-require_once "Tenderfoot/Lib/BaseSchema.php";
-class Schema extends BaseSchema
+require_once "Tenderfoot/Lib/BaseMySqlSchema.php";
+class Schema extends BaseMySqlSchema
 {
     function __construct(string $tableName, bool $createTable = true)
     {
         $reflect = new ReflectionClass($this);
-        $this->Connect = pg_connect(Settings::ConnectionString());
+        $this->InitializeConnection();
         $this->Columns = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
         $this->TableName = $tableName;
         if (Settings::Migrate() && $createTable)
@@ -20,20 +20,22 @@ class Schema extends BaseSchema
         $where = $this->GetWhere(true);
         $order = $this->GetOrder();
         $limit = $this->GetLimit();
-        $query = "SELECT $columns FROM $this->TableName $where $order $limit;";
+        $query = "SELECT $columns FROM $this->TableName $this->Join $where $order $limit;";
         $return = array();
         $result = $this->Execute($query);
-        while ($data = pg_fetch_assoc($result))
+        while ($data = mysqli_fetch_assoc($result))
         {
-            $return[] = $data;
+            $model = (object)$data;
+            $return[] = $model;
         }
         return array_filter($return);
     }
-    function SelectSingle(string ...$columns) : array
+    function SelectSingle(string ...$columns) : object
     {
         $result = $this->Select(...$columns);
         if (count($result) == 1)
         {
+            ModelOverwrite($this, $result[0]);
             return $result[0];
         }
         return array();
@@ -42,13 +44,17 @@ class Schema extends BaseSchema
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
         $where = $this->GetWhere(true);
-        $query = "SELECT COUNT($columns) FROM $this->TableName $where;";
+        $query = "SELECT COUNT($columns) FROM $this->TableName $this->Join $where;";
         $result = $this->Execute($query);
-        return intval(pg_fetch_assoc($result)["count"]);
+        return intval(mysqli_fetch_assoc($result)["count"]);
+    }
+    function Join($schema, string $column)
+    {
+        $this->Join = "INNER JOIN $schema->TableName ON $this->TableName.$column = $schema->TableName.$column";
     }
     function Where(string $column, string $expression, $value, string $condition = DB::AND) : void
     {
-        $this->Where[] = "$this->TableName.$column $expression ".$this->PgEscapeLiteral($value)." $condition";
+        $this->Where[] = "$this->TableName.$column $expression ".$this->MySqliEscapeLiteral($value)." $condition";
     }
     function OrderBy(string $column, string $order = DB::ASC) : void
     {
@@ -74,7 +80,7 @@ class Schema extends BaseSchema
             if ($value != null)
             {
                 $columns[] = $column->getName();
-                $values[] = $this->PgEscapeLiteral($value);
+                $values[] = $this->MySqliEscapeLiteral($value);
             }
         }
         if (count($columns) > 0)
@@ -83,7 +89,7 @@ class Schema extends BaseSchema
             $this->Execute($query);
             $query = "SELECT currval('".$this->TableName."_id_seq')";
             $result = $this->Execute($query, false);
-            $this->id = pg_fetch_assoc($result)["currval"];
+            $this->id = mysqli_fetch_assoc($result)["currval"];
         }
     }
     function Update() : void
@@ -94,7 +100,7 @@ class Schema extends BaseSchema
             $value = $column->getValue($this);
             if ($value != null)
             {
-                $updateValues[] = $column->getName()." = ".$this->PgEscapeLiteral($value);
+                $updateValues[] = $column->getName()." = ".$this->MySqliEscapeLiteral($value);
             }
         }
         if (count($updateValues) > 0)
@@ -106,7 +112,7 @@ class Schema extends BaseSchema
     }
     function Delete() : void
     {
-        $where = $this->GetWhere();
+        $where = $this->GetWhere(true);
         $query = "DELETE FROM $this->TableName $where;";
         $this->Execute($query);
     }
@@ -237,7 +243,7 @@ class Sessions extends Schema
     }
     function CheckSession() : bool 
     {
-        if (IsNullOrEmpty($this->str_session_id))
+        if (!HasValue($this->str_session_id))
         {
             return false;
         }
@@ -251,6 +257,14 @@ class Sessions extends Schema
         $this->Where("str_session_id", DB::Equal, $this->str_session_id);
         $this->Update();
         return true;
+    }
+    function ValidateSession() : string
+    {
+        if (!$this->CheckSession())
+        {
+            return GetMessage("InvalidAccess");
+        }
+        return "";
     }
 }
 class Accesses extends Schema
