@@ -11,10 +11,10 @@ class UsersModel extends Model
     {
         if ($this->Post())
         {
-            yield "username" => $this->Required("username");
-            yield "password" => $this->Required("password");
-            yield "last_name" => $this->Required("last_name");
-            yield "first_name" => $this->Required("first_name");
+            yield "username" => $this->CheckInput("username", true);
+            yield "password" => $this->CheckInput("password", true);
+            yield "last_name" => $this->CheckInput("last_name", true);
+            yield "first_name" => $this->CheckInput("first_name", true);
         }
     }
     function Map()

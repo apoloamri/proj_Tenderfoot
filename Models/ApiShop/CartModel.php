@@ -10,7 +10,7 @@ class CartModel extends Model
     public $total = 0;
     function Validate() : iterable
     {
-        yield "sessionId" => $this->Required("sessionId");
+        yield "sessionId" => $this->CheckInput("sessionId", true);
         if (HasValue($this->sessionId))
         {
             $sessions = new Sessions();
@@ -19,7 +19,7 @@ class CartModel extends Model
         }
         if ($this->Post() || $this->Delete())
         {
-            yield "itemCode" => $this->Required("itemCode");
+            yield "itemCode" => $this->CheckInput("itemCode", true);
         }
     }
     function Map() : void

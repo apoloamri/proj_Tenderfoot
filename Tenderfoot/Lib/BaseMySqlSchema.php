@@ -29,35 +29,35 @@ class BaseMySqlSchema
         $isArray = is_array($value) ? "[]" : "";
         if ($name == "id")
         {
-            return "id serial NOT NULL PRIMARY KEY";
+            return "id INT AUTO_INCREMENT PRIMARY KEY";
         }
         else
         {
             switch (substr($name, 0, 4))
             {
                 case "str_":
-                    $returnString =  "$name character varying";
+                    $returnString =  "$name VARCHAR(255)";
                     break;
                 case "num_":
-                    $returnString =  "$name integer";
+                    $returnString =  "$name INT";
                     break;
                 case "dbl_":
-                    $returnString =  "$name double precision";
+                    $returnString =  "$name DOUBLE";
                     break;
                 case "sml_":
-                    $returnString =  "$name smallint";
+                    $returnString =  "$name SMALLINT";
                     break;
                 case "big_":
-                    $returnString =  "$name bigint";
+                    $returnString =  "$name BIGINT";
                     break;
                 case "dat_":
-                    $returnString =  "$name timestamp without time zone";
+                    $returnString =  "$name DATETIME";
                     break;
                 case "txt_":
-                    $returnString =  "$name text";
+                    $returnString =  "$name TEXT";
                     break;
                 default:
-                    $returnString = "$name character varying";
+                    $returnString = "$name VARCHAR(255)";
                     break;
             }
         }
@@ -74,7 +74,7 @@ class BaseMySqlSchema
                 $value = $column->getValue($this);
                 if ($value != null)
                 {
-                    $entityValues[] = $column->getName()." = ".$this->MySqliEscapeLiteral($value)." ".DB::AND;
+                    $entityValues[] = $column->getName()." = '".$this->MySqliEscapeLiteral($value)."' ".DB::AND;
                 }
             }
         }
@@ -102,10 +102,15 @@ class BaseMySqlSchema
         }
         return "";
     }
+    protected $Page;
     protected $Limit;
     protected function GetLimit() : string
     {
-        if (HasValue($this->Limit))
+        if (HasValue($this->Page))
+        {
+            return "LIMIT $this->Page";
+        }
+        else if (HasValue($this->Limit))
         {
             return "LIMIT $this->Limit";
         }

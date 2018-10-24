@@ -1,0 +1,177 @@
+a {
+    text-decoration: none;
+    color: gray;
+}
+
+body {
+    background-color: #35393E;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin: auto;
+}
+
+button {
+    cursor: pointer;
+    margin: 10px 0px;
+    border: 1px #24446b solid;
+    border-radius: 5px;
+    text-decoration: none;
+    padding: 15px;
+    transition: 300ms;
+    display: block;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #3868A3;
+}
+button:hover {
+    background-color: #24446b;
+}
+button.gray {
+    border-color: gray;
+    background-color: lightgray;
+    color: #333333;
+}
+button.gray:hover {
+    background-color: gray;
+}
+
+hr {
+    margin: 25px 0px;
+    border: none;
+    height: 1px;
+    background-color: lightgray;
+}
+
+input[type="number"],
+input[type="password"],
+input[type="text"],
+textarea {
+    border: solid;
+    border-width: 1px;
+    border-color: lightgray;
+    border-radius: 5px;
+    font-size: 15px;
+    margin: 20px -5px;
+    padding: 15px 20px;
+    width: 100%;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    display: inline-block;
+    margin: 0px 10px;
+}
+
+label {
+    display: block;
+}
+
+textarea {
+    margin: 15px;
+    height: 120px;
+    resize: none;
+    padding: 8px;
+}
+
+.adminTable {
+    background-color: white;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 10px;
+}
+.adminTable input {
+    width: 50%;
+    margin: 10px;
+    padding: 10px;
+}
+.adminTable table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.adminTable td, 
+.adminTable th {    
+    border-bottom: 1px solid #dddddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.image {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 10px;
+    display: inline-block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.levitateDiv {
+    background-color: #F4F6F8;
+    width: 500px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 20px -2px black;
+    padding: 20px;
+    margin: 20px;
+}
+.levitateDiv input[type="text"], 
+.levitateDiv input[type="password"], 
+.levitateDiv button {
+    width: 80%;
+}
+
+.margin-15 {
+    margin: 15px;
+}
+
+.red {
+    color: red;
+}
+
+.spacer-h-15 {
+    height: 15px;
+}
+
+.size-50 {
+    height: 50px;
+    width: 50px;
+}
+
+.size-100 {
+    height: 100px;
+    width: 100px;
+}
+
+#adminNavigation {
+    float: left;
+    width: 15%;
+    min-height: 100vh;
+}
+#adminNavigation a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 300ms;
+}
+#adminNavigation a:hover {
+    color: gray;
+}
+
+#adminContent {
+    background-color: #F4F6F8;
+    box-shadow: inset 0px 0px 20px -2px black;
+    float: right;
+    width: 85%;
+    min-height: 100vh;
+}
+#adminContent button {
+    padding: 10px 15px;
+}
+
+#adminInnerContent {
+    margin: 30px;
+}

@@ -10,9 +10,9 @@ class SessionModel extends Model
     {
         if ($this->Post())
         {
-            yield "username" => $this->Required("username");
-            yield "password" => $this->Required("password");
-            yield "session" => $this->Required("session");
+            yield "username" => $this->CheckInput("username", true);
+            yield "password" => $this->CheckInput("password", true);
+            yield "session" => $this->CheckInput("session", true);
             if (HasValue($this->username) && 
                 HasValue($this->password) &&
                 HasValue($this->session))

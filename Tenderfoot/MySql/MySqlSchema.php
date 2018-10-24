@@ -20,7 +20,7 @@ class Schema extends BaseMySqlSchema
         $where = $this->GetWhere(true);
         $order = $this->GetOrder();
         $limit = $this->GetLimit();
-        $query = "SELECT $columns FROM $this->TableName $this->Join $where $order $limit;";
+        $query = "SELECT $columns FROM $this->TableName $this->Join $where $order $limit";
         $return = array();
         $result = $this->Execute($query);
         while ($data = mysqli_fetch_assoc($result))
@@ -44,9 +44,13 @@ class Schema extends BaseMySqlSchema
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
         $where = $this->GetWhere(true);
-        $query = "SELECT COUNT($columns) FROM $this->TableName $this->Join $where;";
+        $query = "SELECT COUNT($columns) as count FROM $this->TableName $this->Join $where;";
         $result = $this->Execute($query);
         return intval(mysqli_fetch_assoc($result)["count"]);
+    }
+    function Exists(string ...$columns) : bool
+    {
+        return $this->Count(...$columns) > 0;
     }
     function Join($schema, string $column)
     {
@@ -54,7 +58,7 @@ class Schema extends BaseMySqlSchema
     }
     function Where(string $column, string $expression, $value, string $condition = DB::AND) : void
     {
-        $this->Where[] = "$this->TableName.$column $expression ".$this->MySqliEscapeLiteral($value)." $condition";
+        $this->Where[] = "$this->TableName.$column $expression '".$this->MySqliEscapeLiteral($value)."' $condition";
     }
     function OrderBy(string $column, string $order = DB::ASC) : void
     {
@@ -63,6 +67,15 @@ class Schema extends BaseMySqlSchema
     function Limit(int $limit) : void
     {
         $this->Limit = $limit;
+    }
+    function Page(int $page, int $itemCount) : void
+    {
+        $page = ($page - 1) * $itemCount;
+        $this->Page = $page.", ".$itemCount;
+    }
+    function PageCount(int $itemCount) : int
+    {
+        return ceil($this->Count() / $itemCount);
     }
     function Clear() : void
     {
@@ -80,16 +93,16 @@ class Schema extends BaseMySqlSchema
             if ($value != null)
             {
                 $columns[] = $column->getName();
-                $values[] = $this->MySqliEscapeLiteral($value);
+                $values[] = "'".$this->MySqliEscapeLiteral($value)."'";
             }
         }
         if (count($columns) > 0)
         {
             $query = "INSERT INTO $this->TableName(".join(", ", $columns).") VALUES(".join(", ", $values).");";
             $this->Execute($query);
-            $query = "SELECT currval('".$this->TableName."_id_seq')";
+            $query = "SELECT id FROM $this->TableName ORDER BY id DESC LIMIT 1";
             $result = $this->Execute($query, false);
-            $this->id = mysqli_fetch_assoc($result)["currval"];
+            $this->id = mysqli_fetch_assoc($result)["id"];
         }
     }
     function Update() : void
@@ -100,7 +113,7 @@ class Schema extends BaseMySqlSchema
             $value = $column->getValue($this);
             if ($value != null)
             {
-                $updateValues[] = $column->getName()." = ".$this->MySqliEscapeLiteral($value);
+                $updateValues[] = $column->getName()." = '".$this->MySqliEscapeLiteral($value)."'";
             }
         }
         if (count($updateValues) > 0)
@@ -145,8 +158,8 @@ class Schema extends BaseMySqlSchema
     private function CreateTable() : void
     {
         $table = new InformationSchemaTables();
-        $table->table_name = $this->TableName;
-        if ($table->Count("table_name") == 0)
+        $table->TABLE_NAME = $this->TableName;
+        if ($table->Count("TABLE_NAME") == 0)
         {
             $columns;
             foreach ($this->Columns as $property)
@@ -165,9 +178,9 @@ class Schema extends BaseMySqlSchema
         {
             $columnName = $property->getName();
             $table = new InformationSchemaColumns();
-            $table->table_name = $this->TableName;
-            $table->column_name = $columnName;
-            if ($table->Count("column_name") == 0)
+            $table->TABLE_NAME = $this->TableName;
+            $table->COLUMN_NAME = $columnName;
+            if ($table->Count("COLUMN_NAME") == 0)
             {
                 $column = $this->GetColumnType($property);
                 $alterColumns[] = "ADD COLUMN $column;";
@@ -185,35 +198,21 @@ class InformationSchemaTables extends Schema
 {
     function __construct()
     {
-        parent::__construct("information_schema.tables", false);
+        parent::__construct("INFORMATION_SCHEMA.TABLES", false);
     }
-    public $table_catalog;
-    public $table_schema;
-    public $table_name;
-    public $table_type;
-    public $column_name;
-    public $ordinal_position;
-    public $column_default;
-    public $is_nullable;
-    public $data_type;
-    public $character_maximum_length;
+    public $SCHEMA_NAME;
+    public $TABLE_NAME;
+    public $COLUMN_NAME;
 }
 class InformationSchemaColumns extends Schema
 {
     function __construct()
     {
-        parent::__construct("information_schema.columns", false);
+        parent::__construct("INFORMATION_SCHEMA.COLUMNS", false);
     }
-    public $table_catalog;
-    public $table_schema;
-    public $table_name;
-    public $table_type;
-    public $column_name;
-    public $ordinal_position;
-    public $column_default;
-    public $is_nullable;
-    public $data_type;
-    public $character_maximum_length;
+    public $SCHEMA_NAME;
+    public $TABLE_NAME;
+    public $COLUMN_NAME;
 }
 class Sessions extends Schema
 {

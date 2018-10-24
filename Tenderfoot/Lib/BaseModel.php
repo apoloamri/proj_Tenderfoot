@@ -16,6 +16,13 @@ class BaseModel
                 $reflect->getProperty($key)->setValue($this, $value);
             }
         }
+        foreach ($_FILES as $key => $value)
+        {
+            if (property_exists($this, $key))
+            {
+                $reflect->getProperty($key)->setValue($this, $value);
+            }
+        }
         $json = json_decode(file_get_contents('php://input'), true);
         if ($json != null)
         {

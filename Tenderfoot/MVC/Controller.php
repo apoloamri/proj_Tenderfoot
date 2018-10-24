@@ -2,18 +2,26 @@
 require_once "Tenderfoot/Lib/BaseController.php";
 class Controller extends BaseController
 {
-	protected function Initiate(string $model) : void
+	protected function Initiate(string $model = null, string $modelLocation = null) : void
 	{
 		try
 		{
-			$controller = str_replace("Controller", "", get_class($this));
-			require_once "Models/$controller/$model.php";
+			if (session_status() == PHP_SESSION_NONE) 
+			{
+				session_start();
+			}
 			if ($model == null)
 			{
 				$this->Model = new Model();
 			}
 			else
 			{
+				$controller = str_replace("Controller", "", get_class($this));
+				if (HasValue($modelLocation))
+				{
+					$controller = $modelLocation;
+				}
+				require_once "Models/$controller/$model.php";
 				$this->Model = new $model;
 			}
 			$this->Model->URI = explode("/", $_SERVER["REQUEST_URI"]);
@@ -72,6 +80,11 @@ class Controller extends BaseController
 		{
 			echo "A system error occured!\n",  $ex->getMessage(), "\n";
 		}
+	}
+	protected function Redirect(string $url) : void
+	{
+		header('Location: '.$url);
+		die();
 	}
 	protected function Json(string ...$fields) : void
 	{

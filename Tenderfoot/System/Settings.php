@@ -56,6 +56,8 @@ class Settings
 			"password=".self::Password()." ";
 	}
 	//Site
+	static function FilePath() : string { return self::GetSettings("FilePath"); }
+	static function FilePathTemp() : string { return self::GetSettings("FilePathTemp"); }
 	static function Session() : string { return self::GetSettings("Session"); }
 	static function SiteUrl() : string { return self::GetSettings("SiteUrl"); }
 	static function SiteUrlSSL() : string { return self::GetSettings("SiteUrlSSL"); }
@@ -63,6 +65,10 @@ class Settings
 function GetMessage(string $tag, string $value = "") : string
 {
 	$message = parse_ini_file(".messages.ini");
-	return sprintf($message[$tag], $value);
+	if (array_key_exists($tag, $message))
+	{
+		return sprintf($message[$tag], $value);	
+	}
+	return $tag;
 }
 ?>

@@ -6,7 +6,7 @@ class ItemModel extends Model
     public $result;
     function Validate() : iterable
     {
-        yield "code" => $this->Required("code");
+        yield "code" => $this->CheckInput("code", true);
     }
     function Map() : void
     {

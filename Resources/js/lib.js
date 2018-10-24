@@ -20,6 +20,13 @@ export default {
     IsEmptyOrSpaces: function (input) {
         return input == null || input.toString().replace(/\s/g, '').length < 1;
     },
+    Delay: (function () {
+        var timer = 0;
+        return function(callback, ms){
+          clearTimeout (timer);
+          timer = setTimeout(callback, ms);
+        };
+    })(),
     //COMMON
 
     //COOKIES
@@ -83,6 +90,9 @@ export default {
     },
     Delete: function (url, data, success, error) {
         AjaxCall("DELETE", url, data, success, error);
+    },
+    Form: function (url, data, success, error) {
+        AjaxCall("POST", url, data, success, error, false, true);
     },
     Authenticate: function (data) {
         var returnData = false;
@@ -174,7 +184,7 @@ function AjaxCall(
         processData = false;
         contentType = false;
     } 
-    else { 
+    else if (data != null) { 
         if (type == "GET") {
             data = $.param(data);
         }
