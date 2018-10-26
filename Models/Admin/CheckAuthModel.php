@@ -5,8 +5,14 @@ class CheckAuthModel extends Model
     public $sessionId;
     function Validate() : iterable
     {
-        $this->sessionKey = $_SESSION["admin.session_key"];
-        $this->sessionId = $_SESSION["admin.session_id"];
+        if (array_key_exists("admin.session_key", $_SESSION))
+        {
+            $this->sessionKey = $_SESSION["admin.session_key"];
+        }
+        if (array_key_exists("admin.session_id", $_SESSION))
+        {
+            $this->sessionId = $_SESSION["admin.session_id"];
+        }
         $hasValues = 
             HasValue($this->sessionKey) && 
             HasValue($this->sessionId);
@@ -19,6 +25,10 @@ class CheckAuthModel extends Model
             {
                 yield "Session" => GetMessage("InvalidAccess");
             }
+        }
+        else
+        {
+            yield "Session" => GetMessage("InvalidAccess");
         }
     }
 }

@@ -1,5 +1,5 @@
 export default {
-    //ARRAY
+    //COMMON
     ArrayContains: function (array, item) {
         for(var i = 0; i < array.length; i++){
             if (array[i] == item) {
@@ -8,9 +8,6 @@ export default {
         }
         return false
     },
-    //ARRAY
-
-    //COMMON
     ValidateNullOrEmpty: function (object, message) {
         if (!object || this.IsEmptyOrSpaces(object)) {
             return message;
@@ -60,24 +57,32 @@ export default {
         }
         $("#modalShadow").addClass("unshow");
     },
+    InitialLoading: function (bool) {
+        if (bool) {
+            this.EnableButtons(false);
+            this.ShowElement("loading", true);
+            document.body.style.cursor = "wait";
+        }
+        else {
+            this.EnableButtons(true);
+            this.ShowElement("loading", false);
+            document.body.style.cursor = "default";
+        }
+    },
+    EnableButtons: function (bool) {
+        $("button").prop("disabled", !bool);
+        $("submit").prop("disabled", !bool);
+    },
+    ShowElement: function (element, bool) {
+        if (bool) {
+            $("#" + element).show();
+        }
+        else {
+            $("#" + element).hide();
+        }
+    },
     //MODAL
-
-    //PAGINATION
-    PageNext: function (paginationObject) {
-        if (paginationObject.currentPage < paginationObject.totalPages) {
-            paginationObject.currentPage = paginationObject.currentPage + 1;
-        }
-    },
-    PagePrevious: function (paginationObject) {
-        if (paginationObject.currentPage != 1) {
-            paginationObject.currentPage = paginationObject.currentPage - 1;
-        }
-    },
-    PageSelection: function (paginationObject) {
-        paginationObject.pages = Array.from({length: paginationObject.totalPages}, (v, k) => k+1);
-    },
-    //PAGINATION
-
+    
     //REQUESTS
     Get: function (url, data, success, error) {
         AjaxCall("GET", url, data, success, error);
@@ -111,27 +116,6 @@ export default {
         AjaxCall("GET", configuration.CheckAuthentication, data, success, error);
     },
     //REQUESTS
-
-    //RESPONSES
-    Messages: function (obj, isRaw) {
-        var output = "";
-        var items = [];
-        for (var property in obj) {
-            var value = obj[property];
-            if (items.includes(value)) {
-                continue;
-            }
-            items.push(value);
-            if (isRaw == true) {
-                output += value + "\n";
-            }
-            else {
-                output += "<p>" + value + "</p>";
-            }
-        }
-        return output;
-    }
-    //RESPONSES
 }
 
 function SetCookie(cname, cvalue, exdays) {

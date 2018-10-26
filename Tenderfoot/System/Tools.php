@@ -1,4 +1,8 @@
 <?php
+function StringContains($needle, $haystack)
+{
+    return strpos($haystack, $needle) !== false;
+}
 function GenerateRandomString($length = 10) : string
 {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

@@ -6,17 +6,12 @@ class ProductsModel extends Model
     public $PageTitle;
     function Validate() : iterable
     {
-        if ($this->Put())
+        if (HasValue($this->Id))
         {
-            yield "Id" => $this->CheckInput("Id", true, Type::Numeric);
-            if (HasValue($this->Id))
+            $products = new Products();
+            if (!$products->IdExists($this->Id))
             {
-                $products = new Products();
-                $products->id = $this->Id;
-                if (!$products->Exists())
-                {
-                    yield "Id" => GetMessage("IdDoesNotExist", $this->Id);
-                }
+                yield "Id" => GetMessage("IdDoesNotExist", $this->Id);
             }
         }
     }

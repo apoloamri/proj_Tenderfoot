@@ -14,5 +14,8 @@
     <div id="container">
         <?php $model->RenderPage(); ?>
     </div>
+    <div id="loading">
+        <div class="display">Please wait...</div>
+    </div>
 </body>
 </html>

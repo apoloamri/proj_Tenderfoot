@@ -24,17 +24,34 @@ class LoginModel extends Model
                 }
             }
         }
+        if ($this->Delete())
+        {
+            if (!array_key_exists("admin.session_key", $_SESSION))
+            {
+                yield "Session" => GetMessage("InvalidAccess");
+            }
+        }
     }
     function Handle() : void 
     {
-        $admins = new Admins();
-        $admins->str_username = $this->Username;
-        $admins->str_password = $this->Password;
-        $admins->SelectSingle();
         $sessions = new Sessions();
-        $sessions->str_session_key = "admin_".$admins->str_username;
-        $_SESSION["admin.session_key"] = $sessions->str_session_key;
-        $_SESSION["admin.session_id"] = $sessions->GetSession();
+        if ($this->Post())
+        {
+            $admins = new Admins();
+            $admins->str_username = $this->Username;
+            $admins->str_password = $this->Password;
+            $admins->SelectSingle();
+            $sessions->str_session_key = "admin_".$admins->str_username;
+            $_SESSION["admin.session_key"] = $sessions->str_session_key;
+            $_SESSION["admin.session_id"] = $sessions->GetSession();
+        }
+        if ($this->Delete())
+        {
+            $sessions->str_session_key = $_SESSION["admin.session_key"];
+            $sessions->Delete();
+            session_unset("admin.session_key");
+            session_unset("admin.session_id");
+        }
     }
 }
 ?>

@@ -16,11 +16,28 @@ class Schema extends BaseMySqlSchema
     }
     function Select(string ...$columns) : array
     {
-        $columns = count($columns) > 0 ? join(", ", $columns) : "*";
+        $columns = count($columns) > 0 ? join(", ", $columns) : "$this->TableName.*";
+        if (count($this->JoinSchema) > 0)
+        {
+            foreach ($this->JoinSchema as $schema)
+            {
+                $joinColumns = array();
+                foreach ($schema->Columns as $column)
+                {
+                    if ($column->getName() != "id")
+                    {
+                        $joinColumns[] = $schema->TableName.".".$column->getName();
+                    }
+                }
+                $columns = $columns.", ".join(", ", $joinColumns);
+            }
+        }
         $where = $this->GetWhere(true);
+        $join = $this->GetJoin();
         $order = $this->GetOrder();
+        $group = $this->GetGroup();
         $limit = $this->GetLimit();
-        $query = "SELECT $columns FROM $this->TableName $this->Join $where $order $limit";
+        $query = "SELECT $columns FROM $this->TableName $join $where $group $order $limit;";
         $return = array();
         $result = $this->Execute($query);
         while ($data = mysqli_fetch_assoc($result))
@@ -44,7 +61,8 @@ class Schema extends BaseMySqlSchema
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
         $where = $this->GetWhere(true);
-        $query = "SELECT COUNT($columns) as count FROM $this->TableName $this->Join $where;";
+        $group = $this->GetGroup();
+        $query = "SELECT COUNT($columns) as count FROM $this->TableName $where $group;";
         $result = $this->Execute($query);
         return intval(mysqli_fetch_assoc($result)["count"]);
     }
@@ -52,13 +70,18 @@ class Schema extends BaseMySqlSchema
     {
         return $this->Count(...$columns) > 0;
     }
-    function Join($schema, string $column)
+    function Join($schema, string $joinColumn, string $parentColumn)
     {
-        $this->Join = "INNER JOIN $schema->TableName ON $this->TableName.$column = $schema->TableName.$column";
+        $this->Join[] = "LEFT JOIN $schema->TableName ON $this->TableName.$parentColumn = $schema->TableName.$joinColumn";
+        $this->JoinSchema[] = $schema;
     }
     function Where(string $column, string $expression, $value, string $condition = DB::AND) : void
     {
         $this->Where[] = "$this->TableName.$column $expression '".$this->MySqliEscapeLiteral($value)."' $condition";
+    }
+    function GroupBy(string $group)
+    {
+        $this->Group[] = "$this->TableName.$group";
     }
     function OrderBy(string $column, string $order = DB::ASC) : void
     {
@@ -80,6 +103,8 @@ class Schema extends BaseMySqlSchema
     function Clear() : void
     {
         $this->Where = array();
+        $this->Join = array();
+        $this->JoinSchema = array();
         $this->Orders = array();
         $this->Limit = null;
     }
@@ -100,7 +125,7 @@ class Schema extends BaseMySqlSchema
         {
             $query = "INSERT INTO $this->TableName(".join(", ", $columns).") VALUES(".join(", ", $values).");";
             $this->Execute($query);
-            $query = "SELECT id FROM $this->TableName ORDER BY id DESC LIMIT 1";
+            $query = "SELECT id FROM $this->TableName ORDER BY id DESC LIMIT 1;";
             $result = $this->Execute($query, false);
             $this->id = mysqli_fetch_assoc($result)["id"];
         }

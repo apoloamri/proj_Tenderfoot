@@ -5,9 +5,8 @@ class ProductImages extends Schema
     {
         parent::__construct("product_images");
     }
-    public $str_code;
+    public $int_product_id;
     public $str_path;
     public $dat_insert_time;
-    public $dat_update_time;
 }
 ?>

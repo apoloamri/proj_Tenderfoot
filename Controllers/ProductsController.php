@@ -6,7 +6,7 @@ class ProductsController extends BaseAdminController
     {
         $this->Initiate("ProductsModel");
 		$this->Execute("GET");
-        $this->Json("Result", "PageCount");
+        $this->Json("Result", "ImagePaths", "PageCount");
     }
 
     function PostProducts() : void
@@ -30,6 +30,22 @@ class ProductsController extends BaseAdminController
         $this->CheckAuthNotFound();
         $this->Initiate("ProductsModel");
         $this->Execute("PUT");
+        $this->Json();
+    }
+
+    function DeleteProducts() : void
+    {
+        $this->CheckAuthNotFound();
+        $this->Initiate("ProductsModel");
+        $this->Execute("DELETE");
+        $this->Json();
+    }
+
+    function PutInventory() : void
+    {
+        $this->CheckAuthNotFound();
+        $this->Initiate("InventoryModel");
+        $this->Execute("DELETE");
         $this->Json();
     }
 }

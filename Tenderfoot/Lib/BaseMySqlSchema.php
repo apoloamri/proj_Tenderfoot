@@ -2,7 +2,7 @@
 class BaseMySqlSchema
 {
     public $id;
-    protected $Columns, $Connect, $Join, $TableName;
+    protected $Columns, $Connect, $TableName;
     protected function InitializeConnection()
     {
         $connection = Settings::ConnectionString();
@@ -29,7 +29,7 @@ class BaseMySqlSchema
         $isArray = is_array($value) ? "[]" : "";
         if ($name == "id")
         {
-            return "id INT AUTO_INCREMENT PRIMARY KEY";
+            return "id SERIAl PRIMARY KEY";
         }
         else
         {
@@ -74,7 +74,7 @@ class BaseMySqlSchema
                 $value = $column->getValue($this);
                 if ($value != null)
                 {
-                    $entityValues[] = $column->getName()." = '".$this->MySqliEscapeLiteral($value)."' ".DB::AND;
+                    $entityValues[] = "$this->TableName.".$column->getName()." = '".$this->MySqliEscapeLiteral($value)."' ".DB::AND;
                 }
             }
         }
@@ -89,6 +89,26 @@ class BaseMySqlSchema
                 $where = chop($where, $constant);
             }
             return "WHERE $where";
+        }
+        return "";
+    }
+    protected $Join = array();
+    protected $JoinSchema = array();
+    protected function GetJoin() : string
+    {
+        if (count($this->Join) > 0)
+        {
+            return join(" ", $this->Join);
+        }
+        return "";
+    }
+    protected $Group = array();
+    protected function GetGroup() : string
+    {
+        if (count($this->Group) > 0)
+        {
+            $group = join(", ", $this->Group);
+            return "GROUP BY $group";
         }
         return "";
     }

@@ -35,6 +35,7 @@
         methods: {
             Login: function () {
                 var self = this;
+                Lib.InitialLoading(true);
                 Lib.Post("/admin/api/login", {
                     "Username": self.username,
                     "Password": self.password
@@ -45,6 +46,7 @@
                 function (failed) {
                     var response = failed.responseJSON;
                     self.messages = response.Messages;
+                    Lib.InitialLoading(false);
                 });
             }
         }

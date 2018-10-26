@@ -28,7 +28,7 @@ class AdminController extends BaseAdminController
     function ProductsAdd() : void
     {
         $this->CheckAuthRedirect();
-        $this->Initiate();
+        $this->Initiate("ProductsModel");
         $this->Execute("GET");
         $this->Model->PageTitle = "Add Product";
         $this->View("products_add");
@@ -37,7 +37,11 @@ class AdminController extends BaseAdminController
     function ProductsEdit() : void
     {
         $this->CheckAuthRedirect();
-        $this->Initiate();
+        $this->Initiate("ProductsModel");
+        if (!$this->Model->IsValid)
+        {
+            $this->Redirect("/error/404");
+        }
         $this->Execute("GET");
         $this->Model->PageTitle = "Edit Product";
         $this->View("products_add");
@@ -52,8 +56,9 @@ class AdminController extends BaseAdminController
 
     function ApiPostLogout() : void
     {
-        $this->Initiate("LogoutModel");
-		$this->Execute("POST");
+        $this->CheckAuthNotFound();
+        $this->Initiate("LoginModel");
+		$this->Execute("DELETE");
         $this->Json();
     }
 }

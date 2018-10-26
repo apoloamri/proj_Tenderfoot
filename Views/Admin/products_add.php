@@ -1,4 +1,4 @@
-<div id="adminProducts" class="adminPages">
+<div id="adminPages">
     <?php $this->Partial("admin_navigation") ?>
     <div id="adminContent">
         <div id="adminInnerContent">
@@ -30,12 +30,19 @@
             <div class="adminTable">
                 <h3>Images</h3>
                 <input type="file" v-on:change="UploadImage()" id="image" />
+                <button v-on:click="imagePaths = []" class="gray inline-block">Remove Images</button>
                 <label class="red">{{messages["ImageFile"]}}</label>
                 <div v-for="image in imagePaths" v-bind:style="{ 'background-image': 'url(' + image + ')' }" class="image size-100"></div>
             </div>
             <hr />
             <div class="float-right">
-                <button v-on:click="PostProducts()" class="inline-block">Add product</button>
+                <div v-if="id == ''" class="inline-block">
+                    <button v-on:click="PostProducts()" class="inline-block">Add product</button>
+                </div>
+                <div v-else class="inline-block">
+                    <button v-on:click="PutProducts()" class="inline-block">Update product</button>
+                    <button v-on:click="DeleteProducts()" class="red inline-block">Delete product</button>
+                </div>
                 <button v-on:click="Clear()" class="gray inline-block">Clear</button>
             </div>
         </div>
@@ -62,6 +69,7 @@
     new Vue({
         el: "#adminInnerContent",
         data: {
+            id: "<?php echo $this->Id; ?>",
             code: "",
             brand: "",
             name: "",
@@ -71,8 +79,27 @@
             messages: []
         },
         methods: {
+            GetProduct: function () {
+                var self = this;
+                Lib.InitialLoading(true);
+                Lib.Get("/api/products", {
+                    "Id": self.id
+                },
+                function (success) {
+                    self.code = success.Result.str_code;
+                    self.brand = success.Result.str_brand;
+                    self.name = success.Result.str_name;
+                    self.description = success.Result.str_description;
+                    self.price = success.Result.dbl_price;
+                    if (success.ImagePaths != null) {
+                        self.imagePaths = success.ImagePaths;
+                    }
+                    Lib.InitialLoading(false);
+                });
+            },
             PostProducts: function () {
                 var self = this;
+                Lib.InitialLoading(true);
                 Lib.Post("/api/products", {
                     "Code": self.code,
                     "Brand": self.brand,
@@ -82,27 +109,65 @@
                     "ImagePaths": self.imagePaths
                 },
                 function (success) { 
-                    alert("Product Added!");
+                    alert("Product Added");
                     window.location = "/admin/products";
                 },
                 function (failed) {
                     var response = failed.responseJSON;
                     self.messages = response.Messages;
                     $("html, body").animate({ scrollTop: 0 }, "slow");
+                    Lib.InitialLoading(false);
+                });
+            },
+            PutProducts: function () {
+                var self = this;
+                Lib.InitialLoading(true);
+                Lib.Put("/api/products", {
+                    "Id": self.id,
+                    "Code": self.code,
+                    "Brand": self.brand,
+                    "Name": self.name,
+                    "Description": self.description,
+                    "Price": self.price,
+                    "ImagePaths": self.imagePaths
+                },
+                function (success) { 
+                    alert("Product Updated");
+                    Lib.InitialLoading(false);
+                },
+                function (failed) {
+                    var response = failed.responseJSON;
+                    self.messages = response.Messages;
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    Lib.InitialLoading(false);
+                });
+            },
+            DeleteProducts: function () {
+                var self = this;
+                Lib.InitialLoading(false);
+                Lib.Delete("/api/products", {
+                    "Id": self.id
+                },
+                function (success) { 
+                    alert("Product Deleted");
+                    window.location = "/admin/products";
                 });
             },
             UploadImage: function () {
                 var self = this;
+                Lib.InitialLoading(true);
                 var image = $("#image").prop("files")[0];
                 Lib.Form("/api/products/image", {
                     "ImageFile": image
                 },
                 function (success) { 
                     self.imagePaths.push(success.ImagePath);
+                    Lib.InitialLoading(false);
                 },
                 function (failed) {
                     var response = failed.responseJSON;
                     self.messages = response.Messages;
+                    Lib.InitialLoading(false);
                 });
                 $("#image").val(null);
             },
@@ -114,6 +179,11 @@
                 self.description = "";
                 self.price = null;
                 self.imagePaths = [];
+            }
+        },
+        created() {
+            if (this.id != "") {
+                this.GetProduct();
             }
         }
     });

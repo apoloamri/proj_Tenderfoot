@@ -127,13 +127,14 @@ class Model extends BaseModel
         $urlPath = Settings::SiteUrl().Settings::FilePath();
         $newFilePath = $_SERVER['DOCUMENT_ROOT'].parse_url($urlPath, PHP_URL_PATH);
         $oldFilePath = $_SERVER['DOCUMENT_ROOT'].parse_url($fileUrl, PHP_URL_PATH);
+        $fileExtension = pathinfo($oldFilePath, PATHINFO_EXTENSION);
         if ($fileName == null)
         {
             $fileName = pathinfo($oldFilePath, PATHINFO_FILENAME);
         }
-        $newFilePath = $newFilePath."/".$fileName.".".pathinfo($oldFilePath, PATHINFO_EXTENSION);
+        $newFilePath = $newFilePath."/".$fileName.".".$fileExtension;
         rename($oldFilePath, $newFilePath);
-        return $newFilePath;
+        return Settings::SiteUrl().Settings::FilePath()."/".$fileName.".".$fileExtension;
     }
     static function AddSchema(string $schemaName) : void
     {
