@@ -1,6 +1,6 @@
 <?php 
 require_once "Tenderfoot/Lib/BaseMySqlSchema.php";
-class Schema extends BaseMySqlSchema
+class MySqlSchema extends BaseMySqlSchema
 {
     function __construct(string $tableName, bool $createTable = true)
     {
@@ -32,8 +32,8 @@ class Schema extends BaseMySqlSchema
                 $columns = $columns.", ".join(", ", $joinColumns);
             }
         }
-        $where = $this->GetWhere(true);
         $join = $this->GetJoin();
+        $where = $this->GetWhere(true);
         $order = $this->GetOrder();
         $group = $this->GetGroup();
         $limit = $this->GetLimit();
@@ -60,9 +60,10 @@ class Schema extends BaseMySqlSchema
     function Count(string ...$columns) : int
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
+        $join = $this->GetJoin();
         $where = $this->GetWhere(true);
         $group = $this->GetGroup();
-        $query = "SELECT COUNT($columns) as count FROM $this->TableName $where $group;";
+        $query = "SELECT COUNT($columns) as count FROM $this->TableName $join $where $group;";
         $result = $this->Execute($query);
         return intval(mysqli_fetch_assoc($result)["count"]);
     }
@@ -77,7 +78,7 @@ class Schema extends BaseMySqlSchema
     }
     function Where(string $column, string $expression, $value, string $condition = DB::AND) : void
     {
-        $this->Where[] = "$this->TableName.$column $expression '".$this->MySqliEscapeLiteral($value)."' $condition";
+        $this->Where[] = "$column $expression '".$this->MySqliEscapeLiteral($value)."' $condition";
     }
     function GroupBy(string $group)
     {
@@ -219,7 +220,7 @@ class Schema extends BaseMySqlSchema
         }
     }
 }
-class InformationSchemaTables extends Schema
+class InformationSchemaTables extends MySqlSchema
 {
     function __construct()
     {
@@ -229,7 +230,7 @@ class InformationSchemaTables extends Schema
     public $TABLE_NAME;
     public $COLUMN_NAME;
 }
-class InformationSchemaColumns extends Schema
+class InformationSchemaColumns extends MySqlSchema
 {
     function __construct()
     {
@@ -239,7 +240,7 @@ class InformationSchemaColumns extends Schema
     public $TABLE_NAME;
     public $COLUMN_NAME;
 }
-class Sessions extends Schema
+class Sessions extends MySqlSchema
 {
     function __construct()
     {
@@ -291,7 +292,7 @@ class Sessions extends Schema
         return "";
     }
 }
-class Accesses extends Schema
+class Accesses extends MySqlSchema
 {
     function __construct()
     {

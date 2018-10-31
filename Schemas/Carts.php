@@ -1,5 +1,5 @@
 <?php
-class Carts extends Schema
+class Carts extends MySqlSchema
 {
     function __construct()
     {

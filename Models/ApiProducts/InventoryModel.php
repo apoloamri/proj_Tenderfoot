@@ -3,8 +3,9 @@ Model::AddSchema("Products");
 Model::AddSchema("ProductInventory");
 class InventoryModel extends Model
 {   
-    public $Id;
-    public $Amount;
+    public 
+        $Id,
+        $Amount;
     function Validate() : iterable
     {
         yield "Id" => $this->CheckInput("Id", false, Type::Numeric);

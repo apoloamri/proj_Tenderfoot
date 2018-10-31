@@ -2,10 +2,12 @@
 Model::AddSchema("Products");
 Model::AddSchema("ProductImages");
 Model::AddSchema("ProductInventory");
+Model::AddSchema("ProductTags");
 class ProductsModel extends Model
 {   
     //GET
     public $Search;
+    public $SearchTag;
     public $Page;
     public $Count;
     public $Result;
@@ -17,6 +19,7 @@ class ProductsModel extends Model
     public $Brand;
     public $Name;
     public $Description;
+    public $Tags;
     public $Price;
     public $ImagePaths;
     function Validate() : iterable
@@ -24,6 +27,7 @@ class ProductsModel extends Model
         if ($this->Get())
         {
             yield "Search" => $this->CheckInput("Search", false, Type::All);
+            yield "SearchTag" => $this->CheckInput("SearchTag", false, Type::All);
             yield "Page" => $this->CheckInput("Page", false, Type::Numeric);
             yield "Count" => $this->CheckInput("Count", false, Type::Numeric);
         }
@@ -37,15 +41,10 @@ class ProductsModel extends Model
             yield "Code" => $this->CheckInput("Code", true, Type::AlphaNumeric, 25);
             yield "Brand" => $this->CheckInput("Brand", true, Type::All, 100);
             yield "Name" => $this->CheckInput("Name", true, Type::All, 100);
-            yield "Description" => $this->CheckInput("Description", true, Type::All, 1000);
+            yield "Description" => $this->CheckInput("Description", false, Type::All, 1000);
+            yield "Tags" => $this->CheckInput("Tags", false, Type::All, 255);
             yield "Price" => $this->CheckInput("Price", true, Type::Currency, 25);
-            $hasValues = 
-                HasValue($this->Code) &&
-                HasValue($this->Brand) &&
-                HasValue($this->Name) &&
-                HasValue($this->Description) &&
-                HasValue($this->Price);
-            if ($hasValues)
+            if (HasValue($this->Code))
             {
                 $products = new Products();
                 if ($products->CodeExists($this->Code, $this->OldCode))
@@ -67,27 +66,33 @@ class ProductsModel extends Model
             $products->id = $this->Id;
             $this->Result = $products->SelectSingle();
             $images = new ProductImages();
-            $images->int_product_id = $products->id;
-            $imageResult = $images->Select("str_path");
-            foreach ($imageResult as $image)
-            {
-                $this->ImagePaths[] = $image->str_path;
-            }
+            $this->Result->ImagePaths = $images->GetImages($products->id);
+            $tags = new ProductTags();
+            $this->Result->Tags = $tags->GetTags($products->id);
         }
         else
         {
             $productImages = new ProductImages();
             $productInventory = new ProductInventory();
+            $productTags = new ProductTags();
             $products->Join($productImages, "int_product_id", "id");
             $products->Join($productInventory, "int_product_id", "id");
-            $products->Where("str_code", DB::Like, "%".$this->Search."%", DB::OR);
-            $products->Where("str_name", DB::Like, "%".$this->Search."%", DB::OR);
-            $products->Where("str_brand", DB::Like, "%".$this->Search."%");
+            $products->Join($productTags, "int_product_id", "id");
+            if (HasValue($this->SearchTag))
+            {
+                $products->Where("str_tag", DB::Equal, $this->SearchTag);
+            }
+            else
+            {
+                $products->Where("str_code", DB::Like, "%".$this->Search."%", DB::OR);
+                $products->Where("str_name", DB::Like, "%".$this->Search."%", DB::OR);
+                $products->Where("str_brand", DB::Like, "%".$this->Search."%");
+            }
             $products->GroupBy("id");
             $products->OrderBy("id", DB::DESC);
-            $products->Page($this->Page, $this->Count);
+            $products->Page((int)$this->Page, (int)$this->Count);
             $this->Result = $products->Select();
-            $this->PageCount = $products->PageCount($this->Count);
+            $this->PageCount = $products->PageCount((int)$this->Count);
         }
     }
     function Handle() : void
@@ -96,13 +101,14 @@ class ProductsModel extends Model
         $products->str_code = $this->Code;
         $products->str_brand = $this->Brand;
         $products->str_name = $this->Name;
-        $products->str_description = $this->Description;
+        $products->txt_description = $this->Description;
         $products->dbl_price = $this->Price;
         if ($this->Post())
         {
             $products->dat_insert_time = Now();
             $products->Insert();
             $this->UpdateImages($products->id);
+            $this->UpdateTags($products->id);
         }
         if ($this->Put())
         {
@@ -110,6 +116,7 @@ class ProductsModel extends Model
             $products->Where("id", DB::Equal, $this->Id);
             $products->Update();
             $this->UpdateImages($this->Id);
+            $this->UpdateTags($this->Id);
         }
         if ($this->Delete())
         {
@@ -132,7 +139,23 @@ class ProductsModel extends Model
         {
             $productImages->id = null;
             $productImages->str_path = $this->SaveFile($value, $this->Code."-".$key);
+            $productImages->dat_insert_time = Now();
             $productImages->Insert();
+        }
+    }
+    function UpdateTags($id) : void
+    {
+        $productTags = new ProductTags();
+        $productTags->int_product_id = $id;
+        $productTags->Delete();
+        $tags = explode(",", $this->Tags);
+        $tags = array_map("trim", $tags);
+        foreach ($tags as $tag)
+        {
+            $productTags->id = null;
+            $productTags->str_tag = $tag;
+            $productTags->dat_insert_time = Now();
+            $productTags->Insert();
         }
     }
 }

@@ -2,8 +2,9 @@
 Model::AddSchema("Admins");
 class LoginModel extends Model
 {   
-    public $Username;
-    public $Password;
+    public 
+        $Username,
+        $Password;
     function Validate() : iterable
     {
         if ($this->Post())

@@ -2,6 +2,11 @@
 require_once "BaseAdminController.php";
 class AdminController extends BaseAdminController
 {
+    function __construct()
+    {
+        $this->Environment = "Admin";
+    }
+
     function Index() : void
     {   
         $this->CheckAuthRedirect();

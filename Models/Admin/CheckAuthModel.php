@@ -1,8 +1,9 @@
 <?php
 class CheckAuthModel extends Model
 {   
-    public $sessionKey;
-    public $sessionId;
+    public 
+        $sessionKey,
+        $sessionId;
     function Validate() : iterable
     {
         if (array_key_exists("admin.session_key", $_SESSION))

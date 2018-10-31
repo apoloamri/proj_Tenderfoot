@@ -54,7 +54,7 @@ class Schema extends BasePgSchema
     }
     function Where(string $column, string $expression, $value, string $condition = DB::AND) : void
     {
-        $this->Where[] = "$this->TableName.$column $expression ".$this->PgEscapeLiteral($value)." $condition";
+        $this->Where[] = "$column $expression ".$this->PgEscapeLiteral($value)." $condition";
     }
     function OrderBy(string $column, string $order = DB::ASC) : void
     {

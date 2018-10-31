@@ -25,6 +25,7 @@ class Controller extends BaseController
 				$this->Model = new $model;
 			}
 			$this->Model->URI = explode("/", $_SERVER["REQUEST_URI"]);
+			$this->Model->Environment = $this->Environment;
 			$this->Validate();
 		}
 		catch (Exception $ex)

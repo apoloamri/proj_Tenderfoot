@@ -1,5 +1,5 @@
 <?php
-class Products extends Schema
+class Products extends MySqlSchema
 {
     function __construct()
     {
@@ -8,7 +8,7 @@ class Products extends Schema
     public $str_code;
     public $str_brand;
     public $str_name;
-    public $str_description;
+    public $txt_description;
     public $dbl_price;
     public $dat_insert_time;
     public $dat_update_time;

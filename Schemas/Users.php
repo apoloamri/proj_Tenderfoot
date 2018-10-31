@@ -1,5 +1,5 @@
 <?php
-class Users extends Schema
+class Users extends MySqlSchema
 {
     function __construct()
     {

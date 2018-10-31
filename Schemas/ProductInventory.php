@@ -1,5 +1,5 @@
 <?php
-class ProductInventory extends Schema
+class ProductInventory extends MySqlSchema
 {
     function __construct()
     {

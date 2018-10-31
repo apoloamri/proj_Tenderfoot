@@ -8,15 +8,6 @@ export default {
         }
         return false
     },
-    ValidateNullOrEmpty: function (object, message) {
-        if (!object || this.IsEmptyOrSpaces(object)) {
-            return message;
-        }
-        return "";
-    },
-    IsEmptyOrSpaces: function (input) {
-        return input == null || input.toString().replace(/\s/g, '').length < 1;
-    },
     Delay: (function () {
         var timer = 0;
         return function(callback, ms){
@@ -24,6 +15,32 @@ export default {
           timer = setTimeout(callback, ms);
         };
     })(),
+    IsEmptyOrSpaces: function (input) {
+        return input == null || input.toString().replace(/\s/g, '').length < 1;
+    },
+    UrlPart: function (urlPart) {
+        return decodeURI(window.location.pathname.split("/")[urlPart]);
+    },
+    UrlParameter: function (parameterName) {
+        var result = "", tmp = [];
+        location
+            .search
+            .substr(1)
+            .split("&")
+            .forEach(function (item) {
+                tmp = item.split("=");
+                if (tmp[0] === parameterName) {
+                    result = decodeURIComponent(tmp[1]);
+                }
+            });
+        return decodeURI(result);
+    },
+    ValidateNullOrEmpty: function (object, message) {
+        if (!object || this.IsEmptyOrSpaces(object)) {
+            return message;
+        }
+        return "";
+    },
     //COMMON
 
     //COOKIES

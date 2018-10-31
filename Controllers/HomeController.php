@@ -6,11 +6,15 @@ class HomeController extends Controller
         $this->View("index");
     }
 
-    function Item() : void
+    function Detail() : void
     {   
-        $this->Initiate("ItemModel");
+        $this->Initiate("DetailModel");
+        if (!$this->Model->IsValid)
+        {
+            $this->Redirect("/err/404");
+        }
 		$this->Execute("GET");
-        $this->View("item");
+        $this->View("detail");
     }
 
     function Cart() : void

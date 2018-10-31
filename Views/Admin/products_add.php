@@ -28,6 +28,12 @@
             </div>
             <div class="spacer-h-15"></div>
             <div class="adminTable">
+                <h3>Tags</h3>
+                <input type="text" v-model="tags" placeholder="Separate tags by comma." />
+                <label class="red">{{messages["Tags"]}}</label>
+            </div>
+            <div class="spacer-h-15"></div>
+            <div class="adminTable">
                 <h3>Images</h3>
                 <input type="file" v-on:change="UploadImage()" id="image" />
                 <button v-on:click="imagePaths = []" class="gray inline-block">Remove Images</button>
@@ -74,6 +80,7 @@
             brand: "",
             name: "",
             description: "",
+            tags: "",
             price: null,
             imagePaths: [],
             messages: []
@@ -89,10 +96,11 @@
                     self.code = success.Result.str_code;
                     self.brand = success.Result.str_brand;
                     self.name = success.Result.str_name;
-                    self.description = success.Result.str_description;
+                    self.description = success.Result.txt_description;
+                    self.tags = success.Result.Tags;
                     self.price = success.Result.dbl_price;
-                    if (success.ImagePaths != null) {
-                        self.imagePaths = success.ImagePaths;
+                    if (success.Result.ImagePaths != null) {
+                        self.imagePaths = success.Result.ImagePaths;
                     }
                     Lib.InitialLoading(false);
                 });
@@ -105,6 +113,7 @@
                     "Brand": self.brand,
                     "Name": self.name,
                     "Description": self.description,
+                    "Tags": self.tags,
                     "Price": self.price,
                     "ImagePaths": self.imagePaths
                 },
@@ -128,6 +137,7 @@
                     "Brand": self.brand,
                     "Name": self.name,
                     "Description": self.description,
+                    "Tags": self.tags,
                     "Price": self.price,
                     "ImagePaths": self.imagePaths
                 },

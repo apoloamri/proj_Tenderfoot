@@ -29,7 +29,7 @@ class BaseAdminController extends Controller
     {
         if (!$this->CheckAuth())
         {
-            http_response_code(400);
+            $this->Redirect("/err/404");
             die();
         }
     }

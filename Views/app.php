@@ -7,14 +7,22 @@
     <title>Tenderfoot</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <!-- <link rel="stylesheet" type="text/css" href="/Resources/css/style.css"> -->
-    <link rel="stylesheet" type="text/css" href="/Resources/css/admin.css">
+    <?php 
+        if ($model->Environment == "Admin") 
+        {
+            echo '<link rel="stylesheet" type="text/css" href="/Resources/css/admin.css" />';
+        }
+        else
+        {
+            echo '<link rel="stylesheet" type="text/css" href="/Resources/css/style.css" />';
+        }
+    ?>
 </head>
 <body>
     <div id="container">
         <?php $model->RenderPage(); ?>
     </div>
-    <div id="loading">
+    <div id="loading" style="display:none;">
         <div class="display">Please wait...</div>
     </div>
 </body>

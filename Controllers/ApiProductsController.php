@@ -1,12 +1,19 @@
 <?php
 require_once "BaseAdminController.php";
-class ProductsController extends BaseAdminController
+class ApiProductsController extends BaseAdminController
 {
     function GetProducts() : void
     {
         $this->Initiate("ProductsModel");
 		$this->Execute("GET");
-        $this->Json("Result", "ImagePaths", "PageCount");
+        $this->Json("Result", "PageCount");
+    }
+
+    function GetTags() : void
+    {
+        $this->Initiate("TagsModel");
+		$this->Execute("GET");
+        $this->Json("Result");
     }
 
     function PostProducts() : void

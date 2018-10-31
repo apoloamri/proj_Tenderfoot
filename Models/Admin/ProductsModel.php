@@ -2,8 +2,9 @@
 Model::AddSchema("Products");
 class ProductsModel extends Model
 {   
-    public $Id;
-    public $PageTitle;
+    public 
+        $Id,
+        $PageTitle;
     function Validate() : iterable
     {
         if (HasValue($this->Id))
