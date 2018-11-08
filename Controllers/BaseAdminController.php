@@ -1,19 +1,10 @@
 <?php
 class BaseAdminController extends Controller
 {
-    function ApiGetCheckAuth(bool $show = true) : void 
+    function CheckAuth() : bool 
     {
         $this->Initiate("CheckAuthModel", "Admin");
         $this->Execute("GET");
-        if ($show)
-        {
-            $this->Json();
-        }
-    }
-
-    function CheckAuth() : bool 
-    {
-        $this->ApiGetCheckAuth(false);
         return $this->Model->IsValid;
     }
 

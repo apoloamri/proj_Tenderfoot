@@ -7,6 +7,7 @@
     <title>Tenderfoot</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://raw.github.com/openexchangerates/accounting.js/master/accounting.min.js"></script>
     <?php 
         if ($model->Environment == "Admin") 
         {
@@ -15,6 +16,7 @@
         else
         {
             echo '<link rel="stylesheet" type="text/css" href="/Resources/css/style.css" />';
+            echo '<link href="https://fonts.googleapis.com/css?family=Varela Round" rel="stylesheet" />';
         }
     ?>
 </head>

@@ -1,9 +1,11 @@
 import Lib from "/Resources/js/lib.js";
 export default {
     AddCart: function (itemCode) {
-        Lib.Post("/api/shop/cart", {
-            "itemCode": itemCode,
-            "sessionId": Lib.GetCookie("session_id")
+        Lib.Post("/api/cart", {
+            "Code": itemCode
+        },
+        function (success) {
+            window.location = "/cart";
         });
     }
 }

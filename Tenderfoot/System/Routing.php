@@ -7,13 +7,13 @@ class Routing
 		$this->RequestMethod = $_SERVER["REQUEST_METHOD"];
 		$this->RequestUri = explode("?", $_SERVER["REQUEST_URI"])[0];
 	}
-	function Map(string $route, string $controller, string $action, ...$params) : void
+	function Map(string $route, string $controller, string $action) : void
 	{
 		if (!$this->Routed)
 		{
 			$method;
 			$valid = false;
-			$parameters = array();
+			$routeParameters = array();
 			$routeRequest = $this->RequestUri;
 			if ($route != "*")
 			{
@@ -31,7 +31,7 @@ class Routing
 							$param = str_replace("]", "", $param);
 							if (array_key_exists($index, $routeRequest))
 							{
-								$_REQUEST[$param] = $routeRequest[$index];
+								$routeParameters[$param] = $routeRequest[$index];
 								$routeRequest[$index] = "";
 							}
 							$route[$index] = "";
@@ -48,6 +48,10 @@ class Routing
 			}
 			if ($route == "*" || ($route == $routeRequest && $method == $this->RequestMethod))
 			{
+				foreach ($routeParameters as $key => $value)
+				{
+					$_REQUEST[$key] = $value;
+				}
 				$controllerPath = "Controllers/".$controller."Controller.php";
 				if (file_exists($controllerPath))
 				{

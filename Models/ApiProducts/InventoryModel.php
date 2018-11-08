@@ -3,19 +3,25 @@ Model::AddSchema("Products");
 Model::AddSchema("ProductInventory");
 class InventoryModel extends Model
 {   
-    public 
-        $Id,
-        $Amount;
+    public $Id;
+    public $Amount;
     function Validate() : iterable
     {
         yield "Id" => $this->CheckInput("Id", false, Type::Numeric);
-        yield "Amount" => $this->CheckInput("Amount", false, Type::Numeric);
-        if (HasValue($this->Id))
+        if ($this->IsValid("Id"))
         {
             $products = new Products();
             if (!$products->IdExists($this->Id))
             {
                 yield "Id" => GetMessage("IdDoesNotExist", $this->Id);
+            }
+        }
+        yield "Amount" => $this->CheckInput("Amount", false, Type::Numeric);
+        if ($this->IsValid("Amount"))
+        {
+            if ((int)$this->Amount < 0)
+            {
+                yield "Amount" => GetMessage("InvalidFieldInput", "Amount");
             }
         }
     }

@@ -8,10 +8,11 @@
             <center>
                 <a v-bind:href="'/detail/' + item.str_code">
                     <div class="itemImage-250" v-bind:style="'background-image: url(' + item.str_path + ')'"></div>
-                    <label class="font-17">{{item.str_brand}} - {{item.str_name}}</label><br>
-                    <label class="font-13">₱{{item.dbl_price}}</label><br>
+                    <label class="font-17">{{item.str_brand}} - {{item.str_name}}</label><br/>
+                    <label class="font-13">₱{{item.dbl_price}}</label><br/>
+                    <label v-if="item.int_amount == null || item.int_amount == 0" class="red">Out of stock</label><br/>
                 </a>
-                <button v-on:click="AddCart(item.str_code);">Add to cart</button>
+                <button v-on:click="AddCart(item.str_code);" :disabled="item.int_amount == null || item.int_amount == 0">Add to cart</button>
             </center>
         </div>
     </div>

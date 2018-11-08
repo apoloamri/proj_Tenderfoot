@@ -59,7 +59,7 @@ class AdminController extends BaseAdminController
         $this->Json();
     }
 
-    function ApiPostLogout() : void
+    function ApiDeleteLogin() : void
     {
         $this->CheckAuthNotFound();
         $this->Initiate("LoginModel");

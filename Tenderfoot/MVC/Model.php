@@ -2,11 +2,12 @@
 require_once "Tenderfoot/Lib/BaseModel.php";
 class Model extends BaseModel
 {
-    public $IsValid = true;
     public 
+        $IsValid = true,
         $Messages = null, 
         $URI = null, 
-        $Environment = "";
+        $Environment = "",
+        $InvalidFields = array();
     function SiteUrl() : string { return Settings::SiteUrl(); }
     function SiteUrlSSL() : string { return Settings::SiteUrlSSL(); }
     function Get() : bool { return ($_SERVER['REQUEST_METHOD'] == "GET"); }
@@ -31,6 +32,7 @@ class Model extends BaseModel
             $constants = array_values($constants->getConstants());
             if (!in_array($property["type"], $constants))
             {
+                $this->InvalidFields[] = $propertyName;
                 return GetMessage("InvalidFileType", $propertyName);
             }
         }
@@ -38,7 +40,9 @@ class Model extends BaseModel
         {
             if ($property != null)
             {
-                if ($type != Type::All && !preg_match($type, $property)) {
+                if ($type != Type::All && !preg_match($type, $property)) 
+                {
+                    $this->InvalidFields[] = $propertyName;
                     return GetMessage("InvalidFieldInput", $propertyName);
                 }
             }
@@ -48,10 +52,22 @@ class Model extends BaseModel
                 ($length != 0);
             if ($validateLength)
             {
+                $this->InvalidFields[] = $propertyName;
                 return GetMessage("InvalidFieldLength", $propertyName);
             }
         }
         return "";
+    }
+    function IsValid(string ...$propertyNames) : bool
+    {
+        foreach ($propertyNames as $propertyName)
+        {
+            if (in_array($propertyName, $this->InvalidFields))
+            {
+                return false;
+            }
+        }
+        return true;
     }
     private $ControllerName, $ViewName;
     function InitiatePage(string $controller, string $viewName) : void
@@ -150,10 +166,11 @@ class Type
     const Alphabet = "/^[a-zA-Z]*$/";
     const AlphaNumeric = "/^[a-zA-Z0-9]*$/";
     const Currency = "/^\d*\.?\d*$/";
-    const Email = "^([a-zA-Z0-9_+\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$";
-    const Numeric = "/^[0-9]*$/";
-    const Url = "[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)";
+    const Email = "/^([a-zA-Z0-9_+\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/";
+    const Numeric = "/^-?[0-9]\d*(\.\d+)?$/";
+    const Url = "/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/";
     const Image = "Image";
+    const PhoneNumber = "/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/";
 }
 class Image
 {

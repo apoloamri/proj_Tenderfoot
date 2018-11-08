@@ -1,9 +1,9 @@
 <?php
-function StringContains($needle, $haystack)
+function StringContains(string $needle, string $haystack)
 {
     return strpos($haystack, $needle) !== false;
 }
-function GenerateRandomString($length = 10) : string
+function GenerateRandomString(int $length = 10) : string
 {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);

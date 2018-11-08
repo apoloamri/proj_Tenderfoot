@@ -30,7 +30,7 @@
                 var self = this;
                 Lib.Delete("/admin/api/logout", null,
                 function (success) { });
-                window.location = "/admin/login";
+                location.reload();
             }
         }
     });

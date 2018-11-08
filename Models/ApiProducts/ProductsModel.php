@@ -44,7 +44,7 @@ class ProductsModel extends Model
             yield "Description" => $this->CheckInput("Description", false, Type::All, 1000);
             yield "Tags" => $this->CheckInput("Tags", false, Type::All, 255);
             yield "Price" => $this->CheckInput("Price", true, Type::Currency, 25);
-            if (HasValue($this->Code))
+            if ($this-IsValid("Code"))
             {
                 $products = new Products();
                 if ($products->CodeExists($this->Code, $this->OldCode))
@@ -66,18 +66,17 @@ class ProductsModel extends Model
             $products->id = $this->Id;
             $this->Result = $products->SelectSingle();
             $images = new ProductImages();
-            $this->Result->ImagePaths = $images->GetImages($products->id);
+            $images->int_product_id = $products->id;
+            $this->Result->ImagePaths = $images->GetImages();
             $tags = new ProductTags();
-            $this->Result->Tags = $tags->GetTags($products->id);
+            $tags->int_product_id = $products->id;
+            $this->Result->Tags = $tags->GetTags();
         }
         else
         {
-            $productImages = new ProductImages();
-            $productInventory = new ProductInventory();
-            $productTags = new ProductTags();
-            $products->Join($productImages, "int_product_id", "id");
-            $products->Join($productInventory, "int_product_id", "id");
-            $products->Join($productTags, "int_product_id", "id");
+            $products->Join(new ProductImages(), "int_product_id", "id");
+            $products->Join(new ProductInventory(), "int_product_id", "id");
+            $products->Join(new ProductTags(), "int_product_id", "id");
             if (HasValue($this->SearchTag))
             {
                 $products->Where("str_tag", DB::Equal, $this->SearchTag);

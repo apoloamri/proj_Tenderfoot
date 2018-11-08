@@ -6,10 +6,6 @@ class Controller extends BaseController
 	{
 		try
 		{
-			if (session_status() == PHP_SESSION_NONE) 
-			{
-				session_start();
-			}
 			if ($model == null)
 			{
 				$this->Model = new Model();

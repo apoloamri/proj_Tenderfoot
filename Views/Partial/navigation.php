@@ -9,8 +9,12 @@
     </div><hr>
     <div id="navigation" class="float-left">
         <div onclick="window.location='/';" id="shopPinLogo"></div><hr>
+        <a href="/" class="margin-15">Home</a><hr/>
+        <a href="/" class="margin-15">Contact Us</a><hr/>
+        <a href="/" class="margin-15">FAQ</a><hr/>
+        <h4>Categories</h4>
         <div v-for="item in menu">
-            <a v-bind:href="'/?tag=' + item.str_tag" class="margin-15">{{item.str_tag}}</a><hr>
+            <a v-bind:href="'/?tag=' + item.str_tag" class="margin-15">{{item.str_tag}}</a><hr/>
         </div>
     </div>
 </div>
@@ -38,15 +42,13 @@ new Vue({
         count: 0
     },
     methods: {
-        // GetCart: function () {
-        //     var self = this;
-        //     Lib.Get("/api/shop/cart", {
-        //         "sessionId": Lib.GetCookie("session_id")
-        //     },
-        //     function (success) {
-        //         self.count = success.count;
-        //     });
-        // },
+        GetCart: function () {
+            var self = this;
+            Lib.Get("/api/cart", null,
+            function (success) {
+                self.count = success.Count;
+            });
+        },
         GetTags: function () {
             var self = this;
             Lib.Get("/api/products/tags", null,
@@ -62,7 +64,7 @@ new Vue({
         }
     },
     created() {
-        //this.GetCart();
+        this.GetCart();
         this.GetTags();
     }
 });

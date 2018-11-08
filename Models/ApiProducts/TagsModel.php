@@ -11,7 +11,7 @@ class TagsModel extends Model
     {
         $tags = new ProductTags();
         $tags->OrderBy("str_tag");
-        $this->Result = $tags->Select("DISTINCT(str_tag)");
+        $this->Result = $tags->SelectDistinct("str_tag");
     }
 }
 ?>

@@ -8,12 +8,10 @@ class ProductImages extends MySqlSchema
     public $int_product_id;
     public $str_path;
     public $dat_insert_time;
-    function GetImages($productId) : array 
+    function GetImages() : array 
     {
         $return = array();
-        $images = new ProductImages();
-        $images->int_product_id = $productId;
-        $imageResult = $images->Select("str_path");
+        $imageResult = $this->Select("str_path");
         foreach ($imageResult as $image)
         {
             $return[] = $image->str_path;

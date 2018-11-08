@@ -14,22 +14,26 @@ class MySqlSchema extends BaseMySqlSchema
             $this->UpdateColumns();
         }
     }
+    /**
+     * Executes SELECT statement. 
+     ** Populate $columns to select particular columns only.
+     */
     function Select(string ...$columns) : array
     {
-        $columns = count($columns) > 0 ? join(", ", $columns) : "$this->TableName.*";
-        if (count($this->JoinSchema) > 0)
+        $compiledColumns = count($columns) > 0 ? join(", ", $columns) : "$this->TableName.*";
+        if (count($columns) == 0 && count($this->JoinSchema) > 0)
         {
             foreach ($this->JoinSchema as $schema)
             {
                 $joinColumns = array();
                 foreach ($schema->Columns as $column)
                 {
-                    if ($column->getName() != "id")
-                    {
-                        $joinColumns[] = $schema->TableName.".".$column->getName();
-                    }
+                    $columnName = $column->getName();
+                    $joinColumns[] = 
+                        $schema->TableName.".".$columnName.
+                        ($columnName == "id" ? " AS '$schema->TableName-$columnName'" : "");
                 }
-                $columns = $columns.", ".join(", ", $joinColumns);
+                $compiledColumns = $compiledColumns.", ".join(", ", $joinColumns);
             }
         }
         $join = $this->GetJoin();
@@ -37,7 +41,7 @@ class MySqlSchema extends BaseMySqlSchema
         $order = $this->GetOrder();
         $group = $this->GetGroup();
         $limit = $this->GetLimit();
-        $query = "SELECT $columns FROM $this->TableName $join $where $group $order $limit;";
+        $query = "SELECT $compiledColumns FROM $this->TableName $join $where $group $order $limit;";
         $return = array();
         $result = $this->Execute($query);
         while ($data = mysqli_fetch_assoc($result))
@@ -47,6 +51,18 @@ class MySqlSchema extends BaseMySqlSchema
         }
         return array_filter($return);
     }
+    /**
+     * Executes SELECT statement with column DISTINCT. 
+     ** Populate $columns to select particular columns only.
+     */
+    function SelectDistinct(string ...$columns) : array
+    {
+        return $this->Select("DISTINCT ".join(", ", $columns));
+    }
+    /**
+     * Executes SELECT statement with only one result. Automatically populates the entity.
+     ** Populate $columns to select particular columns only.
+     */
     function SelectSingle(string ...$columns) : object
     {
         $result = $this->Select(...$columns);
@@ -57,6 +73,10 @@ class MySqlSchema extends BaseMySqlSchema
         }
         return array();
     }
+    /**
+     * Counts the number of records of the current criteria.
+     ** Populate $columns to select particular columns only.
+     */
     function Count(string ...$columns) : int
     {
         $columns = count($columns) > 0 ? join(", ", $columns) : "*";
@@ -67,16 +87,37 @@ class MySqlSchema extends BaseMySqlSchema
         $result = $this->Execute($query);
         return intval(mysqli_fetch_assoc($result)["count"]);
     }
+    /**
+     * Checks if records exists with the current criteria.
+     ** Populate $columns to select particular columns only.
+     */
     function Exists(string ...$columns) : bool
     {
         return $this->Count(...$columns) > 0;
     }
+    /**
+     * Joins a new table / schema through LEFT JOIN.
+     ** $schema - Table to be joined.
+     ** $joinColumn - Column of the joint table used for comparison.
+     ** $parentColumn - Column of the current schema used for comparison with $joinColumn.
+     */
     function Join($schema, string $joinColumn, string $parentColumn)
     {
-        $this->Join[] = "LEFT JOIN $schema->TableName ON $this->TableName.$parentColumn = $schema->TableName.$joinColumn";
+        $parentColumn = 
+            StringContains("-", $parentColumn) ? "'$parentColumn'" : 
+            StringContains(".", $parentColumn) ? "$parentColumn" : 
+            "$this->TableName.$parentColumn";
+        $this->Join[] = "LEFT JOIN $schema->TableName ON $parentColumn = $schema->TableName.$joinColumn";
         $this->JoinSchema[] = $schema;
     }
-    function Where(string $column, string $expression, $value, string $condition = DB::AND) : void
+    /**
+     * Creates / adds new criterias for the current SELECT statement.
+     ** $column - Column name of the table to be used for the criteria.
+     ** $expression - Condition of the criteria. Use DB const.
+     ** $value - Value used for comparison.
+     ** $condition - Condition for the next criteria.
+     */
+    function Where(string $column, string $expression = DB::Equal, $value = null, string $condition = DB::AND) : void
     {
         $this->Where[] = "$column $expression '".$this->MySqliEscapeLiteral($value)."' $condition";
     }
@@ -266,7 +307,10 @@ class Sessions extends MySqlSchema
         $this->Insert();
         return $this->str_session_id;
     }
-    function CheckSession() : bool 
+    /**
+     * Populate $sessionKey to add / update a new key for the current session.
+     */
+    function CheckSession(string $sessionKey = "") : bool 
     {
         if (!HasValue($this->str_session_id))
         {
@@ -278,6 +322,10 @@ class Sessions extends MySqlSchema
             return false;
         }
         $this->Clear();
+        if (HasValue($sessionKey))
+        {
+            $this->str_session_key = $sessionKey;
+        }
         $this->dat_session_time = Now();
         $this->Where("str_session_id", DB::Equal, $this->str_session_id);
         $this->Update();

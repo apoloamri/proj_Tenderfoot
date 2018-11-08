@@ -1,7 +1,17 @@
+html {
+    font-family: "Varela Round";
+    font-size: 16px;
+    text-shadow: 1px 1px 1px 1px rgba(0,0,0,0.005);
+    text-rendering: auto;
+    text-rendering: optimizeSpeed;
+    text-rendering: optimizeLegibility;
+    text-rendering: geometricPrecision;
+    text-rendering: inherit;
+    -webkit-font-smoothing: antialiased;
+}
+
 body {
     margin: auto;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 15px;
 }
 
 a {
@@ -9,9 +19,9 @@ a {
     text-decoration: none;
     transition: 200ms;
 }
-    a:hover {
-        color: gray;
-    }
+a:hover {
+    color: gray;
+}
 
 button {
     cursor: pointer;
@@ -21,14 +31,19 @@ button {
     padding: 10px;
     transition: 300ms;
     display: inline-block;
-    color: dimgray;
-    border: 2px dimgray solid;
+    color: darkgreen;
+    border: 2px darkgreen solid;
     background-color: transparent;
 }
-    button:hover {
-        color: green;
-        border-color: green;
-    }
+button:hover {
+    color: green;
+    border-color: green;
+}
+button:disabled {
+    color: dimgray;
+    border-color: dimgray;
+    cursor: default;
+}
 
 hr {
     border: none;
@@ -37,14 +52,27 @@ hr {
 }
 
 input[type="text"],
+input[type="number"],
 input[type="password"] {
+    background-color: #fafafa;
     border: solid;
     border-width: 1px;
     border-color: lightgray;
+    border-radius: 3px;
     font-size: 15px;
     margin: 20px 0px;
     padding: 10px;
     width: 100%;
+}
+input[type="number"] {
+    width: 35px;
+}
+input[type="checkbox"] {
+    width: 15px;
+}
+
+.display-block {
+    display: block;
 }
 
 .float-left {
@@ -90,17 +118,21 @@ input[type="password"] {
     margin: 15px;
 }
 
+.red {
+    color: red;
+}
+
 #cartTable {
     width: 100%;
     border-spacing: 0px;
     border-collapse: separate;
 }
 
-    #cartTable th, td {
-        text-align: left;
-        border-bottom: 1px solid lightgray;
-        padding: 5px;
-    }
+#cartTable th, td {
+    text-align: left;
+    border-bottom: 1px solid lightgray !important;
+    padding: 5px;
+}
 
 #container {
     width: 1300px;
@@ -116,19 +148,6 @@ input[type="password"] {
     text-align: center;
 }
 
-#itemDetail {
-    padding: 30px;
-}
-
-#itemImageDetail {
-    width: 500px;
-    height: 500px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: inline-block;
-}
-
 #mainContent {
     float: left;
     margin: 30px;
@@ -142,6 +161,7 @@ input[type="password"] {
 }
 
 #globalSearch {
+    background-color: white;
     border: none;
     margin: 0px;
     width: 70%;
@@ -153,10 +173,9 @@ input[type="password"] {
     padding: 20px;
     margin: 20px;
 }
-
-    #userLogin input, button {
-        width: 90%;
-    }
+#userLogin input, button {
+    width: 90%;
+}
 
 @media screen and (max-width: 900px) {
     body {
