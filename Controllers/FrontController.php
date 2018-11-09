@@ -29,7 +29,7 @@ class FrontController extends BaseFrontController
     function Order() : void 
     {
         $this->StartSession();
-        $this->Initiate("OrderModel", "ApiOrder");
+        $this->Initiate("OrderModel", "ApiOrders");
         if (!$this->Model->IsValid)
         {
             $this->Redirect("/err/404");

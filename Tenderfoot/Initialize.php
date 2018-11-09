@@ -6,6 +6,7 @@ require_once "Tenderfoot/System/Settings.php";
 require_once "Tenderfoot/MVC/Controller.php";
 require_once "Tenderfoot/MVC/Model.php";
 require_once "Tenderfoot/MySql/MySqlSchema.php";
+require_once "Tenderfoot/System/Email.php";
 require_once "Tenderfoot/System/Routing.php";
 require_once "Tenderfoot/System/Tools.php";
 

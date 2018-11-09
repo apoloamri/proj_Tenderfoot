@@ -22,6 +22,22 @@ class AdminController extends BaseAdminController
         $this->View("login");
     }
 
+    function Orders() : void
+    {
+        $this->CheckAuthRedirect();
+        $this->Initiate();
+		$this->Execute("GET");
+        $this->View("orders");
+    }
+
+    function OrdersDetail() : void
+    {
+        $this->CheckAuthRedirect();
+        $this->Initiate();
+		$this->Execute("GET");
+        $this->View("orders_detail");
+    }
+
     function Products() : void
     {
         $this->CheckAuthRedirect();

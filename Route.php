@@ -4,6 +4,8 @@ $router = new Routing();
 //AdminController
 $router->Map("GET /admin", "Admin", "Index");
 $router->Map("GET /admin/login", "Admin", "Login");
+$router->Map("GET /admin/orders", "Admin", "Orders");
+$router->Map("GET /admin/orders/detail", "Admin", "OrdersDetail");
 $router->Map("GET /admin/products", "Admin", "Products");
 $router->Map("GET /admin/products/add", "Admin", "ProductsAdd");
 $router->Map("GET /admin/products/edit/[Id]", "Admin", "ProductsEdit");
@@ -18,7 +20,8 @@ $router->Map("GET /detail/[Code]", "Front", "Detail");
 $router->Map("GET /order", "Front", "Order");
 
 //ApiOrderController
-$router->Map("POST /api/order", "ApiOrder", "PostOrder");
+$router->Map("GET /api/orders", "ApiOrders", "GetOrders");
+$router->Map("POST /api/orders", "ApiOrders", "PostOrders");
 
 //ApiProductsController
 $router->Map("GET /api/products", "ApiProducts", "GetProducts");

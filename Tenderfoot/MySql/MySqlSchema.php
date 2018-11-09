@@ -296,12 +296,11 @@ class Sessions extends MySqlSchema
         {
             return $this->str_session_id;
         }
-        $sessionString = GenerateRandomString(50);
-        $this->str_session_id = $sessionString;
+        $this->str_session_id = GenerateRandomString(50);
         while ($this->Count() != 0)
         {
             $this->Clear();
-            $this->str_session_id = $sessionString;
+            $this->str_session_id = GenerateRandomString(50);
         }
         $this->dat_session_time = Now();
         $this->Insert();

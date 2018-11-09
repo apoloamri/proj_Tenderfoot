@@ -164,13 +164,13 @@ class Type
 {
     const All = "";
     const Alphabet = "/^[a-zA-Z]*$/";
-    const AlphaNumeric = "/^[a-zA-Z0-9]*$/";
+    const AlphaNumeric = "/^[a-zA-Z0-9 ]*$/";
     const Currency = "/^\d*\.?\d*$/";
     const Email = "/^([a-zA-Z0-9_+\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/";
     const Numeric = "/^-?[0-9]\d*(\.\d+)?$/";
-    const Url = "/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/";
+    const Url = "/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/";
     const Image = "Image";
-    const PhoneNumber = "/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/";
+    const PhoneNumber = "/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/";
 }
 class Image
 {

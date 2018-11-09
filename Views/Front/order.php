@@ -48,6 +48,14 @@
                 </table>
             </center>
         </div>
+        <div id="shadowModal" class="modal"></div>
+        <div id="completeModal" class="modal">
+            <center><h2>Order Completed!</h2></center>
+            <p>Congratulations {{lastName}}, {{firstName}}!</p>
+            <p>Your order is now being processed. Please wait for a text message for your order fulfillment and shipping status.</p>
+            <p>Your order number: <b>{{orderNumber}}</b>. When there are problems, please use this order number when you contact us.</p>
+            <center><button onclick="window.location='/';">Return to homepage.</button></center>
+        </div>
     </div>
 </div>
 
@@ -72,6 +80,34 @@
     #contactInformation input[type="checkbox"] {
         width: 15px;
     }
+
+    #completeModal {
+        background-color: white;
+        border-radius: 5px;
+        width: 500px;
+        height: 300px;
+        box-shadow: 0px 0px 15px -5px black;
+        padding: 20px;
+        position: fixed;
+        left: 0; 
+        right: 0; 
+        margin-left: auto; 
+        margin-right: auto; 
+    }
+
+    #shadowModal {
+        background-color: black;
+        opacity: 0.8;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        right: 0;
+    }
+
+    .modal {
+        display: none;
+    }
 </style>
 
 <script type="module">
@@ -82,6 +118,7 @@
             result: [],
             count: 0,
             total: 0,
+            orderNumber: "",
             phoneNumber: "",
             lastName: "",
             firstName: "",
@@ -103,17 +140,18 @@
             },
             PostOrder: function () {
                 var self = this;
-                Lib.Post("/api/order", {
-                    PhoneNumber: self.PhoneNumber,
-                    lastName: self.LastName,
-                    firstName: self.FirstName,
-                    address: self.Address,
-                    barangay: self.Barangay,
-                    city: self.City,
-                    postalCode: self.PostalCode
+                Lib.Post("/api/orders", {
+                    PhoneNumber: self.phoneNumber,
+                    LastName: self.lastName,
+                    FirstName: self.firstName,
+                    Address: self.address,
+                    Barangay: self.barangay,
+                    City: self.city,
+                    PostalCode: self.postalCode
                 },
                 function (success) {
-                    alert("Order complete.")
+                    self.orderNumber = success.OrderNumber;
+                    $(".modal").show();
                 },
                 function (failed) {
                     var response = failed.responseJSON;
