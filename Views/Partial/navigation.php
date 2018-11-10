@@ -1,7 +1,7 @@
 <div id="header">
     <img src="/Resources/images/magnifying-glass.png" style="height:20px;margin:-3px 3px;"> 
     <input type="text" placeholder="Search" id="globalSearch" v-model="search" v-on:keyup="Search()" />
-    <div id="cartHeader" class="float-right">
+    <div id="cartHeader" class="display-inline">
         <a href="/cart" class="margin-15">
             <img src="/Resources/images/shopping-cart.png" style="height:20px;margin:-3px 3px;"> 
             Cart ({{count}})

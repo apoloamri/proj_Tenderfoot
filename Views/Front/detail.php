@@ -27,8 +27,8 @@
     }
 
     #itemImageDetail {
-        width: 500px;
-        height: 500px;
+        width: 400px;
+        height: 400px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;

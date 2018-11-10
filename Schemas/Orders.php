@@ -28,6 +28,12 @@ class Orders extends MySqlSchema
         }
         $this->str_order_number = $order->str_order_number;
     }
+    function IdExists(int $id) : bool
+    {
+        $orders = new Orders();
+        $orders->id = $id;
+        return $orders->Exists();
+    }
 }
 class OrderStatus
 {

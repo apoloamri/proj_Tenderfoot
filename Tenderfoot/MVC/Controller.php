@@ -4,30 +4,24 @@ class Controller extends BaseController
 {
 	protected function Initiate(string $model = null, string $modelLocation = null) : void
 	{
-		try
+		$this->SetTimeZone();
+		if ($model == null)
 		{
-			if ($model == null)
-			{
-				$this->Model = new Model();
-			}
-			else
-			{
-				$controller = str_replace("Controller", "", get_class($this));
-				if (HasValue($modelLocation))
-				{
-					$controller = $modelLocation;
-				}
-				require_once "Models/$controller/$model.php";
-				$this->Model = new $model;
-			}
-			$this->Model->URI = explode("/", $_SERVER["REQUEST_URI"]);
-			$this->Model->Environment = $this->Environment;
-			$this->Validate();
+			$this->Model = new Model();
 		}
-		catch (Exception $ex)
+		else
 		{
-			echo "A system error occured!\n",  $ex->getMessage(), "\n";
+			$controller = str_replace("Controller", "", get_class($this));
+			if (HasValue($modelLocation))
+			{
+				$controller = $modelLocation;
+			}
+			require_once "Models/$controller/$model.php";
+			$this->Model = new $model;
 		}
+		$this->Model->URI = explode("/", $_SERVER["REQUEST_URI"]);
+		$this->Model->Environment = $this->Environment;
+		$this->Validate();
 	}
 	protected function Execute(string $method) : void
 	{

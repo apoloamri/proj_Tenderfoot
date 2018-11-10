@@ -21,6 +21,7 @@ class Email
     function SendEmail() : void
     {
         $emailFrom = Settings::Email();
+        $emailCc = "";
         $this->EmailTo[] = Settings::EmailAdmin();
         $headers = 
             "MIME-Version: 1.0 \r\n".
@@ -36,7 +37,19 @@ class Email
         $model = $this->Model;
         $message = $this->CompileView();
         $subject = $this->GetTitle($message);
-        mail($emailTo, $subject, $message, $headers);
+        $emailSent = EmailSent::Success;
+        if (!@mail($emailTo, $subject, $message, $headers))
+        {
+            $emailSent = EmailSent::Failed;
+        }
+        $emails = new Emails();
+        $emails->txt_subject = $subject;
+        $emails->txt_message = $message;
+        $emails->str_email = $emailTo;
+        $emails->str_cc = $emailCc;
+        $emails->str_email_sent = $emailSent;
+        $emails->dat_insert_time = Now();
+        $emails->Insert();
     }
     private function GetTitle(string $message) : string
     {
@@ -64,5 +77,23 @@ class Email
         }
         return $view;
     }
+}
+class Emails extends MySqlSchema
+{
+    function __construct()
+    {
+        parent::__construct("emails");
+    }
+    public $txt_subject;
+    public $txt_message;
+    public $str_email;
+    public $str_cc;
+    public $str_email_sent;
+    public $dat_insert_time;
+}
+class EmailSent
+{
+    const Success = "Success";
+    const Failed = "Failed";
 }
 ?>

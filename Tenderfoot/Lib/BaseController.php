@@ -16,5 +16,11 @@ class BaseController
             $this->Model->Messages = $errorList;
         }
     }
+    protected function SetTimeZone() : void
+    {
+        $timeZone = Settings::TimeZone();
+        $sessions = new Sessions();
+        $sessions->Execute("SET time_zone = '$timeZone'");
+    }
 }
 ?>

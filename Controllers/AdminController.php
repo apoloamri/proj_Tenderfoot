@@ -33,7 +33,11 @@ class AdminController extends BaseAdminController
     function OrdersDetail() : void
     {
         $this->CheckAuthRedirect();
-        $this->Initiate();
+        $this->Initiate("OrdersModel");
+        if (!$this->Model->IsValid)
+        {
+            $this->Redirect("/error/404");
+        }
 		$this->Execute("GET");
         $this->View("orders_detail");
     }

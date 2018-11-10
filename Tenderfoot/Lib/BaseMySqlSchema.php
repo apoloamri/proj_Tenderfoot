@@ -17,7 +17,7 @@ class BaseMySqlSchema
 			$this->Connect = $GLOBALS[".settings.connection"];
 		}
     }
-    protected function Execute(string $query)
+    function Execute(string $query)
     {
         return mysqli_query($this->Connect, $query);
     }

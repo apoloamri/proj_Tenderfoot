@@ -75,6 +75,10 @@ input[type="checkbox"] {
     display: block;
 }
 
+.display-inline {
+    display: inline-block;
+}
+
 .float-left {
     float: left;
 }
@@ -89,6 +93,14 @@ input[type="checkbox"] {
 
 .font-13 {
     font-size: 13px;
+}
+
+.green {
+    color: green;
+}
+
+.green-bg {
+    background-color: lightgreen;
 }
 
 .itemImage-250 {
@@ -164,7 +176,7 @@ input[type="checkbox"] {
     background-color: white;
     border: none;
     margin: 0px;
-    width: 70%;
+    width: 85%;
 }
 
 #userLogin {

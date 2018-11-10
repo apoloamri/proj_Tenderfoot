@@ -5,7 +5,7 @@ $router = new Routing();
 $router->Map("GET /admin", "Admin", "Index");
 $router->Map("GET /admin/login", "Admin", "Login");
 $router->Map("GET /admin/orders", "Admin", "Orders");
-$router->Map("GET /admin/orders/detail", "Admin", "OrdersDetail");
+$router->Map("GET /admin/orders/detail/[Id]", "Admin", "OrdersDetail");
 $router->Map("GET /admin/products", "Admin", "Products");
 $router->Map("GET /admin/products/add", "Admin", "ProductsAdd");
 $router->Map("GET /admin/products/edit/[Id]", "Admin", "ProductsEdit");

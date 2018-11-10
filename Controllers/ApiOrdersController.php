@@ -7,7 +7,7 @@ class ApiOrdersController extends BaseAdminController
         $this->CheckAuthNotFound();
         $this->Initiate("OrderModel");
         $this->Execute("GET");
-        $this->Json("Result", "PageCount");
+        $this->Json("Result", "CartItems", "PageCount");
     }
 
     function PostOrders() : void 

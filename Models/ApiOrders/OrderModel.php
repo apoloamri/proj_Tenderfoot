@@ -13,6 +13,7 @@ class OrderModel extends Model
     public $Result;
     public $PageCount;
     //POST
+    public $Id;
     public $OrderNumber;
     public $PhoneNumber;
     public $LastName;
@@ -55,12 +56,23 @@ class OrderModel extends Model
     function Map() : void
     {
         $orders = new Orders();
-        $orders->Where("str_order_number", DB::Like, "%".$this->Search."%", DB::OR);
-        $orders->Where("str_last_name", DB::Like, "%".$this->Search."%", DB::OR);
-        $orders->Where("str_first_name", DB::Like, "%".$this->Search."%");
-        $orders->Page((int)$this->Page, (int)$this->Count);
-        $this->Result = $orders->Select();
-        $this->PageCount = $orders->PageCount((int)$this->Count);
+        if (HasValue($this->Id))
+        {
+            $orders->id = $this->Id;
+            $this->Result = $orders->SelectSingle();
+            $orderRecords = new OrderRecords();
+            $orderRecords->int_order_id = $this->Id;
+            $this->CartItems = $orderRecords->Select();
+        }
+        else
+        {
+            $orders->Where("str_order_number", DB::Like, "%".$this->Search."%", DB::OR);
+            $orders->Where("str_last_name", DB::Like, "%".$this->Search."%", DB::OR);
+            $orders->Where("str_first_name", DB::Like, "%".$this->Search."%");
+            $orders->Page((int)$this->Page, (int)$this->Count);
+            $this->Result = $orders->Select();    
+            $this->PageCount = $orders->PageCount((int)$this->Count);
+        }
     }
     function Handle() : void
     {
@@ -87,6 +99,8 @@ class OrderModel extends Model
             $orderRecords = new OrderRecords();
             ModelOverwrite($orderRecords, $cartItem);
             $orderRecords->int_order_id = $orders->id;
+            $orderRecords->int_product_id = $cartItem->{'products-id'};
+            $orderRecords->dbl_total_price = (int)$orderRecords->num_amount * (int)$orderRecords->dbl_price;
             $orderRecords->dat_insert_time = $now;
             $orderRecords->Insert();
         }

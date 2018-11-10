@@ -61,6 +61,7 @@ class Settings
 	static function Session() : string { return self::GetSettings("Session"); }
 	static function SiteUrl() : string { return self::GetSettings("SiteUrl"); }
 	static function SiteUrlSSL() : string { return self::GetSettings("SiteUrlSSL"); }
+	static function TimeZone() : string { return self::GetSettings("TimeZone"); }
 	//Emailing
 	static function Email() : string { return self::GetSettings("Email"); }
 	static function EmailAdmin() : string { return self::GetSettings("EmailAdmin"); }
