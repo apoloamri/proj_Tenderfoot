@@ -3,22 +3,33 @@
     <div id="adminContent">
         <div id="adminInnerContent">
             <h3><a href="/admin/orders">◄ Orders</a></h3>
-            <h2>Order Details</h2>
-            <div class="adminTable" style="width:50%;">
-                <label><b>Order Number</b></label>
-                <label>{{details.str_order_number}}</label><br/>
-                <label><b>Phone Number</b></label>
-                <label>{{details.str_phonenumber}}</label><br/>
-                <label><b>Customer Name</b></label>
-                <label>{{details.str_last_name}}, {{details.str_first_name}}</label><br/>
-                <label><b>Street Address</b></label>
-                <label>{{details.str_address}}</label><br/>
-                <label><b>Barangay</b></label>
-                <label>{{details.str_barangay}}</label><br/>
-                <label><b>City</b></label>
-                <label>{{details.str_city}}</label><br/>
-                <label><b>Postal Code</b></label>
-                <label>{{details.str_postal}}</label>
+            <div style="overflow:auto;">
+                <h2>Order Details</h2>
+                <div class="adminTable float-left" style="width:50%;">
+                    <label><b>Order Number</b></label>
+                    <label>{{details.str_order_number}}</label><br/>
+                    <label><b>Phone Number</b></label>
+                    <label>{{details.str_phonenumber}}</label><br/>
+                    <label><b>Customer Name</b></label>
+                    <label>{{details.str_last_name}}, {{details.str_first_name}}</label><br/>
+                    <label><b>Street Address</b></label>
+                    <label>{{details.str_address}}</label><br/>
+                    <label><b>Barangay</b></label>
+                    <label>{{details.str_barangay}}</label><br/>
+                    <label><b>City</b></label>
+                    <label>{{details.str_city}}</label><br/>
+                    <label><b>Postal Code</b></label>
+                    <label>{{details.str_postal}}</label>
+                </div>
+                <div id="statusChange" class="float-left">
+                    <center>
+                        <label>Current status: <b>{{details.str_order_status}}</b></label><br/>
+                        <button id="button1" class="statusChange">Processed</button><label class="arrow">▾<br/>▾<br/></label>
+                        <button id="button2" class="statusChange">On Delivery</button><label class="arrow">▾<br/>▾<br/></label>
+                        <button id="button3" class="statusChange">Delivered</button><label class="arrow">▾<br/>▾<br/></label>
+                        <button id="button4" class="statusChange">Fulfilled</button>
+                    </center>
+                </div>
             </div>
             <h3>Items</h3>
             <div class="adminTable">
@@ -47,13 +58,25 @@
     </div>
 </div>
 
+<style>
+    #statusChange {
+        width: 45%;
+    }
+    #statusChange button {
+        width: 70%;
+    }
+    .arrow {
+        color: lightgray;
+    }
+</style>
+
 <script type="module">
     import Lib from "/Resources/js/lib.js";
     new Vue({
         el: "#adminInnerContent",
         data: {
             id: "<?php echo $this->Id; ?>",
-            details: null,
+            details: { type: Object, default: () => ({}) },
             cartItems: []
         },
         methods: {
@@ -67,7 +90,27 @@
                     self.details = success.Result;
                     self.cartItems = success.CartItems;
                     Lib.InitialLoading(false);
+                    self.Disable();
                 });
+            },
+            Disable: function () {
+                var self = this;
+                $(".statusChange").prop("disabled", true);
+                switch (self.details.str_order_status)
+                {
+                    case "New Order":
+                    $("#button1").removeAttr("disabled");
+                    break;
+                    case "Processed":
+                    $("#button2").removeAttr("disabled");
+                    break;
+                    case "On Delivery":
+                    $("#button3").removeAttr("disabled");
+                    break;
+                    case "Delivered":
+                    $("#button4").removeAttr("disabled");
+                    break;
+                }
             }
         },
         created() {

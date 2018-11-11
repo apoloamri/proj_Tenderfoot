@@ -13,7 +13,7 @@
                         <th width="15%">Status</th>
                         <th width="20%">Date</th>
                     </tr>
-                    <tr v-for="order in result" v-bind:class="{ 'green-bg' : order.str_order_status == 'New Order' }">
+                    <tr v-for="order in result" v-bind:class="{ 'green' : order.str_order_status == 'New Order' }">
                         <td v-on:click="Redirect(order.id)">{{order.str_order_number}}</td>
                         <td v-on:click="Redirect(order.id)">{{order.str_last_name}}, {{order.str_first_name}}</td>
                         <td v-on:click="Redirect(order.id)">{{order.dbl_total}}</td>

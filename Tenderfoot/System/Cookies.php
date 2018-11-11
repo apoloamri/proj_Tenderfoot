@@ -54,7 +54,7 @@ function CheckSession(string $environment = null) : bool
 {
     if (Cookie("$environment.SessionId") != null)
     {
-        $sessionValue = GetSession();
+        $sessionValue = GetSession("admin");
         $sessions = new Sessions();
         $sessions->str_session_id = $sessionValue->SessionId;
         if (HasValue($sessionValue->SessionKey))

@@ -38,9 +38,9 @@ class Orders extends MySqlSchema
 class OrderStatus
 {
     const NewOrder = "New Order";
-    const ReceivedOrder = "Received Order";
-    const OrderOnDelivery = "Order On Delivery";
-    const OrderDelivered = "Order Delivered";
-    const OrderFulfilled = "Order Fulfilled";
+    const Processed = "Processed";
+    const OnDelivery = "On Delivery";
+    const Delivered = "Delivered";
+    const Fulfilled = "Fulfilled";
 }
 ?>
