@@ -23,11 +23,11 @@
                 </div>
                 <div id="statusChange" class="float-left">
                     <center>
-                        <label>Current status: <b>{{details.str_order_status}}</b></label><br/>
-                        <button id="button1" class="statusChange">Processed</button><label class="arrow">▾<br/>▾<br/></label>
-                        <button id="button2" class="statusChange">On Delivery</button><label class="arrow">▾<br/>▾<br/></label>
-                        <button id="button3" class="statusChange">Delivered</button><label class="arrow">▾<br/>▾<br/></label>
-                        <button id="button4" class="statusChange">Fulfilled</button>
+                        <label v-bind:class="{ 'green': details.str_order_status == 'Fulfilled' }">Current status: <b>{{details.str_order_status}}</b></label><br/>
+                        <button id="button1" v-on:click="PutOrder()" class="statusChange">Processed</button><label class="arrow">▾<br/>▾<br/></label>
+                        <button id="button2" v-on:click="PutOrder()" class="statusChange">On Delivery</button><label class="arrow">▾<br/>▾<br/></label>
+                        <button id="button3" v-on:click="PutOrder()" class="statusChange">Delivered</button><label class="arrow">▾<br/>▾<br/></label>
+                        <button id="button4" v-on:click="PutOrder()" class="statusChange">Fulfilled</button>
                     </center>
                 </div>
             </div>
@@ -91,6 +91,17 @@
                     self.cartItems = success.CartItems;
                     Lib.InitialLoading(false);
                     self.Disable();
+                });
+            },
+            PutOrder: function () {
+                var self = this;
+                Lib.InitialLoading(true);
+                Lib.Put("/api/orders", {
+                    "Id": self.id
+                },
+                function (success) {
+                    Lib.InitialLoading(false);
+                    self.GetOrder();
                 });
             },
             Disable: function () {

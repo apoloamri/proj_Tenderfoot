@@ -42,5 +42,6 @@ class OrderStatus
     const OnDelivery = "On Delivery";
     const Delivered = "Delivered";
     const Fulfilled = "Fulfilled";
+    const Cancelled = "Cancelled";
 }
 ?>

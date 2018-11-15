@@ -22,6 +22,7 @@ $router->Map("GET /order", "Front", "Order");
 //ApiOrderController
 $router->Map("GET /api/orders", "ApiOrders", "GetOrders");
 $router->Map("POST /api/orders", "ApiOrders", "PostOrders");
+$router->Map("PUT /api/orders", "ApiOrders", "PutOrders");
 
 //ApiProductsController
 $router->Map("GET /api/products", "ApiProducts", "GetProducts");

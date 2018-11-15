@@ -64,7 +64,8 @@ class BaseMySqlSchema
         return $returnString.$isArray;
     }
     protected $Where = array();
-    protected function GetWhere(bool $isSelect = false) : string
+    protected $Wheres = array();
+    protected function GetWhere(bool $isSelect = false, bool $getWheres = true) : string
     {
         $entityValues = array();
         if ($isSelect)
@@ -78,9 +79,15 @@ class BaseMySqlSchema
                 }
             }
         }
+        if ($getWheres && count($this->Wheres) > 0)
+        {
+            $this->Where[] = trim(join(" ", $entityValues)." ".join(" ", $this->Wheres))." ";
+        }
         if (count($this->Where) > 0 || count($entityValues) > 0)
         {
-            $where = trim(join(" ", $entityValues)." ".join(" ", $this->Where));
+            $where = "WHERE ";
+            $where .= trim(join(" ", $entityValues)." ".join(" ", $this->Where))." ";
+            $where = trim($where);
             $constants = new DB();
             $constants = new ReflectionClass(get_class($constants));
             $constants = $constants->getConstants();
@@ -88,9 +95,13 @@ class BaseMySqlSchema
             {
                 $where = chop($where, $constant);
             }
-            return "WHERE $where";
+            return $where;
         }
         return "";
+    }
+    protected function GetWheres() : string
+    {
+        return trim(join(" ", $entityValues)." ".join(" ", $this->Wheres))." ";
     }
     protected $Join = array();
     protected $JoinSchema = array();

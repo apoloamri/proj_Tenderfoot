@@ -16,5 +16,13 @@ class ApiOrdersController extends BaseAdminController
         $this->Execute("POST");
         $this->Json("OrderNumber");
     }
+
+    function PutOrders() : void 
+    {
+        $this->CheckAuthNotFound();
+        $this->Initiate("OrderModel");
+        $this->Execute("PUT");
+        $this->Json();
+    }
 }
 ?>

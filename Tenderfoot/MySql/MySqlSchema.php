@@ -121,6 +121,12 @@ class MySqlSchema extends BaseMySqlSchema
     {
         $this->Where[] = "$column $expression '".$this->MySqliEscapeLiteral($value)."' $condition";
     }
+    function Combine(string $condition = DB::AND)
+    {
+        $where = "(".str_replace("WHERE", "", $this->GetWhere(true, false)).") $condition";
+        $this->Where = array();
+        $this->Wheres[] = $where;
+    }
     function GroupBy(string $group)
     {
         $this->Group[] = "$this->TableName.$group";
@@ -156,10 +162,11 @@ class MySqlSchema extends BaseMySqlSchema
         $values = array();
         foreach ($this->Columns as $column)
         {
+            $name = $column->getName();
             $value = $column->getValue($this);
-            if ($value != null)
+            if ($name != "id" && $value != null)
             {
-                $columns[] = $column->getName();
+                $columns[] = $name;
                 $values[] = "'".$this->MySqliEscapeLiteral($value)."'";
             }
         }

@@ -7,7 +7,7 @@ class OrderModel extends Model
 {   
     //GET
     public $Search;
-    public $SearchTag;
+    public $OrderStatus;
     public $Page;
     public $Count;
     public $Result;
@@ -32,7 +32,7 @@ class OrderModel extends Model
             yield "Page" => $this->CheckInput("Page", false, Type::Numeric);
             yield "Count" => $this->CheckInput("Count", false, Type::Numeric);
         }
-        if ($this->Post())
+        else if ($this->Post())
         {
             $sessionId = GetSession()->SessionId;
             if (HasValue($sessionId))
@@ -52,6 +52,19 @@ class OrderModel extends Model
             yield "City" => $this->CheckInput("City", true, Type::AlphaNumeric, 255);
             yield "PostalCode" => $this->CheckInput("PostalCode", true, Type::All, 255);
         }
+        else if ($this->Put())
+        {
+            yield "Id" => $this->CheckInput("Id", false, Type::All);
+            if ($this->IsValid("Id"))
+            {
+                $orders = new Orders();
+                $orders->id = $this->Id;
+                if (!$orders->Exists())
+                {
+                    yield "Id" => GetMessage("IdDoesNotExist");
+                }
+            }
+        }
     }
     function Map() : void
     {
@@ -69,6 +82,17 @@ class OrderModel extends Model
             $orders->Where("str_order_number", DB::Like, "%".$this->Search."%", DB::OR);
             $orders->Where("str_last_name", DB::Like, "%".$this->Search."%", DB::OR);
             $orders->Where("str_first_name", DB::Like, "%".$this->Search."%");
+            $orders->Combine(DB::AND);
+            if (HasValue($this->OrderStatus))
+            {
+                $orders->Where("str_order_status", DB::Equal, $this->OrderStatus, DB::AND);
+            }
+            else
+            {
+                $orders->Where("str_order_status", DB::NotEqual, OrderStatus::Fulfilled, DB::AND);
+                $orders->Combine(DB::AND);
+            }
+            $orders->OrderBy("dat_insert_time", DB::DESC);
             $orders->Page((int)$this->Page, (int)$this->Count);
             $this->Result = $orders->Select();    
             $this->PageCount = $orders->PageCount((int)$this->Count);
@@ -78,35 +102,60 @@ class OrderModel extends Model
     {
         $now = Now();
         $orders = new Orders();
-        $orders->CreateOrderNumber();
-        $orders->str_phonenumber = $this->PhoneNumber;
-        $orders->str_last_name = $this->LastName;
-        $orders->str_first_name = $this->FirstName;
-        $orders->str_address = $this->Address;
-        $orders->str_barangay = $this->Barangay;
-        $orders->str_city = $this->City;
-        $orders->str_postal = $this->PostalCode;
-        $orders->str_order_status = OrderStatus::NewOrder;
-        $orders->dat_insert_time = $now;
-        $carts = new Carts();
-        $carts->Join(new Products(), "str_code", "str_code");
-        $carts->str_session_id = GetSession()->SessionId;
-        $cartItems = $carts->Select();
-        $orders->dbl_total = $this->GetTotal($cartItems);
-        $orders->Insert();
-        foreach ($cartItems as $cartItem)
+        if ($this->Post())
         {
-            $orderRecords = new OrderRecords();
-            ModelOverwrite($orderRecords, $cartItem);
-            $orderRecords->int_order_id = $orders->id;
-            $orderRecords->int_product_id = $cartItem->{'products-id'};
-            $orderRecords->dbl_total_price = (int)$orderRecords->num_amount * (int)$orderRecords->dbl_price;
-            $orderRecords->dat_insert_time = $now;
-            $orderRecords->Insert();
+            $orders->CreateOrderNumber();
+            $orders->str_phonenumber = $this->PhoneNumber;
+            $orders->str_last_name = $this->LastName;
+            $orders->str_first_name = $this->FirstName;
+            $orders->str_address = $this->Address;
+            $orders->str_barangay = $this->Barangay;
+            $orders->str_city = $this->City;
+            $orders->str_postal = $this->PostalCode;
+            $orders->str_order_status = OrderStatus::NewOrder;
+            $orders->dat_insert_time = $now;
+            $carts = new Carts();
+            $carts->Join(new Products(), "str_code", "str_code");
+            $carts->str_session_id = GetSession()->SessionId;
+            $cartItems = $carts->Select();
+            $orders->dbl_total = $this->GetTotal($cartItems);
+            $orders->Insert();
+            foreach ($cartItems as $cartItem)
+            {
+                $orderRecords = new OrderRecords();
+                ModelOverwrite($orderRecords, $cartItem);
+                $orderRecords->int_order_id = $orders->id;
+                $orderRecords->int_product_id = $cartItem->{'products-id'};
+                $orderRecords->dbl_total_price = (int)$orderRecords->num_amount * (int)$orderRecords->dbl_price;
+                $orderRecords->dat_insert_time = $now;
+                $orderRecords->dat_update_time = null;
+                $orderRecords->Insert();
+            }
+            $carts->Delete();
+            $this->OrderNumber = $orders->str_order_number;
+            $this->SendEmail();
         }
-        $carts->Delete();
-        $this->OrderNumber = $orders->str_order_number;
-        $this->SendEmail();
+        else if ($this->Put())
+        {
+            $orders->Where("id", DB::Equal, $this->Id);
+            $orders->SelectSingle();
+            switch ($orders->str_order_status)
+            {
+                case OrderStatus::NewOrder:
+                $orders->str_order_status = OrderStatus::Processed;
+                break;
+                case OrderStatus::Processed:
+                $orders->str_order_status = OrderStatus::OnDelivery;
+                break;
+                case OrderStatus::OnDelivery:
+                $orders->str_order_status = OrderStatus::Delivered;
+                break;
+                case OrderStatus::Delivered:
+                $orders->str_order_status = OrderStatus::Fulfilled;
+                break;
+            }
+            $orders->Update();
+        }
     }
     function GetTotal($cartItems) : int
     {

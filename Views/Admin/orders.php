@@ -4,7 +4,12 @@
         <div id="adminInnerContent">
             <h2>Orders</h2>
             <div class="adminTable">
-                <input type="text" v-model="search" v-on:keyup="GetOrdersDelay()" placeholder="Search orders" />
+                <input type="text" v-model="search" v-on:keyup="GetOrdersDelay()" placeholder="Search orders" /><br/>
+                <button class="status" v-on:click="GetList('New Order')">New</button>
+                <button class="status" v-on:click="GetList('Processed')">Processed</button>
+                <button class="status" v-on:click="GetList('On Delivery')">On Delivery</button>
+                <button class="status" v-on:click="GetList('Delivered')">Delivered</button>
+                <button class="status" v-on:click="GetList('Fulfilled')">Fulfilled</button>
                 <table>
                     <tr>
                         <th width="25%">Order Number</th>
@@ -36,6 +41,10 @@
     input[type="number"] {
         width: 30px;
     }
+    .status {
+        width: 110px;
+        display: inline-block;
+    }
 </style>
 
 <script type="module">
@@ -44,6 +53,7 @@
         el: "#adminInnerContent",
         data: {
             search: "",
+            orderStatus: "",
             page: 1,
             pageCount: 0,
             result: []
@@ -60,6 +70,7 @@
                 Lib.InitialLoading(true);
                 Lib.Get("/api/orders", {
                     "Search": self.search,
+                    "OrderStatus": self.orderStatus,
                     "Page": self.page,
                     "Count": 10
                 },
@@ -68,6 +79,11 @@
                     self.pageCount = success.PageCount;
                     Lib.InitialLoading(false);
                 });
+            },
+            GetList: function (orderStatus) {
+                var self = this;
+                self.orderStatus = orderStatus;
+                self.GetOrders();
             },
             NextPage: function () {
                 if (this.page < this.pageCount) {
