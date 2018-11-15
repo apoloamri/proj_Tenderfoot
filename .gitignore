@@ -1,0 +1,3 @@
+# exclude files in upload folder
+Resources/upload/*
+!Resources/upload/.gitkeep
