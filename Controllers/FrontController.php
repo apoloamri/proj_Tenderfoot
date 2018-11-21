@@ -36,5 +36,17 @@ class FrontController extends BaseFrontController
         }
         $this->View("order");
     }
+
+    function Tracking() : void
+    {   
+        $this->StartSession();
+        $this->Initiate("TrackingModel");
+        if (!$this->Model->IsValid)
+        {
+            $this->Redirect("/err/404");
+        }
+		$this->Execute("GET");
+        $this->View("tracking");
+    }
 }
 ?>

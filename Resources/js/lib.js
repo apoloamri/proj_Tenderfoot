@@ -35,12 +35,6 @@ export default {
             });
         return decodeURI(result);
     },
-    ValidateNullOrEmpty: function (object, message) {
-        if (!object || this.IsEmptyOrSpaces(object)) {
-            return message;
-        }
-        return "";
-    },
     //COMMON
 
     //COOKIES

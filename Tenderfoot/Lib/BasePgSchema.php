@@ -38,7 +38,7 @@ class BasePgSchema
                 case "str_":
                     $returnString =  "$name character varying";
                     break;
-                case "num_":
+                case "int_":
                     $returnString =  "$name integer";
                     break;
                 case "dbl_":

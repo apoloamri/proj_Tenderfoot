@@ -71,7 +71,7 @@ class MySqlSchema extends BaseMySqlSchema
             ModelOverwrite($this, $result[0]);
             return $result[0];
         }
-        return array();
+        return new stdClass();
     }
     /**
      * Counts the number of records of the current criteria.
@@ -164,7 +164,7 @@ class MySqlSchema extends BaseMySqlSchema
         {
             $name = $column->getName();
             $value = $column->getValue($this);
-            if ($name != "id" && $value != null)
+            if ($name != "id" && !is_null($value))
             {
                 $columns[] = $name;
                 $values[] = "'".$this->MySqliEscapeLiteral($value)."'";
@@ -174,9 +174,7 @@ class MySqlSchema extends BaseMySqlSchema
         {
             $query = "INSERT INTO $this->TableName(".join(", ", $columns).") VALUES(".join(", ", $values).");";
             $this->Execute($query);
-            $query = "SELECT id FROM $this->TableName ORDER BY id DESC LIMIT 1;";
-            $result = $this->Execute($query, false);
-            $this->id = mysqli_fetch_assoc($result)["id"];
+            $this->SelectSingle("id");
         }
     }
     function Update() : void
@@ -185,7 +183,7 @@ class MySqlSchema extends BaseMySqlSchema
         foreach ($this->Columns as $column)
         {
             $value = $column->getValue($this);
-            if ($value != null)
+            if (!is_null($value))
             {
                 $updateValues[] = $column->getName()." = '".$this->MySqliEscapeLiteral($value)."'";
             }

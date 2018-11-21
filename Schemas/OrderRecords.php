@@ -9,7 +9,7 @@ class OrderRecords extends MySqlSchema
     public $int_product_id;
     public $str_session_id;
     public $str_code;
-    public $num_amount;
+    public $int_amount;
     public $dbl_price;
     public $dbl_total_price;
     public $dat_insert_time;

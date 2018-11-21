@@ -18,11 +18,13 @@ $router->Map("GET /", "Front", "Index");
 $router->Map("GET /cart", "Front", "Cart");
 $router->Map("GET /detail/[Code]", "Front", "Detail");
 $router->Map("GET /order", "Front", "Order");
+$router->Map("GET /tracking/[OrderNumber]", "Front", "Tracking");
 
 //ApiOrderController
 $router->Map("GET /api/orders", "ApiOrders", "GetOrders");
 $router->Map("POST /api/orders", "ApiOrders", "PostOrders");
 $router->Map("PUT /api/orders", "ApiOrders", "PutOrders");
+$router->Map("DELETE /api/orders", "ApiOrders", "DeleteOrders");
 
 //ApiProductsController
 $router->Map("GET /api/products", "ApiProducts", "GetProducts");
@@ -36,6 +38,7 @@ $router->Map("DELETE /api/products/", "ApiProducts", "DeleteProducts");
 //ApiCartController
 $router->Map("GET /api/cart", "ApiCart", "GetCart");
 $router->Map("POST /api/cart", "ApiCart", "PostCart");
+$router->Map("PUT /api/cart", "ApiCart", "PutCart");
 $router->Map("DELETE /api/cart", "ApiCart", "DeleteCart");
 
 //Errors

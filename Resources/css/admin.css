@@ -35,7 +35,7 @@ button.gray:hover {
 }
 button.red {
     border-color: darkred;
-    background-color: red;
+    background-color: brown;
 }
 button.red:hover {
     background-color: darkred;
@@ -60,6 +60,10 @@ textarea {
     margin: 20px -5px;
     padding: 15px 20px;
     width: 100%;
+}
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
 }
 
 input[type="checkbox"],

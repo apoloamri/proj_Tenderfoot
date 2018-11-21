@@ -10,6 +10,7 @@
                 <button class="status" v-on:click="GetList('On Delivery')">On Delivery</button>
                 <button class="status" v-on:click="GetList('Delivered')">Delivered</button>
                 <button class="status" v-on:click="GetList('Fulfilled')">Fulfilled</button>
+                <button class="status red" v-on:click="GetList('Cancelled')">Cancelled</button>
                 <table>
                     <tr>
                         <th width="25%">Order Number</th>

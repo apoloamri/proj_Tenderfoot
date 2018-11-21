@@ -24,5 +24,13 @@ class ApiOrdersController extends BaseAdminController
         $this->Execute("PUT");
         $this->Json();
     }
+
+    function DeleteOrders() : void 
+    {
+        $this->CheckAuthNotFound();
+        $this->Initiate("OrderModel");
+        $this->Execute("DELETE");
+        $this->Json();
+    }
 }
 ?>

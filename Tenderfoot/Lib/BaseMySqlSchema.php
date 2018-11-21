@@ -38,7 +38,7 @@ class BaseMySqlSchema
                 case "str_":
                     $returnString =  "$name VARCHAR(255)";
                     break;
-                case "num_":
+                case "int_":
                     $returnString =  "$name INT";
                     break;
                 case "dbl_":
@@ -85,8 +85,7 @@ class BaseMySqlSchema
         }
         if (count($this->Where) > 0 || count($entityValues) > 0)
         {
-            $where = "WHERE ";
-            $where .= trim(join(" ", $entityValues)." ".join(" ", $this->Where))." ";
+            $where = "WHERE ".trim(join(" ", $entityValues)." ".join(" ", $this->Where))." ";
             $where = trim($where);
             $constants = new DB();
             $constants = new ReflectionClass(get_class($constants));

@@ -23,10 +23,11 @@
                 </div>
                 <div id="statusChange" class="float-left">
                     <center>
-                        <label v-bind:class="{ 'green': details.str_order_status == 'Fulfilled' }">Current status: <b>{{details.str_order_status}}</b></label><br/>
-                        <button id="button1" v-on:click="PutOrder()" class="statusChange">Processed</button><label class="arrow">▾<br/>▾<br/></label>
-                        <button id="button2" v-on:click="PutOrder()" class="statusChange">On Delivery</button><label class="arrow">▾<br/>▾<br/></label>
-                        <button id="button3" v-on:click="PutOrder()" class="statusChange">Delivered</button><label class="arrow">▾<br/>▾<br/></label>
+                        <label v-bind:class="{ 'green': details.str_order_status == 'Fulfilled', 'red': details.str_order_status == 'Cancelled' }">Current status: <b>{{details.str_order_status}}</b></label><br/>
+                        <button id="cancel" v-on:click="CancelOrder()" class="statusChange red">Cancel</button>
+                        <button id="button1" v-on:click="PutOrder()" class="statusChange">Processed</button><label class="arrow">▾<br/></label>
+                        <button id="button2" v-on:click="PutOrder()" class="statusChange">On Delivery</button><label class="arrow">▾<br/></label>
+                        <button id="button3" v-on:click="PutOrder()" class="statusChange">Delivered</button><label class="arrow">▾<br/></label>
                         <button id="button4" v-on:click="PutOrder()" class="statusChange">Fulfilled</button>
                     </center>
                 </div>
@@ -43,7 +44,7 @@
                     <tr v-for="item in cartItems">
                         <td>{{item.str_code}}</td>
                         <td>{{item.dbl_price}}</td>
-                        <td>{{item.num_amount}}</td>
+                        <td>{{item.int_amount}}</td>
                         <td>{{item.dbl_total_price}}</td>
                     </tr>
                     <tr>
@@ -102,11 +103,33 @@
                 function (success) {
                     Lib.InitialLoading(false);
                     self.GetOrder();
+                },
+                function (failed) {
+                    var response = failed.responseJSON;
+                    alert(response.Messages.Id);
+                    self.GetOrder();
+                });
+            },
+            CancelOrder: function () {
+                var self = this;
+                Lib.InitialLoading(true);
+                Lib.Delete("/api/orders", {
+                    "Id": self.id
+                },
+                function (success) {
+                    Lib.InitialLoading(false);
+                    self.GetOrder();
+                },
+                function (failed) {
+                    var response = failed.responseJSON;
+                    alert(response.Messages.Id);
+                    self.GetOrder();
                 });
             },
             Disable: function () {
                 var self = this;
                 $(".statusChange").prop("disabled", true);
+                $("#cancel").removeAttr("disabled");
                 switch (self.details.str_order_status)
                 {
                     case "New Order":

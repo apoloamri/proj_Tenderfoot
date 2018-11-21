@@ -1,0 +1,117 @@
+.menuImages {
+    height: 20px;
+    margin: -3px 3px;
+}
+
+/* ------------------ */
+/* UPPER MENU - START */
+/* ------------------ */
+#menuUpper {
+    background-color: white;
+    padding: 20px 30px;
+    overflow: auto;
+}
+#menuLogo {
+    background: url("/Resources/images/shoppin-logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 45px;
+    margin: -5px;
+    width: 120px;
+    cursor: pointer;
+    display: inline-block;
+}
+#menuCartDiv {
+    margin-top: 10px;
+    float: right;
+}
+/* ---------------- */
+/* UPPER MENU - END */
+/* ---------------- */
+
+/* ------------------ */
+/* LOWER MENU - START */
+/* ------------------ */
+#menuLower {
+    background-color: #B61820;
+    padding: 10px 30px;
+    overflow: hidden;
+}
+#menuNaviDiv {
+    float: left;
+    margin-top: 9px;
+}
+#menuNaviDiv a {
+    margin: 15px;
+    color: white;
+}
+#menuNaviDiv a:hover {
+    margin: 15px;
+    color: lightgray;
+}
+#menuSearchDiv {
+    margin-right: -30px;
+    float: right;
+    width: 70%;
+}
+#menuSearch {
+    border: none;
+    border-radius: 5px;
+    margin: 0px;
+    width: 90%;
+}
+/* ---------------- */
+/* LOWER MENU - END */
+/* ---------------- */
+
+
+/* ------------------ */
+/* CATEGORIES - START */
+/* ------------------ */
+#categories {
+    float: left;
+    position: relative;
+    margin: 10px;
+    min-height: 100vh;
+}
+#categories .content {
+    background-color: white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+#categories .links {
+    padding: 10px;
+}
+#categories .header {
+    border-radius: 5px 5px 0px 0px;
+    background-color: #B61820;
+    text-align: center;
+    color: white;
+    padding: 10px;
+}
+#categories input {
+    border: none;
+    background-color: white;
+    width: 85%;
+    margin: 5px;
+}
+/* ---------------- */
+/* CATEGORIES - END */
+/* ---------------- */
+
+@media screen and (max-width: 1200px) {
+    #categories {
+        float: unset;
+        width: 90%;
+    }
+    #categories .content {
+        display: inline-block;
+        width: 35%;
+        height: 40px;
+        overflow: hidden;
+    }
+    #categories .content:hover {
+        height: unset;
+        overflow: unset;
+    }
+}

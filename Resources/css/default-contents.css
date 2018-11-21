@@ -1,0 +1,64 @@
+/* ----------------- */
+/* ITEM LIST - START */
+/* ----------------- */
+.items {
+    background-color: white;
+    border: 1px solid lightgray;
+    display: inline-block;
+    margin: 10px 2px;
+    width: 230px;
+}
+.items .content {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 210px;
+    padding: 10px;
+}
+.items .image {
+    width: 230px;
+    height: 170px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 5px;
+}
+.items button {
+    width: 100%;
+    height: 65px;
+    color: #868080;
+    border: none;
+    background-color: lightgray;
+    border-radius: unset;
+    margin: unset;
+}
+.items button:hover {
+    background-color: gray;
+    color: white;
+}
+.items button:disabled {
+    background-color: white;
+    color: red;
+}
+/* --------------- */
+/* ITEM LIST - END */
+/* --------------- */
+
+/* ------------------- */
+/* ITEM DETAIL - START */
+/* ------------------- */
+#detailsImage {
+    width: 350px;
+    height: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    float: left;
+}
+#detailsContent {
+    margin: 0px 20px;
+    float: left;
+}
+/* ----------------- */
+/* ITEM DETAIL - END */
+/* ----------------- */

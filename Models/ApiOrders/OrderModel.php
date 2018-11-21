@@ -3,6 +3,7 @@ Model::AddSchema("Carts");
 Model::AddSchema("Orders");
 Model::AddSchema("OrderRecords");
 Model::AddSchema("Products");
+Model::AddSchema("ProductInventory");
 class OrderModel extends Model
 {   
     //GET
@@ -52,7 +53,7 @@ class OrderModel extends Model
             yield "City" => $this->CheckInput("City", true, Type::AlphaNumeric, 255);
             yield "PostalCode" => $this->CheckInput("PostalCode", true, Type::All, 255);
         }
-        else if ($this->Put())
+        else if ($this->Put() || $this->Delete())
         {
             yield "Id" => $this->CheckInput("Id", false, Type::All);
             if ($this->IsValid("Id"))
@@ -62,6 +63,17 @@ class OrderModel extends Model
                 if (!$orders->Exists())
                 {
                     yield "Id" => GetMessage("IdDoesNotExist");
+                }
+                else
+                {
+                    if ($this->Delete())
+                    {
+                        $orders->SelectSingle();
+                        if ($orders->str_order_status == OrderStatus::Cancelled)
+                        {
+                            yield "Id" => GetMessage("InvalidOperation");
+                        }
+                    }
                 }
             }
         }
@@ -90,6 +102,7 @@ class OrderModel extends Model
             else
             {
                 $orders->Where("str_order_status", DB::NotEqual, OrderStatus::Fulfilled, DB::AND);
+                $orders->Where("str_order_status", DB::NotEqual, OrderStatus::Cancelled, DB::AND);
                 $orders->Combine(DB::AND);
             }
             $orders->OrderBy("dat_insert_time", DB::DESC);
@@ -126,35 +139,50 @@ class OrderModel extends Model
                 ModelOverwrite($orderRecords, $cartItem);
                 $orderRecords->int_order_id = $orders->id;
                 $orderRecords->int_product_id = $cartItem->{'products-id'};
-                $orderRecords->dbl_total_price = (int)$orderRecords->num_amount * (int)$orderRecords->dbl_price;
+                $orderRecords->dbl_total_price = (int)$orderRecords->int_amount * (int)$orderRecords->dbl_price;
                 $orderRecords->dat_insert_time = $now;
                 $orderRecords->dat_update_time = null;
                 $orderRecords->Insert();
+                $this->UpdateInventory((int)$orderRecords->int_product_id, -(int)$orderRecords->int_amount);
             }
             $carts->Delete();
             $this->OrderNumber = $orders->str_order_number;
             $this->SendEmail();
         }
-        else if ($this->Put())
+        else if ($this->Put() || $this->Delete())
         {
             $orders->Where("id", DB::Equal, $this->Id);
             $orders->SelectSingle();
-            switch ($orders->str_order_status)
+            if ($this->Put())
             {
-                case OrderStatus::NewOrder:
-                $orders->str_order_status = OrderStatus::Processed;
-                break;
-                case OrderStatus::Processed:
-                $orders->str_order_status = OrderStatus::OnDelivery;
-                break;
-                case OrderStatus::OnDelivery:
-                $orders->str_order_status = OrderStatus::Delivered;
-                break;
-                case OrderStatus::Delivered:
-                $orders->str_order_status = OrderStatus::Fulfilled;
-                break;
+                switch ($orders->str_order_status)
+                {
+                    case OrderStatus::NewOrder:
+                    $orders->str_order_status = OrderStatus::Processed;
+                    break;
+                    case OrderStatus::Processed:
+                    $orders->str_order_status = OrderStatus::OnDelivery;
+                    break;
+                    case OrderStatus::OnDelivery:
+                    $orders->str_order_status = OrderStatus::Delivered;
+                    break;
+                    case OrderStatus::Delivered:
+                    $orders->str_order_status = OrderStatus::Fulfilled;
+                    break;
+                }
+            }
+            else if ($this->Delete())
+            {
+                $orders->str_order_status = OrderStatus::Cancelled;
             }
             $orders->Update();
+            $orderRecords = new OrderRecords();
+            $orderRecords->int_order_id = $this->Id;
+            $result = $orderRecords->Select();
+            foreach ($result as $orderRecord)
+            {
+                $this->UpdateInventory((int)$orderRecord->int_product_id, (int)$orderRecord->int_amount);
+            }
         }
     }
     function GetTotal($cartItems) : int
@@ -162,9 +190,19 @@ class OrderModel extends Model
         $price = 0;
         foreach ($cartItems as $item)
         {
-            $price += $item->num_amount * $item->dbl_price;
+            $price += $item->int_amount * $item->dbl_price;
         }
         return $price;
+    }
+    function UpdateInventory(int $productId, int $amount) : void
+    {
+        $inventory = new ProductInventory();
+        $inventory->int_product_id = $productId;
+        $inventory->SelectSingle();
+        $inventory->int_amount = $inventory->int_amount + $amount;
+        $inventory->dat_update_time = Now();
+        $inventory->Where("int_product_id", DB::Equal, $productId);
+        $inventory->Update(); 
     }
     function SendEmail() : void
     {

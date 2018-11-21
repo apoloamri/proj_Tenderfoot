@@ -21,6 +21,14 @@ class ApiCartController extends BaseFrontController
 		$this->Json();
     }
 
+    function PutCart() : void
+    {
+        $this->StartSession();
+        $this->Initiate("CartModel");
+		$this->Execute("PUT");
+		$this->Json();
+    }
+
     function DeleteCart() : void
     {
         $this->StartSession();

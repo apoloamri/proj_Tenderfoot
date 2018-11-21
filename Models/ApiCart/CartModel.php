@@ -41,8 +41,8 @@ class CartModel extends Model
         $price = 0;
         foreach ($this->Result as $item)
         {
-            $amount += $item->num_amount;
-            $price += $item->num_amount * $item->dbl_price;
+            $amount += $item->int_amount;
+            $price += $item->int_amount * $item->dbl_price;
         }
         $this->Count = $amount;
         $this->Total = $price;
@@ -51,17 +51,17 @@ class CartModel extends Model
     {
         $sessionId = GetSession()->SessionId;
         $carts = new Carts();
-        if ($this->Post())
+        if ($this->Post() || $this->Put())
         {
             $carts->str_code = $this->Code;
             $carts->str_session_id = $sessionId;
             if ($carts->Count() > 0)
             {
                 $carts->SelectSingle();
-                $carts->num_amount = 
+                $carts->int_amount = 
                     HasValue($this->Amount) ? 
                     $this->Amount : 
-                    $carts->num_amount + 1;
+                    $carts->int_amount + 1;
                 $carts->dat_update_time = Now();
                 $carts->Where("str_code", DB::Equal, $this->Code);
                 $carts->Where("str_session_id", DB::Equal, $sessionId);
@@ -69,7 +69,7 @@ class CartModel extends Model
             }
             else
             {
-                $carts->num_amount = 
+                $carts->int_amount = 
                     HasValue($this->Amount) ? 
                     $this->Amount : 
                     1;

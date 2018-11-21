@@ -15,8 +15,11 @@
         }
         else
         {
-            echo '<link rel="stylesheet" type="text/css" href="/Resources/css/style.css" />';
-            echo '<link href="https://fonts.googleapis.com/css?family=Varela Round" rel="stylesheet" />';
+            echo '<link rel="stylesheet" type="text/css" href="/Resources/css/default.css" />';
+            echo '<link rel="stylesheet" type="text/css" href="/Resources/css/default-cart.css" />';
+            echo '<link rel="stylesheet" type="text/css" href="/Resources/css/default-contents.css" />';
+            echo '<link rel="stylesheet" type="text/css" href="/Resources/css/default-navigation.css" />';
+            echo '<link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">';
         }
     ?>
 </head>

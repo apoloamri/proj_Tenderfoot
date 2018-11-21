@@ -1,20 +1,23 @@
-<div id="home">
-    <?php $this->Partial("navigation") ?>
-    <div id="mainContent">
-        <h3 v-if="search != ''">Search: '{{search}}'</h3>
-        <h3 v-else-if="searchTag != ''">Items tagged: '{{searchTag}}'</h3>
-        <h3 v-else>Items</h3>
-        <div class="items" v-for="item in result">
-            <center>
-                <a v-bind:href="'/detail/' + item.str_code">
-                    <div class="itemImage-250" v-bind:style="'background-image: url(' + item.str_path + ')'"></div>
+<?php $this->Partial("menu") ?>
+<?php $this->Partial("categories") ?>
+<div id="mainContent">
+    <h3 v-if="search != ''">Search: '{{search}}'</h3>
+    <h3 v-else-if="searchTag != ''">Items tagged: '{{searchTag}}'</h3>
+    <h3 v-else>New Arrivals</h3>
+    <div class="items" v-for="item in result">
+        <center>
+            <a v-bind:href="'/detail/' + item.str_code">
+                <div class="image" v-bind:style="'background-image: url(' + item.str_path + ')'"></div>
+                <div class="content">
                     <label class="font-17">{{item.str_brand}} - {{item.str_name}}</label><br/>
-                    <label class="font-13">₱{{item.dbl_price}}</label><br/>
-                    <label v-if="item.int_amount == null || item.int_amount == 0" class="red">Out of stock</label><br/>
-                </a>
-                <button v-on:click="AddCart(item.str_code);" :disabled="item.int_amount == null || item.int_amount == 0">Add to cart</button>
-            </center>
-        </div>
+                    <label class="font-15">₱{{item.dbl_price}}</label>
+                </div>
+            </a>
+            <button v-on:click="AddCart(item.str_code);" :disabled="item.int_amount == null || item.int_amount == 0">
+                <label v-if="item.int_amount == null || item.int_amount == 0">OUT OF STOCK</label>
+                <label v-else>ADD TO CART</label>
+            </button>
+        </center>
     </div>
 </div>
 
