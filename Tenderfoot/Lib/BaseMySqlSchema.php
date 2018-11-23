@@ -1,7 +1,7 @@
 <?php 
 class BaseMySqlSchema
 {
-    public $id;
+    public $id, $dat_insert_time, $dat_update_time;
     protected $Columns, $Connect, $TableName;
     protected function InitializeConnection()
     {
@@ -19,7 +19,16 @@ class BaseMySqlSchema
     }
     function Execute(string $query)
     {
-        return mysqli_query($this->Connect, $query);
+        $result = mysqli_query($this->Connect, $query);
+        if (!$result)
+        {
+            echo "[ERROR FOUND ON QUERY] $query";
+            return null;
+        }
+        else
+        {
+            return $result;
+        }
     }
     protected function GetColumnType(ReflectionProperty $column) : string
     {

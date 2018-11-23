@@ -32,14 +32,12 @@ class InventoryModel extends Model
         if ($products->Exists())
         {
             $products->int_amount = $this->Amount;
-            $products->dat_update_time = Now();
             $products->Where("int_product_id", DB::Equal, $this->Id);
             $products->Update();
         }
         else
         {
             $products->int_amount = $this->Amount;
-            $products->dat_insert_time = Now();
             $products->Insert();
         }
     }

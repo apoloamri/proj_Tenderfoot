@@ -16,6 +16,13 @@ class ApiProductsController extends BaseAdminController
         $this->Json("Result");
     }
 
+    function GetTrends() : void
+    {
+        $this->Initiate("TrendsModel");
+		$this->Execute("GET");
+        $this->Json("MostViews", "MostCarts", "MostPurchases");
+    }
+
     function PostProducts() : void
     {
         $this->CheckAuthNotFound();

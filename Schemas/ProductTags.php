@@ -7,7 +7,6 @@ class ProductTags extends MySqlSchema
     }
     public $int_product_id;
     public $str_tag;
-    public $dat_insert_time;
     function GetTags() : string
     {
         $tagArray = array();

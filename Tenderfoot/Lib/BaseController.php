@@ -20,7 +20,18 @@ class BaseController
     {
         $timeZone = Settings::TimeZone();
         $sessions = new Sessions();
-        $sessions->Execute("SET time_zone = '$timeZone'");
+        $sessions->Execute("SET time_zone = '$timeZone';");
+    }
+    protected function Transact() : void
+    {
+        $sessions = new Sessions();
+        $sessions->Execute("SET autocommit = OFF;");
+        $sessions->Execute("START TRANSACTION;");
+    }
+    protected function Commit() : void
+    {
+        $sessions = new Sessions();
+        $sessions->Execute("COMMIT;");
     }
 }
 ?>

@@ -10,8 +10,6 @@ class Products extends MySqlSchema
     public $str_name;
     public $txt_description;
     public $dbl_price;
-    public $dat_insert_time;
-    public $dat_update_time;
     function IdExists(int $id) : bool
     {
         $products = new Products();

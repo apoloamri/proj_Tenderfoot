@@ -15,9 +15,7 @@ class Orders extends MySqlSchema
     public $str_postal;
     public $dbl_total;
     public $str_order_status;
-    public $dat_insert_time;
-    public $dat_update_time;
-    function CreateOrderNumber()
+    function CreateOrderNumber() : void
     {
         $order = new Orders();
         $order->str_order_number = GenerateRandomString(10);

@@ -48,7 +48,6 @@ class Email
         $emails->str_email = $emailTo;
         $emails->str_cc = $emailCc;
         $emails->str_email_sent = $emailSent;
-        $emails->dat_insert_time = Now();
         $emails->Insert();
     }
     private function GetTitle(string $message) : string

@@ -104,14 +104,12 @@ class ProductsModel extends Model
         $products->dbl_price = $this->Price;
         if ($this->Post())
         {
-            $products->dat_insert_time = Now();
             $products->Insert();
             $this->UpdateImages($products->id);
             $this->UpdateTags($products->id);
         }
         if ($this->Put())
         {
-            $products->dat_update_time = Now();
             $products->Where("id", DB::Equal, $this->Id);
             $products->Update();
             $this->UpdateImages($this->Id);
@@ -136,9 +134,7 @@ class ProductsModel extends Model
         $productImages->Delete();
         foreach ($this->ImagePaths as $key => $value)
         {
-            $productImages->id = null;
             $productImages->str_path = $this->SaveFile($value, $this->Code."-".$key);
-            $productImages->dat_insert_time = Now();
             $productImages->Insert();
         }
     }
@@ -151,9 +147,7 @@ class ProductsModel extends Model
         $tags = array_map("trim", $tags);
         foreach ($tags as $tag)
         {
-            $productTags->id = null;
             $productTags->str_tag = $tag;
-            $productTags->dat_insert_time = Now();
             $productTags->Insert();
         }
     }

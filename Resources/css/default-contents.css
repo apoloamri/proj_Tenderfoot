@@ -33,7 +33,7 @@
     margin: unset;
 }
 .items button:hover {
-    background-color: gray;
+    background-color: #B61820;
     color: white;
 }
 .items button:disabled {

@@ -4,6 +4,7 @@ Model::AddSchema("Orders");
 Model::AddSchema("OrderRecords");
 Model::AddSchema("Products");
 Model::AddSchema("ProductInventory");
+Model::AddSchema("ProductViews");
 class OrderModel extends Model
 {   
     //GET
@@ -126,7 +127,6 @@ class OrderModel extends Model
             $orders->str_city = $this->City;
             $orders->str_postal = $this->PostalCode;
             $orders->str_order_status = OrderStatus::NewOrder;
-            $orders->dat_insert_time = $now;
             $carts = new Carts();
             $carts->Join(new Products(), "str_code", "str_code");
             $carts->str_session_id = GetSession()->SessionId;
@@ -136,14 +136,14 @@ class OrderModel extends Model
             foreach ($cartItems as $cartItem)
             {
                 $orderRecords = new OrderRecords();
-                ModelOverwrite($orderRecords, $cartItem);
+                $orderRecords->OverwriteWithModel($cartItem);
                 $orderRecords->int_order_id = $orders->id;
                 $orderRecords->int_product_id = $cartItem->{'products-id'};
                 $orderRecords->dbl_total_price = (int)$orderRecords->int_amount * (int)$orderRecords->dbl_price;
-                $orderRecords->dat_insert_time = $now;
-                $orderRecords->dat_update_time = null;
                 $orderRecords->Insert();
                 $this->UpdateInventory((int)$orderRecords->int_product_id, -(int)$orderRecords->int_amount);
+                $this->AddPurchase((int)$cartItem->{'products-id'});
+                
             }
             $carts->Delete();
             $this->OrderNumber = $orders->str_order_number;
@@ -200,9 +200,14 @@ class OrderModel extends Model
         $inventory->int_product_id = $productId;
         $inventory->SelectSingle();
         $inventory->int_amount = $inventory->int_amount + $amount;
-        $inventory->dat_update_time = Now();
         $inventory->Where("int_product_id", DB::Equal, $productId);
         $inventory->Update(); 
+    }
+    function AddPurchase(int $productId) : void
+    {
+        $views = new ProductViews();
+        $views->int_product_id = $productId;
+        $views->AddPurchase();
     }
     function SendEmail() : void
     {

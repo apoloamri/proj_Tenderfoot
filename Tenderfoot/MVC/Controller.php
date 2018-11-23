@@ -25,51 +25,39 @@ class Controller extends BaseController
 	}
 	protected function Execute(string $method) : void
 	{
-		try
+		if ($this->Model->IsValid)
 		{
-			if ($this->Model->IsValid)
+			$this->Transact();
+			switch ($_SERVER['REQUEST_METHOD'])
 			{
-				switch ($_SERVER['REQUEST_METHOD'])
-				{
-					case "GET":
-						$this->Model->Map();
-						break;
-					case "POST":
-					case "PUT":
-					case "DELETE":
-						$this->Model->Handle();
-						break;
-				}
+				case "GET":
+					$this->Model->Map();
+					break;
+				case "POST":
+				case "PUT":
+				case "DELETE":
+					$this->Model->Handle();
+					break;
 			}
-		}
-		catch (Exception $ex)
-		{
-			echo "A system error occured!\n",  $ex->getMessage(), "\n";
+			$this->Commit();
 		}
 	}
 	protected function View(string $viewName) : void
 	{
-		try
+		$layout = "Views/app.php";
+		if ($this->Model == null)
 		{
-			$layout = "Views/app.php";
-			if ($this->Model == null)
-			{
-				$model = new Model();
-			}
-			else
-			{
-				$model = $this->Model;
-			}
-			if (file_exists($layout))
-			{
-				$model->InitiatePage(get_class($this), $viewName);
-				header("Content-Type: text/html");
-				require_once $layout;
-			}
+			$model = new Model();
 		}
-		catch (Exception $ex)
+		else
 		{
-			echo "A system error occured!\n",  $ex->getMessage(), "\n";
+			$model = $this->Model;
+		}
+		if (file_exists($layout))
+		{
+			$model->InitiatePage(get_class($this), $viewName);
+			header("Content-Type: text/html");
+			require_once $layout;
 		}
 	}
 	protected function Redirect(string $url) : void
@@ -79,26 +67,19 @@ class Controller extends BaseController
 	}
 	protected function Json(string ...$fields) : void
 	{
-		try 
+		array_push($fields, "IsValid");
+		array_push($fields, "Messages");
+		$reflect = new ReflectionClass($this->Model);
+		$jsonArray = array();
+		foreach ($fields as $field)
 		{
-			array_push($fields, "IsValid");
-			array_push($fields, "Messages");
-			$reflect = new ReflectionClass($this->Model);
-			$jsonArray = array();
-			foreach ($fields as $field)
+			if (property_exists($this->Model, $field))
 			{
-				if (property_exists($this->Model, $field))
-				{
-					$jsonArray[$field] = $reflect->getProperty($field)->getValue($this->Model);
-				}
+				$jsonArray[$field] = $reflect->getProperty($field)->getValue($this->Model);
 			}
-			header("Content-Type: application/json");
-			echo json_encode($jsonArray);
 		}
-		catch (Exception $ex)
-		{
-			echo "A system error occured!\n",  $ex->getMessage(), "\n";
-		}
+		header("Content-Type: application/json");
+		echo json_encode($jsonArray, JSON_PRETTY_PRINT);
 	}
 }
 ?>

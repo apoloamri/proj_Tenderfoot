@@ -7,7 +7,6 @@ class ProductImages extends MySqlSchema
     }
     public $int_product_id;
     public $str_path;
-    public $dat_insert_time;
     function GetImages() : array 
     {
         $return = array();

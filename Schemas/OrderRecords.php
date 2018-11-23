@@ -12,7 +12,5 @@ class OrderRecords extends MySqlSchema
     public $int_amount;
     public $dbl_price;
     public $dbl_total_price;
-    public $dat_insert_time;
-    public $dat_update_time;
 }
 ?>

@@ -9,8 +9,6 @@ class Admins extends MySqlSchema
     public $str_password;
     public $str_last_name;
     public $str_first_name;
-    public $dat_insert_time;
-    public $dat_update_time;
     function HasAdmin() : bool
     {
         if ($this->Count("str_username") != 0)

@@ -20,7 +20,19 @@ class MySqlSchema extends BaseMySqlSchema
      */
     function Select(string ...$columns) : array
     {
-        $compiledColumns = count($columns) > 0 ? join(", ", $columns) : "$this->TableName.*";
+        $compiledColumns = "$this->TableName.*";
+        if (count($columns) > 0)
+        {
+            $getColumns = array();
+            foreach ($columns as $column)
+            {
+                $getColumns[] = 
+                    StringContains("-", $column) ?
+                    "'$column'" :
+                    $column;
+            }
+            $compiledColumns = join(", ", $getColumns);
+        }
         if (count($columns) == 0 && count($this->JoinSchema) > 0)
         {
             foreach ($this->JoinSchema as $schema)
@@ -44,12 +56,16 @@ class MySqlSchema extends BaseMySqlSchema
         $query = "SELECT $compiledColumns FROM $this->TableName $join $where $group $order $limit;";
         $return = array();
         $result = $this->Execute($query);
-        while ($data = mysqli_fetch_assoc($result))
+        if ($result)
         {
-            $model = (object)$data;
-            $return[] = $model;
+            while ($data = mysqli_fetch_assoc($result))
+            {
+                $model = (object)$data;
+                $return[] = $model;
+            }
+            return array_filter($return);
         }
-        return array_filter($return);
+        return array();
     }
     /**
      * Executes SELECT statement with column DISTINCT. 
@@ -85,7 +101,11 @@ class MySqlSchema extends BaseMySqlSchema
         $group = $this->GetGroup();
         $query = "SELECT COUNT($columns) as count FROM $this->TableName $join $where $group;";
         $result = $this->Execute($query);
-        return intval(mysqli_fetch_assoc($result)["count"]);
+        if ($result)
+        {
+            return intval(mysqli_fetch_assoc($result)["count"]);
+        }
+        return 0;
     }
     /**
      * Checks if records exists with the current criteria.
@@ -94,6 +114,14 @@ class MySqlSchema extends BaseMySqlSchema
     function Exists(string ...$columns) : bool
     {
         return $this->Count(...$columns) > 0;
+    }
+    /**
+     * Checks if a single record exists with the current criteria.
+     ** Populate $columns to select particular columns only.
+     */
+    function ExistsOne(string ...$columns) : bool
+    {
+        return $this->Count(...$columns) == 1;
     }
     /**
      * Joins a new table / schema through LEFT JOIN.
@@ -153,13 +181,15 @@ class MySqlSchema extends BaseMySqlSchema
         $this->Where = array();
         $this->Join = array();
         $this->JoinSchema = array();
-        $this->Orders = array();
+        $this->Order = array();
         $this->Limit = null;
     }
     function Insert() : void
     {
         $columns = array();
         $values = array();
+        $this->dat_insert_time = Now();
+        $this->dat_update_time = null;
         foreach ($this->Columns as $column)
         {
             $name = $column->getName();
@@ -174,18 +204,21 @@ class MySqlSchema extends BaseMySqlSchema
         {
             $query = "INSERT INTO $this->TableName(".join(", ", $columns).") VALUES(".join(", ", $values).");";
             $this->Execute($query);
-            $this->SelectSingle("id");
+            $this->SelectSingle();
         }
     }
     function Update() : void
     {
         $updateValues = array();
+        $this->dat_insert_time = null;
+        $this->dat_update_time = Now();
         foreach ($this->Columns as $column)
         {
+            $name = $column->getName();
             $value = $column->getValue($this);
-            if (!is_null($value))
+            if ($name != "id" && !is_null($value))
             {
-                $updateValues[] = $column->getName()." = '".$this->MySqliEscapeLiteral($value)."'";
+                $updateValues[] = $name." = '".$this->MySqliEscapeLiteral($value)."'";
             }
         }
         if (count($updateValues) > 0)
@@ -211,19 +244,7 @@ class MySqlSchema extends BaseMySqlSchema
             $value = null;
             if (property_exists($model, $name))
             {
-                $value = $valuesReflect
-                    ->getProperty($name)
-                    ->getValue($model);
-            }
-            else if (property_exists($model, $name = substr($name, 4)))
-            {
-                $value = $valuesReflect
-                    ->getProperty($name)
-                    ->getValue($model);
-            }
-            if ($value != null)
-            {
-                $property->setValue($this, $value);
+                $property->setValue($this, $model->$name);
             }
         }
     }
@@ -255,14 +276,15 @@ class MySqlSchema extends BaseMySqlSchema
             if ($table->Count("COLUMN_NAME") == 0)
             {
                 $column = $this->GetColumnType($property);
-                $alterColumns[] = "ADD COLUMN $column;";
+                $alterColumns[] = "ALTER TABLE $this->TableName ADD COLUMN $column;";
             }
         }
         if (count($alterColumns) > 0)
         {
-            $alterColumns = join(" ", $alterColumns);
-            $query = "ALTER TABLE $this->TableName $alterColumns";
-            $this->Execute($query);
+            foreach ($alterColumns as $query)
+            {
+                $this->Execute($query);   
+            }
         }
     }
 }

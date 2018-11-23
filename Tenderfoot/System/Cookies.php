@@ -9,7 +9,7 @@ foreach ($_SESSION as $key => $value)
         setcookie($newKey, $value->value, $value->expiration, $value->path);
     }
 }
-function NewCookie(string $key, $value, string $path) : void
+function NewCookie(string $key, $value, string $path = "/") : void
 {
     $cookie = new stdClass();
     $cookie->key = $key;
@@ -18,21 +18,24 @@ function NewCookie(string $key, $value, string $path) : void
     $cookie->path = $path;
     $_SESSION["cookie.".$key] = $cookie;
 }
-function Cookie(string $key)
+function Cookie(string $key) : string
 {
     if (array_key_exists("cookie.".$key, $_SESSION))
     {
         $cookie = $_SESSION["cookie.".$key];
-        return $cookie->value;
+        return 
+            is_null($cookie->value) ?
+            "" :
+            $cookie->value;
     }
     else if (array_key_exists($key, $_COOKIE))
     {
         unset($_SESSION["cookie.$key"]);
         return $_COOKIE[$key];
     }
-    return null;
+    return "";
 }
-function DeleteCookie(string $key, string $path)
+function DeleteCookie(string $key, string $path) : void
 {
     $cookie = new stdClass();
     $cookie->key = $key;

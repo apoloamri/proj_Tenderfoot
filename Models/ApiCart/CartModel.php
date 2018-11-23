@@ -2,6 +2,7 @@
 Model::AddSchema("Carts");
 Model::AddSchema("Products");
 Model::AddSchema("ProductImages");
+Model::AddSchema("ProductViews");
 class CartModel extends Model
 {   
     public $Code;
@@ -62,7 +63,6 @@ class CartModel extends Model
                     HasValue($this->Amount) ? 
                     $this->Amount : 
                     $carts->int_amount + 1;
-                $carts->dat_update_time = Now();
                 $carts->Where("str_code", DB::Equal, $this->Code);
                 $carts->Where("str_session_id", DB::Equal, $sessionId);
                 $carts->Update();
@@ -73,8 +73,13 @@ class CartModel extends Model
                     HasValue($this->Amount) ? 
                     $this->Amount : 
                     1;
-                $carts->dat_insert_time = Now();
                 $carts->Insert();
+                $products = new Products();
+                $products->str_code = $this->Code;
+                $products->SelectSingle();
+                $views = new ProductViews();
+                $views->int_product_id = $products->id;
+                $views->AddCart();
             }
         }
         else if ($this->Delete())
