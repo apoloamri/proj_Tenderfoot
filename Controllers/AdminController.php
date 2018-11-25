@@ -71,6 +71,14 @@ class AdminController extends BaseAdminController
         $this->Model->PageTitle = "Edit Product";
         $this->View("products_add");
     }
+
+    function ProductsTags() : void
+    {
+        $this->CheckAuthRedirect();
+        $this->Initiate();
+        $this->Execute("GET");
+        $this->View("products_tags");
+    }
     
     function ApiPostLogin() : void 
     {

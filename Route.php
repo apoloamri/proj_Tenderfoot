@@ -9,6 +9,7 @@ $router->Map("GET /admin/orders/detail/[Id]", "Admin", "OrdersDetail");
 $router->Map("GET /admin/products", "Admin", "Products");
 $router->Map("GET /admin/products/add", "Admin", "ProductsAdd");
 $router->Map("GET /admin/products/edit/[Id]", "Admin", "ProductsEdit");
+$router->Map("GET /admin/products/tags", "Admin", "ProductsTags");
 $router->Map("GET /admin/api/checkauth", "Admin", "ApiGetCheckAuth");
 $router->Map("POST /admin/api/login", "Admin", "ApiPostLogin");
 $router->Map("DELETE /admin/api/logout", "Admin", "ApiDeleteLogin");
@@ -35,6 +36,7 @@ $router->Map("POST /api/products/image", "ApiProducts", "PostProductsImage");
 $router->Map("PUT /api/products/", "ApiProducts", "PutProducts");
 $router->Map("PUT /api/products/inventory", "ApiProducts", "PutInventory");
 $router->Map("DELETE /api/products/", "ApiProducts", "DeleteProducts");
+$router->Map("DELETE /api/products/tags", "ApiProducts", "DeleteTags");
 
 //ApiCartController
 $router->Map("GET /api/cart", "ApiCart", "GetCart");

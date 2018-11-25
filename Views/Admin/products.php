@@ -4,6 +4,7 @@
         <div id="adminInnerContent">
             <h2>Products</h2>
             <button onclick="window.location='/admin/products/add';">Add product</button>
+            <button onclick="window.location='/admin/products/tags';">Edit Tags</button>
             <div class="adminTable">
                 <input type="text" v-model="search" v-on:keyup="GetProductsDelay()" placeholder="Search products" />
                 <table>
@@ -38,6 +39,9 @@
 <style>
     input[type="number"] {
         width: 30px;
+    }
+    button {
+        display: inline-block;
     }
 </style>
 

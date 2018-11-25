@@ -55,6 +55,14 @@ class ApiProductsController extends BaseAdminController
         $this->Json();
     }
 
+    function DeleteTags() : void
+    {
+        $this->CheckAuthNotFound();
+        $this->Initiate("TagsModel");
+        $this->Execute("DELETE");
+        $this->Json();
+    }
+
     function PutInventory() : void
     {
         $this->CheckAuthNotFound();
