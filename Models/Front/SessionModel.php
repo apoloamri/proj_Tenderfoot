@@ -1,10 +1,6 @@
 <?php
 class SessionModel extends Model
 {   
-    function Validate() : iterable
-    {
-        yield null;
-    }
     function Map() : void
     {
         $valid = false;

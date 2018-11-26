@@ -5,6 +5,7 @@ Model::AddSchema("OrderRecords");
 Model::AddSchema("Products");
 Model::AddSchema("ProductInventory");
 Model::AddSchema("ProductViews");
+Model::AddSchema("Logs");
 class OrderModel extends Model
 {   
     //GET
@@ -151,6 +152,7 @@ class OrderModel extends Model
         }
         else if ($this->Put() || $this->Delete())
         {
+            $logs = new Logs();
             $orders->Where("id", DB::Equal, $this->Id);
             $orders->SelectSingle();
             if ($this->Put())
@@ -159,23 +161,30 @@ class OrderModel extends Model
                 {
                     case OrderStatus::NewOrder:
                     $orders->str_order_status = OrderStatus::Processed;
+                    $logs->str_action = OrderStatus::Processed;
                     break;
                     case OrderStatus::Processed:
                     $orders->str_order_status = OrderStatus::OnDelivery;
+                    $logs->str_action = OrderStatus::OnDelivery;
                     break;
                     case OrderStatus::OnDelivery:
                     $orders->str_order_status = OrderStatus::Delivered;
+                    $logs->str_action = OrderStatus::Delivered;
                     break;
                     case OrderStatus::Delivered:
                     $orders->str_order_status = OrderStatus::Fulfilled;
+                    $logs->str_action = OrderStatus::Fulfilled;
                     break;
                 }
             }
             else if ($this->Delete())
             {
                 $orders->str_order_status = OrderStatus::Cancelled;
+                $logs->str_action = OrderStatus::Cancelled;
             }
             $orders->Update();
+            $logs->str_code = $orders->str_order_number;
+            $logs->LogAction();
             $orderRecords = new OrderRecords();
             $orderRecords->int_order_id = $this->Id;
             $result = $orderRecords->Select();

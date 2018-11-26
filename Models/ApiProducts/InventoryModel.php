@@ -1,6 +1,7 @@
 <?php
 Model::AddSchema("Products");
 Model::AddSchema("ProductInventory");
+Model::AddSchema("Logs");
 class InventoryModel extends Model
 {   
     public $Id;
@@ -27,19 +28,31 @@ class InventoryModel extends Model
     }
     function Handle() : void
     {
-        $products = new ProductInventory();
-        $products->int_product_id = $this->Id;
-        if ($products->Exists())
+        $logs = new Logs();
+        $productInventory = new ProductInventory();
+        $productInventory->int_product_id = $this->Id;
+        if ($productInventory->Exists())
         {
-            $products->int_amount = $this->Amount;
-            $products->Where("int_product_id", DB::Equal, $this->Id);
-            $products->Update();
+            $productInventory->Where("int_product_id", DB::Equal, $this->Id);
+            $productInventory->SelectSingle();
+            $logs->str_action = 
+                $productInventory->int_amount < $this->Amount ?
+                Action::Increased :
+                Action::Decreased;
+            $productInventory->int_amount = $this->Amount;
+            $productInventory->Update();
         }
         else
         {
-            $products->int_amount = $this->Amount;
-            $products->Insert();
+            $productInventory->int_amount = $this->Amount;
+            $productInventory->Insert();
+            $logs->str_action = Action::Increased;
         }
+        $products = new Products();
+        $products->id = $this->Id;
+        $products->SelectSingle();
+        $logs->str_code = $products->str_code;
+        $logs->LogAction();
     }
 }
 ?>

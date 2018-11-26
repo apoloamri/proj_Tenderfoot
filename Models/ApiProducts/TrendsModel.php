@@ -6,10 +6,6 @@ class TrendsModel extends Model
     public $MostViews;
     public $MostCarts;
     public $MostPurchases;
-    function Validate() : iterable
-    {
-        yield null;
-    }
     function Map() : void
     {
         $views = new ProductViews();

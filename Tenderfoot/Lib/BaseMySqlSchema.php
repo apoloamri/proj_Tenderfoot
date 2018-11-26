@@ -30,6 +30,45 @@ class BaseMySqlSchema
             return $result;
         }
     }
+    protected function CreateTable() : void
+    {
+        $table = new InformationSchemaTables();
+        $table->TABLE_NAME = $this->TableName;
+        if ($table->Count("TABLE_NAME") == 0)
+        {
+            $columns;
+            foreach ($this->Columns as $property)
+            {
+                $columns[] = $this->GetColumnType($property);
+            }
+            $columns = join(", ", $columns);
+            $query = "CREATE TABLE $this->TableName ($columns);";
+            $this->Execute($query);
+        }
+    }
+    protected function UpdateColumns() : void
+    {
+        $alterColumns = array();
+        foreach ($this->Columns as $property)
+        {
+            $columnName = $property->getName();
+            $table = new InformationSchemaColumns();
+            $table->TABLE_NAME = $this->TableName;
+            $table->COLUMN_NAME = $columnName;
+            if ($table->Count("COLUMN_NAME") == 0)
+            {
+                $column = $this->GetColumnType($property);
+                $alterColumns[] = "ALTER TABLE $this->TableName ADD COLUMN $column;";
+            }
+        }
+        if (count($alterColumns) > 0)
+        {
+            foreach ($alterColumns as $query)
+            {
+                $this->Execute($query);   
+            }
+        }
+    }
     protected function GetColumnType(ReflectionProperty $column) : string
     {
         $returnString;

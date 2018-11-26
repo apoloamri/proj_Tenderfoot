@@ -1,5 +1,6 @@
 <?php
 Model::AddSchema("Admins");
+Model::AddSchema("Logs");
 class LoginModel extends Model
 {   
     public $Username;
@@ -31,6 +32,7 @@ class LoginModel extends Model
     }
     function Handle() : void 
     {
+        $logs = new Logs();
         $sessions = new Sessions();
         if ($this->Post())
         {
@@ -39,11 +41,15 @@ class LoginModel extends Model
             $admins->str_password = $this->Password;
             $admins->SelectSingle();
             SetSession($admins->str_username, "admin");
+            $logs->str_action = Action::LogIn;
+            $logs->LogAction();
         }
-        if ($this->Delete())
+        else if ($this->Delete())
         {
             $sessions->str_session_key = GetSession("admin")->SessionKey;
             $sessions->Delete();
+            $logs->str_action = Action::LogOut;
+            $logs->LogAction();
             DeleteSession("admin");
         }
     }

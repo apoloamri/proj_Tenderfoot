@@ -169,11 +169,13 @@ class MySqlSchema extends BaseMySqlSchema
     }
     function Page(int $page, int $itemCount) : void
     {
+        $page = $page == 0 ? 1 : $page;
         $page = ($page - 1) * $itemCount;
         $this->Page = $page.", ".$itemCount;
     }
     function PageCount(int $itemCount) : int
     {
+        $itemCount = $itemCount == 0 ? 1 : $itemCount;
         return ceil($this->Count() / $itemCount);
     }
     function Clear() : void
@@ -248,44 +250,9 @@ class MySqlSchema extends BaseMySqlSchema
             }
         }
     }
-    private function CreateTable() : void
+    static function AddSchema(string $schemaName) : void
     {
-        $table = new InformationSchemaTables();
-        $table->TABLE_NAME = $this->TableName;
-        if ($table->Count("TABLE_NAME") == 0)
-        {
-            $columns;
-            foreach ($this->Columns as $property)
-            {
-                $columns[] = $this->GetColumnType($property);
-            }
-            $columns = join(", ", $columns);
-            $query = "CREATE TABLE $this->TableName ($columns);";
-            $this->Execute($query);
-        }
-    }
-    private function UpdateColumns() : void
-    {
-        $alterColumns = array();
-        foreach ($this->Columns as $property)
-        {
-            $columnName = $property->getName();
-            $table = new InformationSchemaColumns();
-            $table->TABLE_NAME = $this->TableName;
-            $table->COLUMN_NAME = $columnName;
-            if ($table->Count("COLUMN_NAME") == 0)
-            {
-                $column = $this->GetColumnType($property);
-                $alterColumns[] = "ALTER TABLE $this->TableName ADD COLUMN $column;";
-            }
-        }
-        if (count($alterColumns) > 0)
-        {
-            foreach ($alterColumns as $query)
-            {
-                $this->Execute($query);   
-            }
-        }
+        require_once "Schemas/$schemaName.php";
     }
 }
 class InformationSchemaTables extends MySqlSchema

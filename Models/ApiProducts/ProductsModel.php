@@ -3,6 +3,7 @@ Model::AddSchema("Products");
 Model::AddSchema("ProductImages");
 Model::AddSchema("ProductInventory");
 Model::AddSchema("ProductTags");
+Model::AddSchema("Logs");
 class ProductsModel extends Model
 {   
     //GET
@@ -96,28 +97,35 @@ class ProductsModel extends Model
     }
     function Handle() : void
     {
+        $logs = new Logs();
         $products = new Products();
-        $products->str_code = $this->Code;
-        $products->str_brand = $this->Brand;
-        $products->str_name = $this->Name;
-        $products->txt_description = $this->Description;
-        $products->dbl_price = $this->Price;
-        if ($this->Post())
+        if ($this->Post() || $this->Put())
         {
-            $products->Insert();
-            $this->UpdateImages($products->id);
-            $this->UpdateTags($products->id);
+            $products->str_code = $this->Code;
+            $products->str_brand = $this->Brand;
+            $products->str_name = $this->Name;
+            $products->txt_description = $this->Description;
+            $products->dbl_price = $this->Price;
+            if ($this->Post())
+            {
+                $products->Insert();
+                $this->UpdateImages($products->id);
+                $this->UpdateTags($products->id);
+                $logs->str_action = Action::Created;
+            }
+            else if ($this->Put())
+            {
+                $products->Where("id", DB::Equal, $this->Id);
+                $products->Update();
+                $this->UpdateImages($this->Id);
+                $this->UpdateTags($this->Id);
+                $logs->str_action = Action::Updated;
+            }
         }
-        if ($this->Put())
-        {
-            $products->Where("id", DB::Equal, $this->Id);
-            $products->Update();
-            $this->UpdateImages($this->Id);
-            $this->UpdateTags($this->Id);
-        }
-        if ($this->Delete())
+        else if ($this->Delete())
         {
             $products->id = $this->Id;
+            $products->SelectSingle();
             $products->Delete();
             $productImages = new ProductImages();
             $productImages->int_product_id = $this->Id;
@@ -125,7 +133,10 @@ class ProductsModel extends Model
             $productInventory = new ProductInventory();
             $productInventory->int_product_id = $this->Id;
             $productInventory->Delete();
+            $logs->str_action = Action::Deleted;
         }
+        $logs->str_code = $products->str_code;
+        $logs->LogAction();
     }
     function UpdateImages($id) : void
     {

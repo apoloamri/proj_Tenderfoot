@@ -9,7 +9,7 @@
             <a v-bind:href="'/detail/' + item.str_code">
                 <div class="image" v-bind:style="'background-image: url(' + item.str_path + ')'"></div>
                 <div class="content">
-                    <label class="font-17">{{item.str_brand}} - {{item.str_name}}</label><br/>
+                    <label class="font-17">{{item.str_name}}</label><br/>
                     <label class="font-15">₱{{item.dbl_price}}</label>
                 </div>
             </a>

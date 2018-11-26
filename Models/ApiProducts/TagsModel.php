@@ -3,10 +3,6 @@ Model::AddSchema("ProductTags");
 class TagsModel extends Model
 {   
     public $Result;
-    function Validate() : iterable
-    {
-        yield null;
-    }
     function Map() : void
     {
         $tags = new ProductTags();
