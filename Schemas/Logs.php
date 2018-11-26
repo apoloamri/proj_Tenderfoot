@@ -1,6 +1,7 @@
 <?php
 class Logs extends MySqlSchema
 {
+    function __construct()
     {
         parent::__construct("logs");
     }
