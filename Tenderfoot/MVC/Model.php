@@ -138,11 +138,16 @@ class Model extends BaseModel
         $fileName = pathinfo($fileArray["tmp_name"], PATHINFO_FILENAME);
         $urlPath = Settings::SiteUrl().Settings::FilePathTemp();
         $filePath = $_SERVER['DOCUMENT_ROOT'].parse_url($urlPath, PHP_URL_PATH);
+        if (!file_exists($filePath))
+        {
+            mkdir($filePath);
+        }
         file_put_contents($filePath."/".$fileName.$fileExtension, $file);
         return $urlPath."/".$fileName.$fileExtension;
     }
     function SaveFile(string $fileUrl, string $fileName = null) : string
     {
+        $fileName = str_replace(" ", "_", $fileName);
         $urlPath = Settings::SiteUrl().Settings::FilePath();
         $newFilePath = $_SERVER['DOCUMENT_ROOT'].parse_url($urlPath, PHP_URL_PATH);
         $oldFilePath = $_SERVER['DOCUMENT_ROOT'].parse_url($fileUrl, PHP_URL_PATH);
@@ -152,6 +157,11 @@ class Model extends BaseModel
             $fileName = pathinfo($oldFilePath, PATHINFO_FILENAME);
         }
         $newFilePath = $newFilePath."/".$fileName.".".$fileExtension;
+        $directory = dirname($newFilePath);
+        if (!file_exists($directory))
+        {
+            mkdir(dirname($directory));
+        }
         rename($oldFilePath, $newFilePath);
         return Settings::SiteUrl().Settings::FilePath()."/".$fileName.".".$fileExtension;
     }

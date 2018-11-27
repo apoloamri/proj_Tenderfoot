@@ -42,6 +42,7 @@ $router->Map("GET /api/products/tags", "ApiProducts", "GetTags");
 $router->Map("GET /api/products/trends", "ApiProducts", "GetTrends");
 $router->Map("POST /api/products", "ApiProducts", "PostProducts");
 $router->Map("POST /api/products/image", "ApiProducts", "PostProductsImage");
+$router->Map("POST /api/products/tags/image", "ApiProducts", "PostTagsImage");
 $router->Map("PUT /api/products/", "ApiProducts", "PutProducts");
 $router->Map("PUT /api/products/inventory", "ApiProducts", "PutInventory");
 $router->Map("DELETE /api/products/", "ApiProducts", "DeleteProducts");
