@@ -45,6 +45,7 @@ $router->Map("POST /api/products/image", "ApiProducts", "PostProductsImage");
 $router->Map("POST /api/products/tags/image", "ApiProducts", "PostTagsImage");
 $router->Map("PUT /api/products/", "ApiProducts", "PutProducts");
 $router->Map("PUT /api/products/inventory", "ApiProducts", "PutInventory");
+$router->Map("PUT /api/products/tags/image", "ApiProducts", "PutTagsImage");
 $router->Map("DELETE /api/products/", "ApiProducts", "DeleteProducts");
 $router->Map("DELETE /api/products/tags", "ApiProducts", "DeleteTags");
 

@@ -111,6 +111,43 @@ class BaseMySqlSchema
         }
         return $returnString.$isArray;
     }
+    function GetQuery(array $columns) : string
+    {
+        $compiledColumns = "$this->TableName.*";
+        if (count($columns) > 0)
+        {
+            $getColumns = array();
+            foreach ($columns as $column)
+            {
+                $getColumns[] = 
+                    StringContains("-", $column) ?
+                    "'$column'" :
+                    $column;
+            }
+            $compiledColumns = join(", ", $getColumns);
+        }
+        if (count($columns) == 0 && count($this->JoinSchema) > 0)
+        {
+            foreach ($this->JoinSchema as $schema)
+            {
+                $joinColumns = array();
+                foreach ($schema->Columns as $column)
+                {
+                    $columnName = $column->getName();
+                    $joinColumns[] = 
+                        $schema->TableName.".".$columnName.
+                        ($columnName == "id" ? " AS '$schema->TableName-$columnName'" : "");
+                }
+                $compiledColumns = $compiledColumns.", ".join(", ", $joinColumns);
+            }
+        }
+        $join = $this->GetJoin();
+        $where = $this->GetWhere(true);
+        $order = $this->GetOrder();
+        $group = $this->GetGroup();
+        $limit = $this->GetLimit();
+        return "SELECT $compiledColumns FROM $this->TableName $join $where $group $order $limit";
+    }
     protected $Where = array();
     protected $Wheres = array();
     protected function GetWhere(bool $isSelect = false, bool $getWheres = true) : string
@@ -123,7 +160,7 @@ class BaseMySqlSchema
                 $value = $column->getValue($this);
                 if ($value != null)
                 {
-                    $entityValues[] = "$this->TableName.".$column->getName()." = '".$this->MySqliEscapeLiteral($value)."' ".DB::AND;
+                    $entityValues[] = "$this->TableName.".$column->getName()." = '".$this->Sanitize($value)."' ".DB::AND;
                 }
             }
         }
@@ -194,7 +231,7 @@ class BaseMySqlSchema
         }
         return "";
     }
-    protected function MySqliEscapeLiteral($value) : string 
+    protected function Sanitize($value) : string 
     {
         return mysqli_escape_string($this->Connect, $value);
     }

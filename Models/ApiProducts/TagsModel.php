@@ -1,4 +1,5 @@
 <?php
+Model::AddSchema("Products");
 Model::AddSchema("ProductTags");
 Model::AddSchema("ProductTagImages");
 class TagsModel extends Model
@@ -23,26 +24,42 @@ class TagsModel extends Model
         $tags->Join(new ProductTagImages(), "str_tag", "str_tag");
         $tags->OrderBy("str_tag");
         $tags->GroupBy("str_tag");
-        $this->Result = $tags->Select("product_tags.id", "product_tags.str_tag", "str_image_path");
+        $result = $tags->Select("product_tags.id", "product_tags.str_tag", "str_image_path");
+        foreach ($result as $item)
+        {
+            $subTags = new ProductTags();
+            $subTags->str_tag = $item->str_tag;
+            $products = new Products();
+            $products->InQuery("id", $subTags, "int_product_id");
+            $item->products = $products->Select();
+        }
+        $this->Result = $result;
     }
     function Handle() : void
     {
-        if ($this->Post())
+        if ($this->Post() || $this->Put())
         {
-            $tempFile = $this->SaveTempFile($this->ImageFile);
-            $fileUrl = $this->SaveFile($tempFile, "tags/".$this->TagName);
             $images = new ProductTagImages();
             $images->Where("str_tag", DB::Equal, $this->TagName);
-            if (!$images->Exists())
+            if ($this->Post())
             {
-                $images->str_tag = $this->TagName;
-                $images->str_image_path = $fileUrl;
-                $images->Insert();
+                $tempFile = $this->SaveTempFile($this->ImageFile);
+                $fileUrl = $this->SaveFile($tempFile, "tags/".$this->TagName);
+                if (!$images->Exists())
+                {
+                    $images->str_tag = $this->TagName;
+                    $images->str_image_path = $fileUrl;
+                    $images->Insert();
+                }
+                else
+                {
+                    $images->str_image_path = $fileUrl;
+                    $images->Update();
+                }
             }
-            else
+            else if ($this->Put())
             {
-                $images->str_image_path = $fileUrl;
-                $images->Update();
+                $images->Delete();
             }
         }
         else if ($this->Delete())

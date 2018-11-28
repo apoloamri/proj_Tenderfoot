@@ -2,21 +2,27 @@
     <div id="menuUpper">
         <div onclick="window.location='/';" id="menuLogo"></div>
         <div id="menuCartDiv">
-            <a href="/cart" class="float-right">
-                <img src="/Resources/images/shopping-cart.png" class="menuImages" /> 
+            <a href="/"><img src="/Resources/images/home.png" class="menuImages" /></a>
+            <a href="/contact"><img src="/Resources/images/contact.png" class="menuImages" /></a>
+            <a href="/faq"><img src="/Resources/images/faq.png" class="menuImages" /></a>
+            <a href="/cart">
+                <img src="/Resources/images/cart.png" class="menuImages" /> 
                 {{count}} item/s (₱{{total}})
             </a>
         </div>
     </div>
     <div id="menuLower">
-        <div id="menuNaviDiv">
-            <a href="/">Home</a>
-            <a href="/">Contact Us</a>
-            <a href="/">FAQ</a>
-        </div>
         <div id="menuSearchDiv">
-            <input type="text" placeholder="Search" id="menuSearch" v-model="search" v-on:keyup="Search()" />
-            <img src="/Resources/images/magnifying-glass.png" class="menuImages" v-on:click="Search()" /> 
+            <input type="text" placeholder="Search products in ShopPin..." id="menuSearch" v-model="search" v-on:keyup="Search()" />
+            <img src="/Resources/images/search.png" class="menuImages hideOnMobile" v-on:click="Search()" /> 
+            <label>
+                Top searches: 
+                <a href="/?search=lenovo">Lenovo</a>
+                <a href="/?search=lenovo">Lenovo</a>
+                <a href="/?search=lenovo">Lenovo</a>
+                <a href="/?search=lenovo">Lenovo</a>
+                <a href="/?search=lenovo">Lenovo</a>
+            </label>
         </div>
     </div>
 </div>

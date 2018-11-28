@@ -1,6 +1,6 @@
 .menuImages {
-    height: 20px;
-    margin: -3px 3px;
+    height: 25px;
+    margin: -7px 3px;
 }
 
 /* ------------------ */
@@ -37,12 +37,14 @@
     padding: 10px 30px;
     overflow: hidden;
 }
-#menuNaviDiv {
-    float: left;
-    margin-top: 9px;
+#menuLower a {
+    font-size: 14px;
+    text-decoration: underline;
+    color: white;
 }
-#menuNaviDiv a {
-    margin: 15px;
+#menuLower label {
+    font-size: 14px;
+    display: inline-block;
     color: white;
 }
 #menuNaviDiv a:hover {
@@ -50,9 +52,9 @@
     color: lightgray;
 }
 #menuSearchDiv {
-    margin-right: -30px;
-    float: right;
-    width: 70%;
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 #menuSearch {
     border: none;
@@ -64,20 +66,18 @@
 /* LOWER MENU - END */
 /* ---------------- */
 
-
 /* ------------------ */
 /* CATEGORIES - START */
 /* ------------------ */
 #categories {
     float: left;
     position: relative;
-    margin: 10px;
-    min-height: 100vh;
+    width: 20%;
 }
 #categories .content {
     background-color: white;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin: 15px;
 }
 #categories .links {
     padding: 10px;
@@ -99,14 +99,25 @@
 /* CATEGORIES - END */
 /* ---------------- */
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1024px) {
+    #menuLogo {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #menuCartDiv {
+        float: unset;
+    }
+    #menuSearchDiv {
+        width: 100%;
+    }
     #categories {
         float: unset;
-        width: 90%;
+        min-height: unset;
+        width: 100%;
     }
     #categories .content {
         display: inline-block;
-        width: 35%;
+        width: 90%;
         height: 40px;
         overflow: hidden;
     }

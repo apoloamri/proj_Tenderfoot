@@ -20,40 +20,7 @@ class MySqlSchema extends BaseMySqlSchema
      */
     function Select(string ...$columns) : array
     {
-        $compiledColumns = "$this->TableName.*";
-        if (count($columns) > 0)
-        {
-            $getColumns = array();
-            foreach ($columns as $column)
-            {
-                $getColumns[] = 
-                    StringContains("-", $column) ?
-                    "'$column'" :
-                    $column;
-            }
-            $compiledColumns = join(", ", $getColumns);
-        }
-        if (count($columns) == 0 && count($this->JoinSchema) > 0)
-        {
-            foreach ($this->JoinSchema as $schema)
-            {
-                $joinColumns = array();
-                foreach ($schema->Columns as $column)
-                {
-                    $columnName = $column->getName();
-                    $joinColumns[] = 
-                        $schema->TableName.".".$columnName.
-                        ($columnName == "id" ? " AS '$schema->TableName-$columnName'" : "");
-                }
-                $compiledColumns = $compiledColumns.", ".join(", ", $joinColumns);
-            }
-        }
-        $join = $this->GetJoin();
-        $where = $this->GetWhere(true);
-        $order = $this->GetOrder();
-        $group = $this->GetGroup();
-        $limit = $this->GetLimit();
-        $query = "SELECT $compiledColumns FROM $this->TableName $join $where $group $order $limit;";
+        $query = $this->GetQuery($columns).";";
         $return = array();
         $result = $this->Execute($query);
         if ($result)
@@ -147,7 +114,15 @@ class MySqlSchema extends BaseMySqlSchema
      */
     function Where(string $column, string $expression = DB::Equal, $value = null, string $condition = DB::AND) : void
     {
-        $this->Where[] = "$column $expression '".$this->MySqliEscapeLiteral($value)."' $condition";
+        $this->Where[] = "$column $expression '".$this->Sanitize($value)."' $condition";
+    }
+    function In(string $column, array $values)
+    {
+        $this->Where[] = "$column IN (".join(",", "'".$this->Sanitize($value)."'");
+    }
+    function InQuery(string $column, $schema, string ...$columns)
+    {
+        $this->Where[] = "$column IN (".$schema->GetQuery($columns).")";
     }
     function Combine(string $condition = DB::AND)
     {
@@ -199,7 +174,7 @@ class MySqlSchema extends BaseMySqlSchema
             if ($name != "id" && !is_null($value))
             {
                 $columns[] = $name;
-                $values[] = "'".$this->MySqliEscapeLiteral($value)."'";
+                $values[] = "'".$this->Sanitize($value)."'";
             }
         }
         if (count($columns) > 0)
@@ -220,7 +195,7 @@ class MySqlSchema extends BaseMySqlSchema
             $value = $column->getValue($this);
             if ($name != "id" && !is_null($value))
             {
-                $updateValues[] = $name." = '".$this->MySqliEscapeLiteral($value)."'";
+                $updateValues[] = $name." = '".$this->Sanitize($value)."'";
             }
         }
         if (count($updateValues) > 0)

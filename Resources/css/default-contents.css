@@ -1,3 +1,19 @@
+/* -------------- */
+/* BANNER - START */
+/* -------------- */
+#header {
+    width: 100%;
+    display: inline-block;
+}
+#header img {
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+}
+/* ------------ */
+/* BANNER - END */
+/* ------------ */
+
 /* ----------------- */
 /* ITEM LIST - START */
 /* ----------------- */
@@ -59,6 +75,21 @@
     margin: 0px 20px;
     float: left;
 }
+#detailsContent p {
+    width: 440px;
+}
 /* ----------------- */
 /* ITEM DETAIL - END */
 /* ----------------- */
+
+@media screen and (max-width: 1024px) {
+    .items {
+        width: 100%;
+    }
+    .items .image {
+        width: 100%;
+    }
+    #detailsContent p {
+        width: unset;
+    }
+}

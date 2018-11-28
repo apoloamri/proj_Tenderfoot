@@ -11,7 +11,7 @@
             <?php echo $this->Result->str_name; ?>
         </h2>
         <h1>₱<?php echo $this->Result->dbl_price; ?></h1>
-        <p style="width:440px;"><?php echo $this->Result->txt_description; ?></p>
+        <p><?php echo $this->Result->txt_description; ?></p>
         <?php if ($this->Result->int_amount != null && $this->Result->int_amount != 0) { ?>
             <button v-on:click="AddCart();">Add to cart</button>
         <?php } else { ?>
