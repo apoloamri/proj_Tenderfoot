@@ -63,6 +63,9 @@
 /* ------------------- */
 /* ITEM DETAIL - START */
 /* ------------------- */
+#details {
+    margin-top: 25px;
+}
 #detailsImage {
     width: 350px;
     height: 300px;
