@@ -160,7 +160,7 @@ class Model extends BaseModel
         $directory = dirname($newFilePath);
         if (!file_exists($directory))
         {
-            mkdir(dirname($directory));
+            mkdir($directory);
         }
         rename($oldFilePath, $newFilePath);
         return Settings::SiteUrl().Settings::FilePath()."/".$fileName.".".$fileExtension;
