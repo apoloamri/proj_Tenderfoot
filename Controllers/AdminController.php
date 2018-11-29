@@ -11,14 +11,14 @@ class AdminController extends BaseAdminController
     {   
         $this->CheckAuthRedirect();
         $this->Initiate();
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->View("index");
     }
 
     function Login() : void
     {
         $this->Initiate();
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->View("login");
     }
 
@@ -26,7 +26,7 @@ class AdminController extends BaseAdminController
     {
         $this->CheckAuthRedirect();
         $this->Initiate();
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->View("orders");
     }
 
@@ -38,7 +38,7 @@ class AdminController extends BaseAdminController
         {
             $this->Redirect("/error/404");
         }
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->View("orders_detail");
     }
 
@@ -46,7 +46,7 @@ class AdminController extends BaseAdminController
     {
         $this->CheckAuthRedirect();
         $this->Initiate();
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->View("products");
     }
 
@@ -54,7 +54,7 @@ class AdminController extends BaseAdminController
     {
         $this->CheckAuthRedirect();
         $this->Initiate("ProductsModel");
-        $this->Execute("GET");
+        $this->Execute(Http::Get);
         $this->Model->PageTitle = "Add Product";
         $this->View("products_add");
     }
@@ -67,7 +67,7 @@ class AdminController extends BaseAdminController
         {
             $this->Redirect("/error/404");
         }
-        $this->Execute("GET");
+        $this->Execute(Http::Get);
         $this->Model->PageTitle = "Edit Product";
         $this->View("products_add");
     }
@@ -76,14 +76,22 @@ class AdminController extends BaseAdminController
     {
         $this->CheckAuthRedirect();
         $this->Initiate();
-        $this->Execute("GET");
+        $this->Execute(Http::Get);
         $this->View("products_tags");
+    }
+
+    function Store() : void
+    {
+        $this->CheckAuthRedirect();
+        $this->Initiate();
+        $this->Execute(Http::Get);
+        $this->View("store");
     }
     
     function ApiPostLogin() : void 
     {
         $this->Initiate("LoginModel");
-		$this->Execute("POST");
+		$this->Execute(Http::Post);
         $this->Json();
     }
 
@@ -91,7 +99,7 @@ class AdminController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("LoginModel");
-		$this->Execute("DELETE");
+		$this->Execute(Http::Delete);
         $this->Json();
     }
 }

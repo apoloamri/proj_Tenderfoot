@@ -4,7 +4,7 @@ class BaseAdminController extends Controller
     function CheckAuth() : bool 
     {
         $this->Initiate("CheckAuthModel", "Admin");
-        $this->Execute("GET");
+        $this->Execute(Http::Get);
         return $this->Model->IsValid;
     }
 

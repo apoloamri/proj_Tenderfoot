@@ -6,7 +6,7 @@ class ApiCartController extends BaseFrontController
     {
         $this->StartSession();
         $this->Initiate("CartModel", "ApiCart");
-        $this->Execute("GET");
+        $this->Execute(Http::Get);
         if ($showJson)
         {
             $this->Json("Result", "Count", "Total");
@@ -17,7 +17,7 @@ class ApiCartController extends BaseFrontController
     {
         $this->StartSession();
         $this->Initiate("CartModel");
-		$this->Execute("POST");
+		$this->Execute(Http::Post);
 		$this->Json();
     }
 
@@ -25,7 +25,7 @@ class ApiCartController extends BaseFrontController
     {
         $this->StartSession();
         $this->Initiate("CartModel");
-		$this->Execute("PUT");
+		$this->Execute(Http::Put);
 		$this->Json();
     }
 
@@ -33,7 +33,7 @@ class ApiCartController extends BaseFrontController
     {
         $this->StartSession();
         $this->Initiate("CartModel");
-		$this->Execute("DELETE");
+		$this->Execute(Http::Delete);
 		$this->Json();
     }
 }

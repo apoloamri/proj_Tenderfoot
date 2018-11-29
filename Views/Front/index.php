@@ -4,9 +4,9 @@
     <h3 v-if="search != ''">Search: '{{search}}'</h3>
     <h3 v-else-if="searchTag != ''">Items tagged: '{{searchTag}}'</h3>
     <div v-else>
-        <div id="header">
-            <img src="/Resources/uploads/site/header.png" alt="">
-        </div><hr/>
+        <div v-if="store.str_header != null && store.str_header != ''" id="header">
+            <img v-bind:src="store.str_header" alt=""><hr/>
+        </div>
         <h1>Trending Items</h1>
     </div>
     <div class="items" v-for="item in result">
@@ -24,7 +24,7 @@
             </button>
         </center>
     </div>
-    <div v-if="search == ''">
+    <div v-if="search == '' && searchTag == ''">
         <h3>New Arrivals</h3>
         <div class="items" v-for="item in result">
             <center>
@@ -43,6 +43,7 @@
         </div>
     </div>
 </div>
+<?php $this->Partial("footer") ?>
 
 <script type="module">
     import Lib from "/Resources/js/lib.js";
@@ -52,11 +53,20 @@
         data: { 
             search: Lib.UrlParameter("search"),
             searchTag: Lib.UrlParameter("tag"),
+            store: {},
             page: 1,
             result: [],
             pageCount: 0
         },
         methods: {
+            GetStore: function () {
+                var self = this;
+                Lib.Get("/api/store", null,
+                function (success) { 
+                    self.store = success.Store;
+                    Lib.InitialLoading(false);
+                });
+            },
             GetProducts: function () {
                 var self = this;
                 Lib.Get("/api/products", {
@@ -75,6 +85,7 @@
             }
         },
         created() {
+            this.GetStore();
             this.GetProducts();
         }
     });

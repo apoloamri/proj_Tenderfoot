@@ -52,3 +52,4 @@
         </p>
     </div>
 </div>
+<?php $this->Partial("footer") ?>

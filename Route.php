@@ -10,6 +10,7 @@ $router->Map("GET /admin/products", "Admin", "Products");
 $router->Map("GET /admin/products/add", "Admin", "ProductsAdd");
 $router->Map("GET /admin/products/edit/[Id]", "Admin", "ProductsEdit");
 $router->Map("GET /admin/products/tags", "Admin", "ProductsTags");
+$router->Map("GET /admin/store", "Admin", "Store");
 $router->Map("GET /admin/api/checkauth", "Admin", "ApiGetCheckAuth");
 $router->Map("POST /admin/api/login", "Admin", "ApiPostLogin");
 $router->Map("DELETE /admin/api/logout", "Admin", "ApiDeleteLogin");
@@ -48,6 +49,11 @@ $router->Map("PUT /api/products/inventory", "ApiProducts", "PutInventory");
 $router->Map("PUT /api/products/tags/image", "ApiProducts", "PutTagsImage");
 $router->Map("DELETE /api/products/", "ApiProducts", "DeleteProducts");
 $router->Map("DELETE /api/products/tags", "ApiProducts", "DeleteTags");
+
+//ApiStoreController
+$router->Map("GET /api/store", "ApiStore", "GetStore");
+$router->Map("POST /api/store/header", "ApiStore", "PostStoreHeader");
+$router->Map("DELETE /api/store/header", "ApiStore", "DeleteStoreHeader");
 
 //Errors
 $router->Map("GET /err/404", "Errors", "Error404");

@@ -172,6 +172,19 @@ textarea {
     width: 100px;
 }
 
+#add .adminTable {
+    padding: 20px;
+    width: 60%;
+    margin: 0 auto;
+}
+#add .adminTable input,
+#add .adminTable textarea {
+    width: 90%;
+}
+#add .adminTable input[type="number"] {
+    width: 30%;
+}
+
 #adminNavigation {
     float: left;
     width: 15%;

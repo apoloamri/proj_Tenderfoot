@@ -30,12 +30,12 @@ class Controller extends BaseController
 			$this->Transact();
 			switch ($_SERVER['REQUEST_METHOD'])
 			{
-				case "GET":
+				case Http::Get:
 					$this->Model->Map();
 					break;
-				case "POST":
-				case "PUT":
-				case "DELETE":
+				case Http::Post:
+				case Http::Put:
+				case Http::Delete:
 					$this->Model->Handle();
 					break;
 			}
@@ -81,5 +81,13 @@ class Controller extends BaseController
 		header("Content-Type: application/json");
 		echo json_encode($jsonArray, JSON_PRETTY_PRINT);
 	}
+}
+class Http
+{
+	const Get = "GET";
+	const Post = "POST";
+	const Put = "PUT";
+	const Delete = "DELETE";
+	const Option = "OPTION";
 }
 ?>

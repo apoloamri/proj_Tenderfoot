@@ -75,6 +75,7 @@
                     var response = failed.responseJSON;
                     alert(response.Messages.ImageFile);
                 });
+                $("#image_" + id).val(null);
             },
             DeleteTags: function (tagName) {
                 var self = this;

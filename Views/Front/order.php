@@ -58,6 +58,7 @@
         <center><button onclick="window.location='/';">Return to homepage.</button></center>
     </div>
 </div>
+<?php $this->Partial("footer") ?>
 
 <script type="module">
     import Lib from "/Resources/js/lib.js";

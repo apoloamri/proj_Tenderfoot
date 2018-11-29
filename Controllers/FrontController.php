@@ -16,7 +16,7 @@ class FrontController extends BaseFrontController
         {
             $this->Redirect("/err/404");
         }
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->View("detail");
     }
 
@@ -45,7 +45,7 @@ class FrontController extends BaseFrontController
         {
             $this->Redirect("/err/404");
         }
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->View("tracking");
     }
 }

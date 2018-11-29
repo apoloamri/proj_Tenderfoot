@@ -30,6 +30,7 @@
         <button style="width:40%;" onclick="window.location='/order'" :disabled="count == 0"><h3>Continue Order</h3></button>
     </center>
 </div>
+<?php $this->Partial("footer") ?>
 
 <script type="module">
     import Lib from "/Resources/js/lib.js";

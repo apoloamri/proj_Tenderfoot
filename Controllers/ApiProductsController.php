@@ -5,21 +5,21 @@ class ApiProductsController extends BaseAdminController
     function GetProducts() : void
     {
         $this->Initiate("ProductsModel");
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->Json("Result", "PageCount");
     }
 
     function GetTags() : void
     {
         $this->Initiate("TagsModel");
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->Json("Result");
     }
 
     function GetTrends() : void
     {
         $this->Initiate("TrendsModel");
-		$this->Execute("GET");
+		$this->Execute(Http::Get);
         $this->Json("MostViews", "MostCarts", "MostPurchases");
     }
 
@@ -27,7 +27,7 @@ class ApiProductsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("ProductsModel");
-        $this->Execute("POST");
+        $this->Execute(Http::Post);
         $this->Json();
     }
 
@@ -35,7 +35,7 @@ class ApiProductsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("ProductsImageModel");
-        $this->Execute("POST");
+        $this->Execute(Http::Post);
         $this->Json("ImagePath");
     }
 
@@ -43,7 +43,7 @@ class ApiProductsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("TagsModel");
-        $this->Execute("POST");
+        $this->Execute(Http::Post);
         $this->Json();
     }
 
@@ -51,7 +51,7 @@ class ApiProductsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("ProductsModel");
-        $this->Execute("PUT");
+        $this->Execute(Http::Put);
         $this->Json();
     }
 
@@ -59,7 +59,7 @@ class ApiProductsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("TagsModel");
-        $this->Execute("PUT");
+        $this->Execute(Http::Put);
         $this->Json();
     }
 
@@ -67,7 +67,7 @@ class ApiProductsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("ProductsModel");
-        $this->Execute("DELETE");
+        $this->Execute(Http::Delete);
         $this->Json();
     }
 
@@ -75,7 +75,7 @@ class ApiProductsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("TagsModel");
-        $this->Execute("DELETE");
+        $this->Execute(Http::Delete);
         $this->Json();
     }
 
@@ -83,7 +83,7 @@ class ApiProductsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("InventoryModel");
-        $this->Execute("DELETE");
+        $this->Execute(Http::Delete);
         $this->Json();
     }
 }

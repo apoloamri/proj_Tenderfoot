@@ -6,14 +6,14 @@ class ApiOrdersController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("OrderModel");
-        $this->Execute("GET");
+        $this->Execute(Http::Get);
         $this->Json("Result", "CartItems", "PageCount");
     }
 
     function PostOrders() : void 
     {
         $this->Initiate("OrderModel");
-        $this->Execute("POST");
+        $this->Execute(Http::Post);
         $this->Json("OrderNumber");
     }
 
@@ -21,7 +21,7 @@ class ApiOrdersController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("OrderModel");
-        $this->Execute("PUT");
+        $this->Execute(Http::Put);
         $this->Json();
     }
 
@@ -29,7 +29,7 @@ class ApiOrdersController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("OrderModel");
-        $this->Execute("DELETE");
+        $this->Execute(Http::Delete);
         $this->Json();
     }
 }

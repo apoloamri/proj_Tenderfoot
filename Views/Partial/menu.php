@@ -13,8 +13,8 @@
     </div>
     <div id="menuLower">
         <div id="menuSearchDiv">
+        <img src="/Resources/images/search.png" class="menuImages hideOnMobile" v-on:click="Search()" /> 
             <input type="text" placeholder="Search products in ShopPin..." id="menuSearch" v-model="search" v-on:keyup="Search()" />
-            <img src="/Resources/images/search.png" class="menuImages hideOnMobile" v-on:click="Search()" /> 
             <label>
                 Top searches: 
                 <a href="/?search=lenovo">Lenovo</a>

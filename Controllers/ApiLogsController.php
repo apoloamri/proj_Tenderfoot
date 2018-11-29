@@ -6,7 +6,7 @@ class ApiLogsController extends BaseAdminController
     {
         $this->CheckAuthNotFound();
         $this->Initiate("LogsModel");
-        $this->Execute("GET");
+        $this->Execute(Http::Get);
         $this->Json("Result");
     }
 }
