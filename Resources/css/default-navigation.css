@@ -36,13 +36,14 @@
     background-color: #B61820;
     padding: 10px 30px;
     overflow: hidden;
+    text-align: center;
 }
 #menuLower a {
     font-size: 14px;
     text-decoration: underline;
     color: white;
 }
-#menuLower label {
+#menuLower #topSearch {
     font-size: 14px;
     display: inline-block;
     color: white;
@@ -73,6 +74,7 @@
     float: left;
     position: relative;
     width: 20%;
+    max-width: 270px;
 }
 #categories .content {
     background-color: white;
@@ -99,13 +101,13 @@
 /* CATEGORIES - END */
 /* ---------------- */
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 900px) {
+    #menuUpper {
+        padding: 20px 15px;
+    }
     #menuLogo {
         margin-left: auto;
         margin-right: auto;
-    }
-    #menuCartDiv {
-        float: unset;
     }
     #menuSearchDiv {
         width: 100%;
@@ -114,12 +116,21 @@
         float: unset;
         min-height: unset;
         width: 100%;
+        max-width: unset;
+        text-align: center;
+    }
+    #categories .header {
+        border-radius: 5px;
+    }
+    #categories .header:hover {
+        border-radius: 5px 5px 0px 0px;
     }
     #categories .content {
         display: inline-block;
         width: 90%;
         height: 40px;
         overflow: hidden;
+        margin: 10px auto 0px auto;
     }
     #categories .content:hover {
         height: unset;

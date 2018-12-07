@@ -1,8 +1,10 @@
 <?php $this->Partial("menu") ?>
 <?php $this->Partial("categories") ?>
 <div id="mainContent">
-    <a href="/">Home</a> › 
-    Tacking: <?php echo $this->URI[2]; ?>
+    <div id="breadCrumbs">
+        <a href="/">Home</a> › 
+        Tacking: <?php echo $this->URI[2]; ?>
+    </div>
     <hr/>
     <div id="tracking">
         <div>

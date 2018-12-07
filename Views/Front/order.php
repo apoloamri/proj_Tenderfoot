@@ -1,8 +1,10 @@
 <?php $this->Partial("menu") ?>
 <?php $this->Partial("categories") ?>
 <div id="mainContent">
-    <a href="/">Home</a> ›
-    <a href="/cart">Cart</a> › Order
+    <div id="breadCrumbs">
+        <a href="/">Home</a> ›
+        <a href="/cart">Cart</a> › Order
+    </div>
     <hr/>
     <div id="cartInformation">
         <center>
@@ -26,21 +28,24 @@
         </center>
     </div>
     <div id="contactInformation"> 
+        <p>Text boxes with asterisks are required inputs. Please dictate each accurately and exact as possible.</p>
         <h3>Contact Information</h3>
-        <label class="red display-block">{{messages["PhoneNumber"]}}</label>
-        <input type="text" v-model="phoneNumber" placeholder="Phone number" />
+        <label class="red message">{{messages["PhoneNumber"]}}</label>
+        <input type="text" v-model="phoneNumber" placeholder="Phone number" /><label class="red">*</label><br/>
+        <label class="red message">{{messages["Email"]}}</label>
+        <input type="text" v-model="email" placeholder="Email Address" /><label class="red">*</label><br/>
         <h3>Shipping Address</h3>
-        <label class="red display-block">{{messages["LastName"]}}</label>
-        <label class="red display-block">{{messages["FirstName"]}}</label>
-        <input type="text" v-model="lastName" placeholder="Last name" class="short" />
-        <input type="text" v-model="firstName" placeholder="First name" class="short" />
-        <label class="red display-block">{{messages["Address"]}}</label>
-        <input type="text" v-model="address" placeholder="Complete address (Blk, Lot, Street, Subd, Bldg)" />
-        <label class="red display-block">{{messages["Barangay"]}}</label>
+        <label class="red message">{{messages["LastName"]}}</label>
+        <input type="text" v-model="lastName" placeholder="Last name" class="short" /><label class="red">*</label><br/>
+        <label class="red message">{{messages["FirstName"]}}</label>
+        <input type="text" v-model="firstName" placeholder="First name" class="short" /><label class="red">*</label><br/>
+        <label class="red message">{{messages["Address"]}}</label>
+        <input type="text" v-model="address" placeholder="Complete address (Blk, Lot, Street, Subd, Bldg)" /><label class="red">*</label><br/>
+        <label class="red message">{{messages["Barangay"]}}</label>
         <input type="text" v-model="barangay" placeholder="Barangay" />
-        <label class="red display-block">{{messages["City"]}}</label>
-        <label class="red display-block">{{messages["PostalCode"]}}</label>
-        <input type="text" v-model="city" placeholder="City" class="short"  />
+        <label class="red message">{{messages["City"]}}</label>
+        <input type="text" v-model="city" placeholder="City" class="short"  /><label class="red">*</label><br/>
+        <label class="red message">{{messages["PostalCode"]}}</label>
         <input type="text" v-model="postalCode" placeholder="Postal code" class="short"  />
         <h3>Payment Method</h3>
         <p>
@@ -70,6 +75,7 @@
             total: 0,
             orderNumber: "",
             phoneNumber: "",
+            email: "",
             lastName: "",
             firstName: "",
             address: "",
@@ -93,6 +99,7 @@
                 Lib.InitialLoading(true);
                 Lib.Post("/api/orders", {
                     PhoneNumber: self.phoneNumber,
+                    Email: self.email,
                     LastName: self.lastName,
                     FirstName: self.firstName,
                     Address: self.address,

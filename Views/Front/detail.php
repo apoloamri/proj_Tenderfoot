@@ -1,11 +1,18 @@
 <?php $this->Partial("menu") ?>
 <?php $this->Partial("categories") ?>
 <div id="mainContent">
-    <div id="details">
+    <div id="breadCrumbs">
         <a href="/">Home</a> ›
         <?php echo $this->Result->str_name; ?>
+    </div>
+    <div id="details">
         <hr/>
-        <div id="detailsImage" style="background-image: url('<?php echo $this->Result->ImagePaths[0]; ?>')"></div>
+        <div id="detailsImagesDiv">
+            <img id="mainImage" class="image" src="<?php echo $this->Result->ImagePaths[0]; ?>" /><br/>
+            <?php foreach ($this->Result->ImagePaths as $paths) { ?>
+                <img class="childImages" src="<?php echo $paths ?>" />
+            <?php } ?>
+        </div>
         <div id="detailsContent">
             <h2><?php echo $this->Result->str_name; ?></h2>
             <h3><?php echo $this->Result->str_brand; ?></h3>

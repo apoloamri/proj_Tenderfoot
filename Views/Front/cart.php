@@ -1,7 +1,7 @@
 <?php $this->Partial("menu") ?>
 <?php $this->Partial("categories") ?>
 <div id="mainContent">
-    <a href="/">Home</a> › Cart
+    <div id="breadCrumbs"><a href="/">Home</a> › Cart</div>
     <hr/>
     <center>
         <table class="cartTable">

@@ -63,16 +63,21 @@
 /* ------------------- */
 /* ITEM DETAIL - START */
 /* ------------------- */
-#details {
-    margin-top: 25px;
-}
-#detailsImage {
+#detailsImagesDiv {
     width: 350px;
-    height: 300px;
+    float: left;
+}
+#detailsImagesDiv #mainImage {
+    width: 350px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    float: left;
+}
+#detailsImagesDiv .childImages {
+    width: 113px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 #detailsContent {
     margin: 0px 20px;
@@ -85,14 +90,26 @@
 /* ITEM DETAIL - END */
 /* ----------------- */
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 900px) {
     .items {
         width: 100%;
     }
     .items .image {
         width: 100%;
     }
+    #detailsImagesDiv {
+        width: 100%;
+    }
+    #detailsImagesDiv #mainImage {
+        width: 100%;
+    }
+    #detailsImagesDiv .childImages {
+        width: 32%;
+    }
     #detailsContent p {
         width: unset;
+    }
+    #detailsContent button {
+        width: 100%;
     }
 }

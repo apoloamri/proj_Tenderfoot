@@ -19,6 +19,7 @@ class OrderModel extends Model
     public $Id;
     public $OrderNumber;
     public $PhoneNumber;
+    public $Email;
     public $LastName;
     public $FirstName;
     public $Address;
@@ -48,12 +49,13 @@ class OrderModel extends Model
                 }
             }
             yield "PhoneNumber" => $this->CheckInput("PhoneNumber", true, Type::PhoneNumber, 255);
+            yield "Email" => $this->CheckInput("Email", true, Type::Email, 255);
             yield "LastName" => $this->CheckInput("LastName", true, Type::AlphaNumeric, 255);
             yield "FirstName" => $this->CheckInput("FirstName", true, Type::AlphaNumeric, 255);
             yield "Address" => $this->CheckInput("Address", true, Type::All, 255);
-            yield "Barangay" => $this->CheckInput("Barangay", true, Type::AlphaNumeric, 255);
+            yield "Barangay" => $this->CheckInput("Barangay", false, Type::AlphaNumeric, 255);
             yield "City" => $this->CheckInput("City", true, Type::AlphaNumeric, 255);
-            yield "PostalCode" => $this->CheckInput("PostalCode", true, Type::All, 255);
+            yield "PostalCode" => $this->CheckInput("PostalCode", false, Type::All, 255);
         }
         else if ($this->Put() || $this->Delete())
         {
@@ -121,6 +123,7 @@ class OrderModel extends Model
         {
             $orders->CreateOrderNumber();
             $orders->str_phonenumber = $this->PhoneNumber;
+            $orders->str_email = $this->Email;
             $orders->str_last_name = $this->LastName;
             $orders->str_first_name = $this->FirstName;
             $orders->str_address = $this->Address;
@@ -218,9 +221,14 @@ class OrderModel extends Model
         $views->int_product_id = $productId;
         $views->AddPurchase();
     }
+    public $Url;
     function SendEmail() : void
     {
+        $this->Url = Settings::SiteUrlSSL();
         $email = new Email($this, "OrderComplete");
+        $email->SendEmail();
+        $email = new Email($this, "OrderCompleteCustomer");
+        $email->AddEmailTo($this->Email);
         $email->SendEmail();
     }
 }

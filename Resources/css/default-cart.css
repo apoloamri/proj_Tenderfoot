@@ -31,17 +31,20 @@
 /* ------------------ */
 /* ORDER MENU - START */
 /* ------------------ */
-.short {
-    width: 218px !important;
-}
 #contactInformation,
 #cartInformation {
-    width: 40%;
+    width: 45%;
     float: left;
+}
+#contactInformation .message {
+    display: block;
 }
 #contactInformation input {
     margin: 5px;
-    width: 469px;
+    width: 400px;
+}
+#contactInformation .short {
+    width: 218px !important;
 }
 #cartInformation .cartTable {
     min-width: 90%;
@@ -97,3 +100,17 @@
 /* ------------------- */
 /* TRACKING MENU - END */
 /* ------------------- */
+
+@media screen and (max-width: 900px) {
+    #contactInformation,
+    #cartInformation {
+        width: 100%;
+        float: unset;
+    }
+    #contactInformation input {
+        width: 80%;
+    }
+    #contactInformation .short {
+        width: 60% !important;
+    }
+}

@@ -102,12 +102,33 @@ p {
     background-color: #E6E6E6;
     color: #1a1a1a;
 }
+#breadCrumbs {
+    margin-top: 25px;
+}
 #mainContent {
     float: left;
     width: 80%;
+    min-height: 70vh;
+}
+#footer {
+    width: 100%;
+    float: left;
+    margin-top: 25px;
+    text-align: center;
+}
+#footer hr {
+    width: 90%;
+}
+#footerContent {
+    margin-top: 10px;
+    background-color: #d6d6d6;
+    padding: 15px;
+}
+#footerContent img {
+    height: 25px;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 900px) {
     body {
         margin: auto;
     }

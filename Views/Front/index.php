@@ -7,7 +7,7 @@
         <div v-if="store.str_header != null && store.str_header != ''" id="header">
             <img v-bind:src="store.str_header" alt=""><hr/>
         </div>
-        <h1>Trending Items</h1>
+        <h1>Top Trending</h1>
     </div>
     <div class="items" v-for="item in result">
         <center>

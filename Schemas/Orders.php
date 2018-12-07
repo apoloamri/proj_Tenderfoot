@@ -7,6 +7,7 @@ class Orders extends MySqlSchema
     }
     public $str_order_number;
     public $str_phonenumber;
+    public $str_email;
     public $str_last_name;
     public $str_first_name;
     public $str_address;

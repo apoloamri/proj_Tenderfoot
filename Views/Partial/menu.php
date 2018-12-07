@@ -7,7 +7,7 @@
             <a href="/faq"><img src="/Resources/images/faq.png" class="menuImages" /></a>
             <a href="/cart">
                 <img src="/Resources/images/cart.png" class="menuImages" /> 
-                {{count}} item/s (₱{{total}})
+                <label class="hideOnMobile">{{count}} item/s (₱{{total}})</label>
             </a>
         </div>
     </div>
@@ -15,14 +15,14 @@
         <div id="menuSearchDiv">
         <img src="/Resources/images/search.png" class="menuImages hideOnMobile" v-on:click="Search()" /> 
             <input type="text" placeholder="Search products in ShopPin..." id="menuSearch" v-model="search" v-on:keyup="Search()" />
-            <label>
+            <div id="topSearch" class="hideOnMobile">
                 Top searches: 
                 <a href="/?search=lenovo">Lenovo</a>
                 <a href="/?search=lenovo">Lenovo</a>
                 <a href="/?search=lenovo">Lenovo</a>
                 <a href="/?search=lenovo">Lenovo</a>
                 <a href="/?search=lenovo">Lenovo</a>
-            </label>
+            </div>
         </div>
     </div>
 </div>
