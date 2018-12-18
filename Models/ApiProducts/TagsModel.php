@@ -22,6 +22,10 @@ class TagsModel extends Model
     {
         $tags = new ProductTags();
         $tags->Join(new ProductTagImages(), "str_tag", "str_tag");
+        if (_::HasValue($this->TagName))
+        {
+            $tags->Where("str_tag", DB::Like, "%$this->TagName%");
+        }
         $tags->OrderBy("str_tag");
         $tags->GroupBy("str_tag");
         $result = $tags->Select("product_tags.id", "product_tags.str_tag", "str_image_path");

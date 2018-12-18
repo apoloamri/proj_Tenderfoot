@@ -3,7 +3,7 @@ session_start();
 $expiration = Settings::Session() * 1000;
 foreach ($_SESSION as $key => $value)
 {
-    if (StringContains("cookie.", $key))
+    if (_::StringContains("cookie.", $key))
     {
         $newKey = str_replace("cookie.", "", $key);
         setcookie($newKey, $value->value, $value->expiration, $value->path);
@@ -60,7 +60,7 @@ function CheckSession(string $environment = null) : bool
         $sessionValue = GetSession("admin");
         $sessions = new Sessions();
         $sessions->str_session_id = $sessionValue->SessionId;
-        if (HasValue($sessionValue->SessionKey))
+        if (_::HasValue($sessionValue->SessionKey))
         {
             $sessions->str_session_key = $sessionValue->SessionKey;
         }

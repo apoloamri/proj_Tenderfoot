@@ -1,10 +1,10 @@
+<?php $this->Partial("navigation") ?>
 <div id="adminPages">
-    <?php $this->Partial("admin_navigation") ?>
     <div id="adminContent">
         <div id="adminInnerContent">
             <h2>Orders</h2>
             <div class="adminTable">
-                <input type="text" v-model="search" v-on:keyup="GetOrdersDelay()" placeholder="Search orders" /><br/>
+                <input type="text" v-model="Search" v-on:input="GetOrdersDelay()" placeholder="Search orders" /><br/>
                 <button class="status" v-on:click="GetList('New Order')">New</button>
                 <button class="status" v-on:click="GetList('Processed')">Processed</button>
                 <button class="status" v-on:click="GetList('On Delivery')">On Delivery</button>
@@ -19,7 +19,7 @@
                         <th width="15%">Status</th>
                         <th width="20%">Date</th>
                     </tr>
-                    <tr v-for="order in result" v-bind:class="{ 'green' : order.str_order_status == 'New Order' }">
+                    <tr v-for="order in Result" v-bind:class="{ 'green' : order.str_order_status == 'New Order' }">
                         <td v-on:click="Redirect(order.id)">{{order.str_order_number}}</td>
                         <td v-on:click="Redirect(order.id)">{{order.str_last_name}}, {{order.str_first_name}}</td>
                         <td v-on:click="Redirect(order.id)">{{order.dbl_total}}</td>
@@ -30,13 +30,14 @@
                 <div class="spacer-h-15"></div>
                 <center>
                     <a href="#" v-on:click="PrevPage()">🡄</a>
-                    {{page}} / {{pageCount}}
+                    {{Page}} / {{PageCount}}
                     <a href="#" v-on:click="NextPage()">🡆</a>
                 </center>
             </div>
         </div>
     </div>
 </div>
+<script src="/Resources/js/admin/orders.js" async></script>
 
 <style>
     input[type="number"] {
@@ -47,63 +48,3 @@
         display: inline-block;
     }
 </style>
-
-<script type="module">
-    import Lib from "/Resources/js/lib.js";
-    new Vue({
-        el: "#adminInnerContent",
-        data: {
-            search: "",
-            orderStatus: "",
-            page: 1,
-            pageCount: 0,
-            result: []
-        },
-        methods: {
-            GetOrdersDelay: function () {
-                var self = this;
-                Lib.Delay(function () {
-                    self.GetOrders();
-                }, 500);
-            },
-            GetOrders: function () {
-                var self = this;
-                Lib.InitialLoading(true);
-                Lib.Get("/api/orders", {
-                    "Search": self.search,
-                    "OrderStatus": self.orderStatus,
-                    "Page": self.page,
-                    "Count": 10
-                },
-                function (success) {
-                    self.result = success.Result;
-                    self.pageCount = success.PageCount;
-                    Lib.InitialLoading(false);
-                });
-            },
-            GetList: function (orderStatus) {
-                var self = this;
-                self.orderStatus = orderStatus;
-                self.GetOrders();
-            },
-            NextPage: function () {
-                if (this.page < this.pageCount) {
-                    this.page = this.page + 1;
-                    this.GetOrders();
-                }
-            },
-            PrevPage: function () {
-                if (this.page != 1) {
-                    this.page = this.page - 1;
-                    this.GetOrders();
-                }
-            },
-            Redirect: function (id) {
-                window.location = "/admin/orders/detail/" + id;
-            }
-        },
-        created () {
-            this.GetOrders();
-        }
-    });
-</script>

@@ -12,7 +12,7 @@ class Controller extends BaseController
 		else
 		{
 			$controller = str_replace("Controller", "", get_class($this));
-			if (HasValue($modelLocation))
+			if (_::HasValue($modelLocation))
 			{
 				$controller = $modelLocation;
 			}
@@ -21,6 +21,7 @@ class Controller extends BaseController
 		}
 		$this->Model->URI = explode("/", $_SERVER["REQUEST_URI"]);
 		$this->Model->Environment = $this->Environment;
+		$this->Model->Deployment = Settings::Deploy();
 		$this->Validate();
 	}
 	protected function Execute(string $method) : void

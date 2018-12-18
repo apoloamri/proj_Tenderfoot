@@ -1,5 +1,5 @@
+<?php $this->Partial("navigation") ?>
 <div id="adminPages">
-    <?php $this->Partial("admin_navigation") ?>
     <div id="adminContent">
         <div id="adminInnerContent">
             <h3><a href="/admin/orders">◄ Orders</a></h3>
@@ -7,28 +7,28 @@
                 <h2>Order Details</h2>
                 <div class="adminTable float-left" style="width:50%;">
                     <label><b>Order Number</b></label>
-                    <label>{{details.str_order_number}}</label><br/>
+                    <label>{{Details.str_order_number}}</label><br/>
                     <label><b>Phone Number</b></label>
-                    <label>{{details.str_phonenumber}}</label><br/>
+                    <label>{{Details.str_phonenumber}}</label><br/>
                     <label><b>Customer Name</b></label>
-                    <label>{{details.str_last_name}}, {{details.str_first_name}}</label><br/>
+                    <label>{{Details.str_last_name}}, {{Details.str_first_name}}</label><br/>
                     <label><b>Street Address</b></label>
-                    <label>{{details.str_address}}</label><br/>
+                    <label>{{Details.str_address}}</label><br/>
                     <label><b>Barangay</b></label>
-                    <label>{{details.str_barangay}}</label><br/>
+                    <label>{{Details.str_barangay}}</label><br/>
                     <label><b>City</b></label>
-                    <label>{{details.str_city}}</label><br/>
+                    <label>{{Details.str_city}}</label><br/>
                     <label><b>Postal Code</b></label>
-                    <label>{{details.str_postal}}</label>
+                    <label>{{Details.str_postal}}</label>
                 </div>
                 <div id="statusChange" class="float-left">
                     <center>
-                        <label v-bind:class="{ 'green': details.str_order_status == 'Fulfilled', 'red': details.str_order_status == 'Cancelled' }">Current status: <b>{{details.str_order_status}}</b></label><br/>
-                        <button id="cancel" v-on:click="CancelOrder()" class="statusChange red">Cancel</button>
-                        <button id="button1" v-on:click="PutOrder()" class="statusChange">Processed</button><label class="arrow">▾<br/></label>
-                        <button id="button2" v-on:click="PutOrder()" class="statusChange">On Delivery</button><label class="arrow">▾<br/></label>
-                        <button id="button3" v-on:click="PutOrder()" class="statusChange">Delivered</button><label class="arrow">▾<br/></label>
-                        <button id="button4" v-on:click="PutOrder()" class="statusChange">Fulfilled</button>
+                        <label v-bind:class="{ 'green': Details.str_order_status == 'Fulfilled', 'red': Details.str_order_status == 'Cancelled' }">Current status: <b>{{Details.str_order_status}}</b></label><br/>
+                        <button id="cancel" v-on:click="CancelOrder" class="statusChange red">Cancel</button>
+                        <button id="button1" v-on:click="PutOrder" class="statusChange">Processed</button><label class="arrow">▾<br/></label>
+                        <button id="button2" v-on:click="PutOrder" class="statusChange">On Delivery</button><label class="arrow">▾<br/></label>
+                        <button id="button3" v-on:click="PutOrder" class="statusChange">Delivered</button><label class="arrow">▾<br/></label>
+                        <button id="button4" v-on:click="PutOrder" class="statusChange">Fulfilled</button>
                     </center>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                         <th width="10%">Amount</th>
                         <th width="15%">Total</th>
                     </tr>
-                    <tr v-for="item in cartItems">
+                    <tr v-for="item in CartItems">
                         <td>{{item.str_code}}</td>
                         <td>{{item.dbl_price}}</td>
                         <td>{{item.int_amount}}</td>
@@ -51,13 +51,14 @@
                         <td></td>
                         <td></td>
                         <td><b>Total</b></td>
-                        <td>{{details.dbl_total}}</td>
+                        <td>{{Details.dbl_total}}</td>
                     </tr>
                 </table>
             </div>
         </div>
     </div>
 </div>
+<script src="/Resources/js/admin/orders_detail.js" async></script>
 
 <style>
     #statusChange {
@@ -70,85 +71,3 @@
         color: lightgray;
     }
 </style>
-
-<script type="module">
-    import Lib from "/Resources/js/lib.js";
-    new Vue({
-        el: "#adminInnerContent",
-        data: {
-            id: "<?php echo $this->Id; ?>",
-            details: { type: Object, default: () => ({}) },
-            cartItems: []
-        },
-        methods: {
-            GetOrder: function () {
-                var self = this;
-                Lib.InitialLoading(true);
-                Lib.Get("/api/orders", {
-                    "Id": self.id
-                },
-                function (success) {
-                    self.details = success.Result;
-                    self.cartItems = success.CartItems;
-                    Lib.InitialLoading(false);
-                    self.Disable();
-                });
-            },
-            PutOrder: function () {
-                var self = this;
-                Lib.InitialLoading(true);
-                Lib.Put("/api/orders", {
-                    "Id": self.id
-                },
-                function (success) {
-                    Lib.InitialLoading(false);
-                    self.GetOrder();
-                },
-                function (failed) {
-                    var response = failed.responseJSON;
-                    alert(response.Messages.Id);
-                    self.GetOrder();
-                });
-            },
-            CancelOrder: function () {
-                var self = this;
-                Lib.InitialLoading(true);
-                Lib.Delete("/api/orders", {
-                    "Id": self.id
-                },
-                function (success) {
-                    Lib.InitialLoading(false);
-                    self.GetOrder();
-                },
-                function (failed) {
-                    var response = failed.responseJSON;
-                    alert(response.Messages.Id);
-                    self.GetOrder();
-                });
-            },
-            Disable: function () {
-                var self = this;
-                $(".statusChange").prop("disabled", true);
-                $("#cancel").removeAttr("disabled");
-                switch (self.details.str_order_status)
-                {
-                    case "New Order":
-                    $("#button1").removeAttr("disabled");
-                    break;
-                    case "Processed":
-                    $("#button2").removeAttr("disabled");
-                    break;
-                    case "On Delivery":
-                    $("#button3").removeAttr("disabled");
-                    break;
-                    case "Delivered":
-                    $("#button4").removeAttr("disabled");
-                    break;
-                }
-            }
-        },
-        created() {
-            this.GetOrder();
-        }
-    });
-</script>

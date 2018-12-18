@@ -11,7 +11,7 @@ class Logs extends MySqlSchema
     function LogAction() : void
     {
         $session = GetSession("admin");
-        if (HasValue($session->SessionKey))
+        if (_::HasValue($session->SessionKey))
         {
             $this->str_admin_user = $session->SessionKey;
             $this->Insert();   

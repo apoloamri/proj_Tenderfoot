@@ -120,7 +120,7 @@ class BaseMySqlSchema
             foreach ($columns as $column)
             {
                 $getColumns[] = 
-                    StringContains("-", $column) ?
+                    _::StringContains("-", $column) ?
                     "'$column'" :
                     $column;
             }
@@ -221,11 +221,11 @@ class BaseMySqlSchema
     protected $Limit;
     protected function GetLimit() : string
     {
-        if (HasValue($this->Page))
+        if (_::HasValue($this->Page))
         {
             return "LIMIT $this->Page";
         }
-        else if (HasValue($this->Limit))
+        else if (_::HasValue($this->Limit))
         {
             return "LIMIT $this->Limit";
         }

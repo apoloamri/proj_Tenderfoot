@@ -4,7 +4,7 @@ class AdminController extends BaseAdminController
 {
     function __construct()
     {
-        $this->Environment = "Admin";
+        $this->Environment = "admin";
     }
 
     function Index() : void

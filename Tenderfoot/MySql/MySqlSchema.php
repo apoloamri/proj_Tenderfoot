@@ -51,7 +51,7 @@ class MySqlSchema extends BaseMySqlSchema
         $result = $this->Select(...$columns);
         if (count($result) == 1)
         {
-            ModelOverwrite($this, $result[0]);
+            _::ModelOverwrite($this, $result[0]);
             return $result[0];
         }
         return new stdClass();
@@ -99,8 +99,8 @@ class MySqlSchema extends BaseMySqlSchema
     function Join($schema, string $joinColumn, string $parentColumn)
     {
         $parentColumn = 
-            StringContains("-", $parentColumn) ? "'$parentColumn'" : 
-            StringContains(".", $parentColumn) ? "$parentColumn" : 
+            _::StringContains("-", $parentColumn) ? "'$parentColumn'" : 
+            _::StringContains(".", $parentColumn) ? "$parentColumn" : 
             "$this->TableName.$parentColumn";
         $this->Join[] = "LEFT JOIN $schema->TableName ON $parentColumn = $schema->TableName.$joinColumn";
         $this->JoinSchema[] = $schema;
@@ -114,7 +114,14 @@ class MySqlSchema extends BaseMySqlSchema
      */
     function Where(string $column, string $expression = DB::Equal, $value = null, string $condition = DB::AND) : void
     {
-        $this->Where[] = "$column $expression '".$this->Sanitize($value)."' $condition";
+        if (_::StringContains(".", $column))
+        {
+            $this->Where[] = "$column $expression '".$this->Sanitize($value)."' $condition";    
+        }
+        else
+        {
+            $this->Where[] = "$this->TableName.$column $expression '".$this->Sanitize($value)."' $condition";
+        }
     }
     function In(string $column, array $values)
     {
@@ -165,7 +172,7 @@ class MySqlSchema extends BaseMySqlSchema
     {
         $columns = array();
         $values = array();
-        $this->dat_insert_time = Now();
+        $this->dat_insert_time = _::Now();
         $this->dat_update_time = null;
         foreach ($this->Columns as $column)
         {
@@ -188,7 +195,7 @@ class MySqlSchema extends BaseMySqlSchema
     {
         $updateValues = array();
         $this->dat_insert_time = null;
-        $this->dat_update_time = Now();
+        $this->dat_update_time = _::Now();
         foreach ($this->Columns as $column)
         {
             $name = $column->getName();
@@ -265,13 +272,13 @@ class Sessions extends MySqlSchema
         {
             return $this->str_session_id;
         }
-        $this->str_session_id = GenerateRandomString(50);
+        $this->str_session_id = _::GenerateRandomString(50);
         while ($this->Count() != 0)
         {
             $this->Clear();
-            $this->str_session_id = GenerateRandomString(50);
+            $this->str_session_id = _::GenerateRandomString(50);
         }
-        $this->dat_session_time = Now();
+        $this->dat_session_time = _::Now();
         $this->Insert();
         return $this->str_session_id;
     }
@@ -280,21 +287,21 @@ class Sessions extends MySqlSchema
      */
     function CheckSession(string $sessionKey = "") : bool 
     {
-        if (!HasValue($this->str_session_id))
+        if (!_::HasValue($this->str_session_id))
         {
             return false;
         }
-        $this->Where("dat_session_time", DB::GreaterThan, Now(-Settings::Session()));
+        $this->Where("dat_session_time", DB::GreaterThan, _::Now(-Settings::Session()));
         if ($this->Count() == 0)
         {
             return false;
         }
         $this->Clear();
-        if (HasValue($sessionKey))
+        if (_::HasValue($sessionKey))
         {
             $this->str_session_key = $sessionKey;
         }
-        $this->dat_session_time = Now();
+        $this->dat_session_time = _::Now();
         $this->Where("str_session_id", DB::Equal, $this->str_session_id);
         $this->Update();
         return true;

@@ -1,187 +1,67 @@
+<?php $this->Partial("navigation") ?>
 <div id="adminPages">
-    <?php $this->Partial("admin_navigation") ?>
     <div id="adminContent">
         <div id="adminInnerContent">
             <div id="add">
                 <h3><a href="/admin/products">◄ Products</a></h3>
                 <h2><?php echo $this->PageTitle ?></h2>
+                <div class="adminTable" v-if="Id != ''">
+                    <h3>Inventory</h3>
+                    <label>Amount</label>
+                    <input type="number" v-model="Amount" placeholder="50" />
+                    <button v-on:click="PutInventory" class="inline-block">Update</button>
+                    <label class="red">{{Messages["Amount"]}}</label>
+                </div>
+                <div class="spacer-h-15"></div>
                 <div class="adminTable">
                     <h3>Product</h3>
                     <label>Code</label>
-                    <input type="text" v-model="code" placeholder="SKU10001" />
-                    <label class="red">{{messages["Code"]}}</label>
+                    <input type="text" v-model="Code" placeholder="SKU10001" />
+                    <label class="red">{{Messages["Code"]}}</label>
                     <label>Brand</label>
-                    <input type="text" v-model="brand" placeholder="Microsoft" />
-                    <label class="red">{{messages["Brand"]}}</label>
+                    <input type="text" v-model="Brand" placeholder="Microsoft" />
+                    <label class="red">{{Messages["Brand"]}}</label>
                     <label>Name</label>
-                    <input type="text" v-model="name" placeholder="Surface Pro" />
-                    <label class="red">{{messages["Name"]}}</label>
+                    <input type="text" v-model="Name" placeholder="Surface Pro" />
+                    <label class="red">{{Messages["Name"]}}</label>
                     <label>Description</label>
-                    <textarea v-model="description" placeholder="Unplug. Pack light. Get productive your way, all day, with the new Surface Pro 6 - now faster than ever with the latest 8th Gen Intel Core processor."></textarea>
-                    <label class="red">{{messages["Description"]}}</label>
+                    <textarea v-model="Description" placeholder="Unplug. Pack light. Get productive your way, all day, with the new Surface Pro 6 - now faster than ever with the latest 8th Gen Intel Core processor."></textarea>
+                    <label class="red">{{Messages["Description"]}}</label>
                 </div>
                 <div class="spacer-h-15"></div>
                 <div class="adminTable">
                     <h3>Pricing</h3>
                     <label>Price</label>
-                    <input type="number" v-model="price" placeholder="15,000.00" />
-                    <label class="red">{{messages["Price"]}}</label>
+                    <input type="number" v-model="Price" placeholder="15,000.00" />
+                    <label class="red">{{Messages["Price"]}}</label>
                 </div>
                 <div class="spacer-h-15"></div>
                 <div class="adminTable">
                     <h3>Tags</h3>
-                    <input type="text" v-model="tags" placeholder="Separate tags by comma." />
-                    <label class="red">{{messages["Tags"]}}</label>
+                    <input type="text" v-model="Tags" placeholder="Separate Tags by comma." />
+                    <label class="red">{{Messages["Tags"]}}</label>
                 </div>
                 <div class="spacer-h-15"></div>
                 <div class="adminTable">
                     <h3>Images</h3>
-                    <input type="file" v-on:change="UploadImage()" id="image" />
-                    <button v-on:click="imagePaths = []" class="gray inline-block">Remove Images</button>
-                    <label class="red">{{messages["ImageFile"]}}</label>
-                    <div v-for="image in imagePaths" v-bind:style="{ 'background-image': 'url(' + image + ')' }" class="image size-100"></div>
+                    <input type="file" v-on:change="UploadImage" id="image" />
+                    <button v-on:click="ImagePaths = []" class="gray inline-block">Remove Images</button>
+                    <label class="red">{{Messages["ImageFile"]}}</label>
+                    <div v-for="image in ImagePaths" v-bind:style="{ 'background-image': 'url(' + image + ')' }" class="image size-100"></div>
                 </div>
                 <hr />
                 <div class="float-right">
-                    <div v-if="id == ''" class="inline-block">
-                        <button v-on:click="PostProducts()" class="inline-block">Add product</button>
+                    <div v-if="Id == ''" class="inline-block">
+                        <button v-on:click="PostProducts" class="inline-block">Add product</button>
                     </div>
                     <div v-else class="inline-block">
-                        <button v-on:click="PutProducts()" class="inline-block">Update product</button>
-                        <button v-on:click="DeleteProducts()" class="red inline-block">Delete product</button>
+                        <button v-on:click="PutProducts" class="inline-block">Update product</button>
+                        <button v-on:click="DeleteProducts" class="red inline-block">Delete product</button>
                     </div>
-                    <button v-on:click="Clear()" class="gray inline-block">Clear</button>
+                    <button v-on:click="Clear" class="gray inline-block">Clear</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script type="module">
-    import Lib from "/Resources/js/lib.js";
-    new Vue({
-        el: "#adminInnerContent",
-        data: {
-            id: "<?php echo $this->Id; ?>",
-            code: "",
-            brand: "",
-            name: "",
-            description: "",
-            tags: "",
-            price: null,
-            imagePaths: [],
-            messages: []
-        },
-        methods: {
-            GetProduct: function () {
-                var self = this;
-                Lib.InitialLoading(true);
-                Lib.Get("/api/products", {
-                    "Id": self.id
-                },
-                function (success) {
-                    self.code = success.Result.str_code;
-                    self.brand = success.Result.str_brand;
-                    self.name = success.Result.str_name;
-                    self.description = success.Result.txt_description;
-                    self.tags = success.Result.Tags;
-                    self.price = success.Result.dbl_price;
-                    if (success.Result.ImagePaths != null) {
-                        self.imagePaths = success.Result.ImagePaths;
-                    }
-                    Lib.InitialLoading(false);
-                });
-            },
-            PostProducts: function () {
-                var self = this;
-                Lib.InitialLoading(true);
-                Lib.Post("/api/products", {
-                    "Code": self.code,
-                    "Brand": self.brand,
-                    "Name": self.name,
-                    "Description": self.description,
-                    "Tags": self.tags,
-                    "Price": self.price,
-                    "ImagePaths": self.imagePaths
-                },
-                function (success) { 
-                    alert("Product Added");
-                    window.location = "/admin/products";
-                },
-                function (failed) {
-                    var response = failed.responseJSON;
-                    self.messages = response.Messages;
-                    $("html, body").animate({ scrollTop: 0 }, "slow");
-                    Lib.InitialLoading(false);
-                });
-            },
-            PutProducts: function () {
-                var self = this;
-                Lib.InitialLoading(true);
-                Lib.Put("/api/products", {
-                    "Id": self.id,
-                    "Code": self.code,
-                    "Brand": self.brand,
-                    "Name": self.name,
-                    "Description": self.description,
-                    "Tags": self.tags,
-                    "Price": self.price,
-                    "ImagePaths": self.imagePaths
-                },
-                function (success) { 
-                    alert("Product Updated");
-                    Lib.InitialLoading(false);
-                },
-                function (failed) {
-                    var response = failed.responseJSON;
-                    self.messages = response.Messages;
-                    $("html, body").animate({ scrollTop: 0 }, "slow");
-                    Lib.InitialLoading(false);
-                });
-            },
-            DeleteProducts: function () {
-                var self = this;
-                Lib.InitialLoading(false);
-                Lib.Delete("/api/products", {
-                    "Id": self.id
-                },
-                function (success) { 
-                    alert("Product Deleted");
-                    window.location = "/admin/products";
-                });
-            },
-            UploadImage: function () {
-                var self = this;
-                Lib.InitialLoading(true);
-                var image = $("#image").prop("files")[0];
-                Lib.Form("/api/products/image", {
-                    "ImageFile": image
-                },
-                function (success) { 
-                    self.imagePaths.push(success.ImagePath);
-                    Lib.InitialLoading(false);
-                },
-                function (failed) {
-                    var response = failed.responseJSON;
-                    self.messages = response.Messages;
-                    Lib.InitialLoading(false);
-                });
-                $("#image").val(null);
-            },
-            Clear: function () {
-                var self = this;
-                self.code = "";
-                self.brand = "";
-                self.name = "";
-                self.description = "";
-                self.price = null;
-                self.imagePaths = [];
-            }
-        },
-        created() {
-            if (this.id != "") {
-                this.GetProduct();
-            }
-        }
-    });
-</script>
+<script src="/Resources/js/admin/products_add.js" async></script>

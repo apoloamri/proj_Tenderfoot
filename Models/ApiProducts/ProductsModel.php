@@ -62,9 +62,10 @@ class ProductsModel extends Model
     function Map() : void
     {
         $products = new Products();
-        if (HasValue($this->Id))
+        if (_::HasValue($this->Id))
         {
             $products->id = $this->Id;
+            $products->Join(new ProductInventory(), "int_product_id", "id");
             $this->Result = $products->SelectSingle();
             $images = new ProductImages();
             $images->int_product_id = $products->id;
@@ -78,7 +79,7 @@ class ProductsModel extends Model
             $products->Join(new ProductImages(), "int_product_id", "id");
             $products->Join(new ProductInventory(), "int_product_id", "id");
             $products->Join(new ProductTags(), "int_product_id", "id");
-            if (HasValue($this->SearchTag))
+            if (_::HasValue($this->SearchTag))
             {
                 $products->Where("str_tag", DB::Equal, $this->SearchTag);
             }
@@ -109,6 +110,7 @@ class ProductsModel extends Model
             if ($this->Post())
             {
                 $products->Insert();
+                $this->Id = $products->id;
                 $this->UpdateImages($products->id);
                 $this->UpdateTags($products->id);
                 $logs->str_action = Action::Created;
@@ -158,8 +160,11 @@ class ProductsModel extends Model
         $tags = array_map("trim", $tags);
         foreach ($tags as $tag)
         {
-            $productTags->str_tag = $tag;
-            $productTags->Insert();
+            if (_::HasValue($tag))
+            {
+                $productTags->str_tag = $tag;
+                $productTags->Insert();
+            }
         }
     }
 }

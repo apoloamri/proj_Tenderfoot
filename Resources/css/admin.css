@@ -189,6 +189,7 @@ textarea {
     float: left;
     width: 15%;
     min-height: 100vh;
+    position: fixed;
 }
 #adminNavigation a {
     color: white;

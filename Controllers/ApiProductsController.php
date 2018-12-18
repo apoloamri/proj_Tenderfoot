@@ -28,7 +28,7 @@ class ApiProductsController extends BaseAdminController
         $this->CheckAuthNotFound();
         $this->Initiate("ProductsModel");
         $this->Execute(Http::Post);
-        $this->Json();
+        $this->Json("Id");
     }
 
     function PostProductsImage() : void

@@ -34,6 +34,7 @@ class TrackingModel extends Model
         $orderRecords->Join($products, "str_code", "str_code");
         $orderRecords->Join($productImages, "int_product_id", "products.id");
         $orderRecords->int_order_id = $orders->id;
+        $orderRecords->GroupBy("id");
         $this->CartItems = $orderRecords->Select();
     }
 }

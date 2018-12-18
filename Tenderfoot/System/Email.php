@@ -68,7 +68,7 @@ class Email
         foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
         {
             $name = $property->getName();
-            if (StringContains("[$name]", $view))
+            if (_::StringContains("[$name]", $view))
             {
                 $newValue = (string)$this->Model->$name;
                 $view = str_replace("[$name]", "$newValue", $view);

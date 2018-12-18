@@ -2,12 +2,12 @@
 require_once "Tenderfoot/Lib/BaseModel.php";
 class Model extends BaseModel
 {
-    public 
-        $IsValid = true,
-        $Messages = null, 
-        $URI = null, 
-        $Environment = "",
-        $InvalidFields = array();
+    public $IsValid = true;
+    public $Messages = null;
+    public $URI = null;
+    public $Environment = "";
+    public $Deployment = "";
+    public $InvalidFields = array();
     function SiteUrl() : string { return Settings::SiteUrl(); }
     function SiteUrlSSL() : string { return Settings::SiteUrlSSL(); }
     function Get() : bool { return ($_SERVER['REQUEST_METHOD'] == "GET"); }

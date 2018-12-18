@@ -10,7 +10,7 @@ class CheckAuthModel extends Model
         else
         {
             $session = GetSession("admin");
-            if (!HasValue($session->SessionKey))
+            if (!_::HasValue($session->SessionKey))
             {
                 yield "Session" => GetMessage("InvalidAccess");
             }

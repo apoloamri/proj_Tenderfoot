@@ -13,7 +13,7 @@ class CartModel extends Model
     function Validate() : iterable
     {
         $sessionId = GetSession()->SessionId;
-        if (HasValue($sessionId))
+        if (_::HasValue($sessionId))
         {
             $sessions = new Sessions();
             $sessions->str_session_id = $sessionId;
@@ -60,7 +60,7 @@ class CartModel extends Model
             {
                 $carts->SelectSingle();
                 $carts->int_amount = 
-                    HasValue($this->Amount) ? 
+                    _::HasValue($this->Amount) ? 
                     $this->Amount : 
                     $carts->int_amount + 1;
                 $carts->Where("str_code", DB::Equal, $this->Code);
@@ -70,7 +70,7 @@ class CartModel extends Model
             else
             {
                 $carts->int_amount = 
-                    HasValue($this->Amount) ? 
+                    _::HasValue($this->Amount) ? 
                     $this->Amount : 
                     1;
                 $carts->Insert();

@@ -19,24 +19,12 @@
             <h1>₱<?php echo $this->Result->dbl_price; ?></h1>
             <p><?php echo $this->Result->txt_description; ?></p>
             <?php if ($this->Result->int_amount != null && $this->Result->int_amount != 0) { ?>
-                <button v-on:click="AddCart();">Add to cart</button>
+                <button v-on:click="PostCart('<?php echo $this->Result->str_code; ?>')">Add to cart</button>
             <?php } else { ?>
                 <button disabled>Out of stock</button>
             <?php } ?>
         </div>
     </div>
 </div>
+<script src="/Resources/js/front/detail.js" async></script>
 <?php $this->Partial("footer") ?>
-
-<script type="module">
-    import Lib from "/Resources/js/lib.js";
-    import Common from "/Resources/js/common.js";
-    new Vue({
-        el: "#mainContent",
-        methods: {
-            AddCart: function () {
-                Common.AddCart("<?php echo $this->Result->str_code; ?>");
-            }
-        }
-    });
-</script>

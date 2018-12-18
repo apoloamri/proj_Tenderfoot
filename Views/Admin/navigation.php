@@ -6,8 +6,9 @@
     <label class="margin-15"><a href="/admin/customers">Customers</a></label>
     <label class="margin-15"><a href="/admin/analytics">Analytics</a></label>
     <label class="margin-15"><a href="/admin/store">Store</a></label>
-    <label class="margin-15"><a v-on:click="Logout()" href="#">Logout</a></label>
+    <label class="margin-15"><a v-on:click="Logout" href="#">Logout</a></label>
 </div>
+<script src="/Resources/js/admin/navigation.js" async></script>
 
 <style>
     #shopPinLogo {
@@ -20,18 +21,3 @@
         margin-bottom: -5px;
     }
 </style>
-
-<script type="module">
-    import Lib from "/Resources/js/lib.js";
-    new Vue({
-        el: "#adminNavigation",
-        methods: {
-            Logout: function () {
-                var self = this;
-                Lib.Delete("/admin/api/logout", null,
-                function (success) { });
-                location.reload();
-            }
-        }
-    });
-</script>

@@ -20,7 +20,7 @@ class Products extends MySqlSchema
     {
         $products = new Products();
         $products->str_code = $code;
-        if (HasValue($oldCode))
+        if (_::HasValue($oldCode))
         {
             $products->Where("str_code", DB::NotEqual, $oldCode);
         }
