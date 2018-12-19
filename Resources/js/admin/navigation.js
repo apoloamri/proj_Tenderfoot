@@ -2,7 +2,6 @@ new Vue({
     el: "#adminNavigation",
     methods: {
         Logout() {
-            var self = this;
             axios
             .delete("/admin/api/logout")
             .then(function () {
