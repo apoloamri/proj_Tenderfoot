@@ -8,6 +8,7 @@ class TrackingModel extends Model
     public $OrderNumber;
     public $Result;
     public $CartItems;
+    public $Status;
     function Validate() : iterable
     {
         yield "OrderNumber" => $this->CheckInput("OrderNumber", true, Type::AlphaNumeric);
@@ -36,6 +37,11 @@ class TrackingModel extends Model
         $orderRecords->int_order_id = $orders->id;
         $orderRecords->GroupBy("id");
         $this->CartItems = $orderRecords->Select();
+        $this->Status = new stdClass();
+        $this->Status->NewOrder = $this->Result->str_order_status == OrderStatus::NewOrder;
+        $this->Status->Processed = $this->Result->str_order_status == OrderStatus::Processed;
+        $this->Status->OnDelivery = $this->Result->str_order_status == OrderStatus::OnDelivery;
+        $this->Status->Delivered = $this->Result->str_order_status == OrderStatus::Delivered;
     }
 }
 ?>

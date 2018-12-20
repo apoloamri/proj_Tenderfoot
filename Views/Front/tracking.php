@@ -11,13 +11,13 @@
             <center>
                 <h1><?php echo $this->Result->str_order_status ?></h1>
                 <br/>
-                <img src="/Resources/images/tracking-1<?php if ($this->Result->str_order_status == OrderStatus::NewOrder) echo "-active" ?>.png" />
-                <div class="progress">🡆 🡆</div>
-                <img src="/Resources/images/tracking-2<?php if ($this->Result->str_order_status == OrderStatus::Processed) echo "-active" ?>.png" />
-                <div class="progress">🡆 🡆</div>
-                <img src="/Resources/images/tracking-3<?php if ($this->Result->str_order_status == OrderStatus::OnDelivery) echo "-active" ?>.png" />
-                <div class="progress">🡆 🡆</div>
-                <img src="/Resources/images/tracking-4<?php if ($this->Result->str_order_status == OrderStatus::Delivered) echo "-active" ?>.png" />
+                <img src="/Resources/images/tracking-1<?php if ($this->Status->NewOrder) echo "-active" ?>.png" <?php if (!$this->Status->NewOrder) echo "class='hideOnMobile'" ?> />
+                <div class="hideOnMobile progress">🡆 🡆</div>
+                <img src="/Resources/images/tracking-2<?php if ($this->Status->Processed) echo "-active" ?>.png" <?php if (!$this->Status->Processed) echo "class='hideOnMobile'" ?> />
+                <div class="hideOnMobile progress">🡆 🡆</div>
+                <img src="/Resources/images/tracking-3<?php if ($this->Status->OnDelivery) echo "-active" ?>.png" <?php if (!$this->Status->OnDelivery) echo "class='hideOnMobile'" ?> />
+                <div class="hideOnMobile progress">🡆 🡆</div>
+                <img src="/Resources/images/tracking-4<?php if ($this->Status->Delivered) echo "-active" ?>.png" <?php if (!$this->Status->Delivered) echo "class='hideOnMobile'" ?> />
             </center>
         </div>
     </div>

@@ -133,7 +133,7 @@ p {
         margin: auto;
     }
     .hideOnMobile {
-        display: none;
+        display: none !important;
     }
     #mainContent {
         float: unset;

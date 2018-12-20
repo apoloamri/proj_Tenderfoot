@@ -36,7 +36,7 @@ new Vue({
             var self = this;
             Loading(true);
             axios
-            .delete("/api/orders", self.$data)
+            .delete("/api/orders", { params: { Id: self.Id } })
             .then(function () {
                 Loading(false);
                 self.GetOrder();
