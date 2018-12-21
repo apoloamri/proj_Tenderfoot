@@ -1,9 +1,8 @@
 <?php
 class BaseController
 {
-    public 
-        $Model = null,
-        $Environment = "";
+    public $Model = null;
+    public $Environment = "";
     protected function Validate() : void
     {
         $errorList = $this->Model->Validate();

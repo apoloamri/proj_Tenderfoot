@@ -5,6 +5,19 @@ class _
     {
         return strpos($haystack, $needle) !== false;
     }
+    static function StringStartsWith(string $needle, string $haystack) : bool
+    {
+        $length = strlen($needle);
+        return (substr($haystack, 0, $length) === $needle);
+    }
+    static function StringEndsWith(string $needle, string $haystack) : bool
+    {
+        $length = strlen($needle);
+        if ($length == 0) {
+            return true;
+        }
+        return (substr($haystack, -$length) === $needle);
+    }
     static function GenerateRandomString(int $length = 10) : string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -21,6 +34,18 @@ class _
         if (!isset($value))
         {
             return false;
+        }
+        else if (is_object($value))
+        {
+            return true;
+        }
+        else if (is_array($value))
+        {
+            return count($value) > 0;
+        }
+        else if (is_bool($value))
+        {
+            return true;
         }
         else if (strlen($value) == 0)
         {

@@ -34,47 +34,19 @@ class Email
                 "Cc: $emailCc";
         }
         $emailTo = join(", ", $this->EmailTo);
-        $model = $this->Model;
-        $message = $this->CompileView();
-        $subject = $this->GetTitle($message);
+        $view = new View(null, $this->Model, $this->EmailView);
         $emailSent = EmailSent::Success;
-        if (!@mail($emailTo, $subject, $message, $headers))
+        if (!@mail($emailTo, $view->Title, $view->View, $headers))
         {
             $emailSent = EmailSent::Failed;
         }
         $emails = new Emails();
-        $emails->txt_subject = $subject;
-        $emails->txt_message = $message;
+        $emails->txt_subject = $view->Title;
+        $emails->txt_message = $view->View;
         $emails->str_email = $emailTo;
         $emails->str_cc = $emailCc;
         $emails->str_email_sent = $emailSent;
         $emails->Insert();
-    }
-    private function GetTitle(string $message) : string
-    {
-        $result = preg_match("/<title>(.*)<\/title>/siU", $message, $titleMatch);
-        if (!$result) 
-        {
-            return "";
-        }
-        $title = preg_replace('/\s+/', ' ', $titleMatch[1]);
-        $title = trim($title);
-        return $title;
-    }
-    private function CompileView() : string
-    {
-        $view = file_get_contents("Emails/$this->EmailView.html");
-        $modelReflect = new ReflectionClass($this->Model);
-        foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
-        {
-            $name = $property->getName();
-            if (_::StringContains("[$name]", $view))
-            {
-                $newValue = (string)$this->Model->$name;
-                $view = str_replace("[$name]", "$newValue", $view);
-            }
-        }
-        return $view;
     }
 }
 class Emails extends MySqlSchema

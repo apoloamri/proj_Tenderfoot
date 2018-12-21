@@ -55,6 +55,8 @@ $router->Map("GET /api/store", "ApiStore", "GetStore");
 $router->Map("POST /api/store/header", "ApiStore", "PostStoreHeader");
 $router->Map("DELETE /api/store/header", "ApiStore", "DeleteStoreHeader");
 
+$router->Map("GET /api/test", "Test", "Test");
+
 //Errors
 $router->Map("GET /err/404", "Errors", "Error404");
 $router->Map("*", "Errors", "Error404");

@@ -56,9 +56,17 @@ class Controller extends BaseController
 		}
 		if (file_exists($layout))
 		{
-			$model->InitiatePage(get_class($this), $viewName);
-			header("Content-Type: text/html");
-			require_once $layout;
+			$view = new View($this, $model, $viewName);
+			if ($view->NotFound)
+			{
+				$model->InitiatePage(get_class($this), $viewName);
+				header("Content-Type: text/html");
+				require_once $layout;
+			}
+			else
+			{
+				echo $view->View;
+			}
 		}
 	}
 	protected function Redirect(string $url) : void

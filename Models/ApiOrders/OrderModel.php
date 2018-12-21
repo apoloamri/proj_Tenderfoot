@@ -149,9 +149,10 @@ class OrderModel extends Model
                 $this->AddPurchase((int)$cartItem->{'products-id'});
                 
             }
-            $carts->Delete();
             $this->OrderNumber = $orders->str_order_number;
+            $this->CartItems = $cartItems;
             $this->SendEmail();
+            $carts->Delete();
         }
         else if ($this->Put() || $this->Delete())
         {
