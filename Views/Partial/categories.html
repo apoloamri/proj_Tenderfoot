@@ -6,7 +6,7 @@
     <div class="content">
         <div class="header"><img src="/Resources/images/categories.png" class="menuImages" />Categories</div>
         <div class="links" v-for="item in Categories">
-            <a v-bind:href="'/?tag=' + item.str_tag">{{item.str_tag}}</a>
+            <a v-on:click="GetSearchTag(item.str_tag)">{{item.str_tag}}</a>
         </div>
     </div>
 </div>

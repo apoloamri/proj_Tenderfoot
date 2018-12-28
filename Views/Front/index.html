@@ -1,5 +1,5 @@
-<?php $this->Partial("menu") ?>
-<?php $this->Partial("categories") ?>
+<partial.menu/>
+<partial.categories/>
 <div id="mainContent">
     <h3 v-if="Search != ''">Search: '{{Search}}'</h3>
     <h3 v-else-if="SearchTag != ''">Items tagged: '{{SearchTag}}'</h3>
@@ -7,9 +7,9 @@
         <div v-if="Store.str_header != null && Store.str_header != ''" id="header">
             <img v-bind:src="Store.str_header" alt=""><hr/>
         </div>
+        <h1>New Products</h1>
     </div>
-    <div v-if="Search == '' && SearchTag == ''">
-        <h1>Top Trending</h1>
+    <div>
         <div class="items" v-for="item in Result">
             <center>
                 <a v-bind:href="'/detail/' + item.str_code">
@@ -28,4 +28,4 @@
     </div>
 </div>
 <script src="/Resources/js/front/index.js" async></script>
-<?php $this->Partial("footer") ?>
+<partial.footer/>

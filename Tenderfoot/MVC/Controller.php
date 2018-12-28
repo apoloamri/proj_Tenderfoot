@@ -56,12 +56,12 @@ class Controller extends BaseController
 		}
 		if (file_exists($layout))
 		{
-			$view = new View($this, $model, $viewName);
+			header("Content-Type: text/html");
+			$model->InitiatePage($this, $viewName);
+			$view = new View($this, $model, "app");
 			if ($view->NotFound)
 			{
-				$model->InitiatePage(get_class($this), $viewName);
-				header("Content-Type: text/html");
-				require_once $layout;
+				// require_once $layout;
 			}
 			else
 			{

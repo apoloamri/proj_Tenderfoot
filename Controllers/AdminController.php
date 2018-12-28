@@ -68,7 +68,7 @@ class AdminController extends BaseAdminController
             $this->Redirect("/error/404");
         }
         $this->Execute(Http::Get);
-        $this->Model->PageTitle = "Edit Product";
+        $this->Model->PageTitle = "Edit Product (ID: ".$this->Model->Id.")";
         $this->View("products_add");
     }
 

@@ -66,15 +66,11 @@
 #detailsImagesDiv {
     width: 350px;
     float: left;
+    margin-left: 20px;
+    margin-right: 20px;
 }
-#detailsImagesDiv #mainImage {
+#detailsImagesDiv .images {
     width: 350px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-#detailsImagesDiv .childImages {
-    width: 113px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -99,12 +95,11 @@
     }
     #detailsImagesDiv {
         width: 100%;
+        margin-left: unset;
+        margin-right: unset;
     }
-    #detailsImagesDiv #mainImage {
+    #detailsImagesDiv .images {
         width: 100%;
-    }
-    #detailsImagesDiv .childImages {
-        width: 32%;
     }
     #detailsContent p {
         width: unset;

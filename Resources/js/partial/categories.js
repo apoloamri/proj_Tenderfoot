@@ -13,6 +13,12 @@ new Vue({
                 self.Categories = response.data.Result;
             });
         },
+        GetSearchTag(searchTag) {
+            index.Search = "";
+            index.SearchTag = searchTag;
+            index.Count = 10;
+            index.GetProducts();
+        },
         GetTracking() {
             window.location = "/tracking/" + this.Tracking;
         }

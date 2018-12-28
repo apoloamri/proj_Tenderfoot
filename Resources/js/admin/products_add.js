@@ -1,7 +1,7 @@
-new Vue({
+var productAdd = new Vue({
     el: "#adminInnerContent",
     data: {
-        Id: window.location.pathname.split("/").pop(),
+        Id: pageId,
         Amount: 0,
         Code: "",
         Brand: "",

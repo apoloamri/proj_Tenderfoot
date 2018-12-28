@@ -1,10 +1,10 @@
-<?php $this->Partial("navigation") ?>
+<partial.navigation/>
 <div id="adminPages">
     <div id="adminContent">
         <div id="adminInnerContent">
             <div id="add">
                 <h3><a href="/admin/products">◄ Products</a></h3>
-                <h2><?php echo $this->PageTitle ?></h2>
+                <h2><PageTitle/></h2>
                 <div class="adminTable" v-if="Id != ''">
                     <h3>Inventory</h3>
                     <label>Amount</label>
@@ -64,4 +64,5 @@
         </div>
     </div>
 </div>
+<script>var pageId = "<Id/>";</script>
 <script src="/Resources/js/admin/products_add.js" async></script>

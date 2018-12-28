@@ -1,13 +1,13 @@
-new Vue({
+var index = new Vue({
     el: "#mainContent",
     data: { 
-        Search: Param("search"),
-        SearchTag: Param("tag"),
+        Search: "",
+        SearchTag: "",
         Store: {},
         Page: 1,
         Result: [],
         PageCount: 0,
-        Count: 10,
+        Count: 5,
     },
     methods: {
         Menu() { return menu; },

@@ -8,3 +8,11 @@ var order = new Vue({
         }
     }
 });
+$(document).ready(function(){
+    $('.slickImages').slick({
+        dots: true,
+        infinite: true,
+        speed: 300,
+        cssEase: 'linear'
+    });
+});

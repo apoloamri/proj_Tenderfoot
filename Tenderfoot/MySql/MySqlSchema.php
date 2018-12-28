@@ -120,7 +120,7 @@ class MySqlSchema extends BaseMySqlSchema
         }
         else
         {
-            $this->Where[] = "$this->TableName.$column $expression '".$this->Sanitize($value)."' $condition";
+            $this->Where[] = $this->TableName.".$column $expression '".$this->Sanitize($value)."' $condition";
         }
     }
     function In(string $column, array $values)

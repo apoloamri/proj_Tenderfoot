@@ -19,10 +19,10 @@ class Model extends BaseModel
     function Handle() : void { }
     function CheckInput(string $propertyName, bool $required = false, string $type = Type::All, int $length = 255) : string
     {
-        $reflect = new ReflectionClass($this);
-        $property = $reflect->getProperty($propertyName)->getValue($this);
-        if ($property == null && $required)
+        $property = $this->$propertyName;
+        if ($required && !_::HasValue($property))
         {
+            $this->InvalidFields[] = $propertyName;
             return GetMessage("RequiredField", $propertyName);
         }
         if ($type == Type::Image)
@@ -69,38 +69,56 @@ class Model extends BaseModel
         }
         return true;
     }
-    private $ControllerName, $ViewName;
-    function InitiatePage(string $controller, string $viewName) : void
+    private $Controller, $ViewName;
+    function InitiatePage($controller, string $viewName) : void
     {
-        $this->ControllerName = str_replace("Controller", "", $controller);
+        $this->Controller = $controller;
         $this->ViewName = $viewName;
     }
-    function RenderPage() : void
+    function RenderPage() : string
     {
-        $view = "Views/$this->ControllerName/$this->ViewName.php";
-        if (file_exists($view))
-		{
-			header("Content-Type: text/html");
-			require_once $view;
-		}
-    }
-    function Partial(string $partialView) : void
-    {
-        $view = "Views/$this->ControllerName/$partialView.php";
-        if (file_exists($view))
-		{
-			header("Content-Type: text/html");
-			require_once $view;
+        $view = new View($this->Controller, $this, $this->ViewName);
+        if ($view->NotFound)
+        {
+            // $view = "Views/$this->Controller/$this->ViewName.php";
+            // if (file_exists($view))
+            // {
+            //     header("Content-Type: text/html");
+            //     require_once $view;
+            // }
         }
         else
         {
-            $view = "Views/Partial/$partialView.php";
-            if (file_exists($view))
-            {
-                header("Content-Type: text/html");
-                require_once $view;
-            }
+            return $view->View;
         }
+        return "";
+    }
+    function Partial(string $partialView) : string
+    {
+        $view = new View($this->Controller, $this, $partialView);
+        if ($view->NotFound)
+        {
+            // $view = "Views/$this->Controller/$partialView.php";
+            // if (file_exists($view))
+            // {
+            //     header("Content-Type: text/html");
+            //     require_once $view;
+            // }
+            // else
+            // {
+            //     $view = "Views/Partial/$partialView.php";
+            //     if (file_exists($view))
+            //     {
+            //         header("Content-Type: text/html");
+            //         require_once $view;
+            //     }
+            // }
+        }
+        else
+        {
+            return $view->View;
+        }
+        return "";
     }
     function SaveTempFile(array $fileArray) : string
     {

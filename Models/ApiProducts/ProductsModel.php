@@ -62,26 +62,27 @@ class ProductsModel extends Model
     function Map() : void
     {
         $products = new Products();
+        $inventory = new ProductInventory();
+        $images = new ProductImages();
+        $tags = new ProductTags();
         if (_::HasValue($this->Id))
         {
             $products->id = $this->Id;
-            $products->Join(new ProductInventory(), "int_product_id", "id");
+            $products->Join($inventory, "int_product_id", "id");
             $this->Result = $products->SelectSingle();
-            $images = new ProductImages();
             $images->int_product_id = $products->id;
             $this->Result->ImagePaths = $images->GetImages();
-            $tags = new ProductTags();
             $tags->int_product_id = $products->id;
             $this->Result->Tags = $tags->GetTags();
         }
         else
         {
-            $products->Join(new ProductImages(), "int_product_id", "id");
-            $products->Join(new ProductInventory(), "int_product_id", "id");
-            $products->Join(new ProductTags(), "int_product_id", "id");
+            $products->Join($images, "int_product_id", "id");
+            $products->Join($inventory, "int_product_id", "id");
+            $products->Join($tags, "int_product_id", "id");
             if (_::HasValue($this->SearchTag))
             {
-                $products->Where("str_tag", DB::Equal, $this->SearchTag);
+                $products->Where("product_tags.str_tag", DB::Equal, $this->SearchTag);
             }
             else
             {

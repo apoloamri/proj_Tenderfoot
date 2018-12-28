@@ -39,12 +39,13 @@ var menu = new Vue({
             });
         },
         GetSearch() {
-            window.location = "/?search=" + this.Search;
+            index.Search = this.Search;
+            index.SearchTag = "";
+            index.Count = 10;
+            index.GetProducts();
         }
     },
     created() {
-        window.addEventListener("load", () => {
-            this.GetCart();
-        });
+        this.GetCart();
     }
 });
