@@ -9,6 +9,7 @@ var productAdd = new Vue({
         Description: "",
         Tags: "",
         Price: 0,
+        SalePrice: 0,
         ImagePaths: [],
         Messages: []
     },
@@ -26,6 +27,7 @@ var productAdd = new Vue({
                 self.Description = response.data.Result.txt_description;
                 self.Tags = response.data.Result.Tags;
                 self.Price = response.data.Result.dbl_price;
+                self.SalePrice = response.data.Result.dbl_sale_price;
                 if (response.data.Result.ImagePaths != null) {
                     self.ImagePaths = response.data.Result.ImagePaths;
                 }

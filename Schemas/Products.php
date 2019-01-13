@@ -10,6 +10,7 @@ class Products extends MySqlSchema
     public $str_name;
     public $txt_description;
     public $dbl_price;
+    public $dbl_sale_price;
     function IdExists(int $id) : bool
     {
         $products = new Products();

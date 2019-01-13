@@ -58,6 +58,8 @@ class Settings
 	//Site
 	static function FilePath() : string { return self::GetSettings("FilePath"); }
 	static function FilePathTemp() : string { return self::GetSettings("FilePathTemp"); }
+	static function MetaKeywords() : string { return self::GetSettings("MetaKeywords"); }
+	static function MetaDescription() : string { return self::GetSettings("MetaDescription"); }
 	static function Session() : string { return self::GetSettings("Session"); }
 	static function SiteUrl() : string { return self::GetSettings("SiteUrl"); }
 	static function SiteUrlSSL() : string { return self::GetSettings("SiteUrlSSL"); }

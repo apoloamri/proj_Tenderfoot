@@ -16,7 +16,8 @@
                     <div class="image" v-bind:style="'background-image: url(' + item.str_path + ')'"></div>
                     <div class="content">
                         <label class="font-17">{{item.str_name}}</label><br/>
-                        <label class="font-15">₱{{item.dbl_price}}</label>
+                        <label class="font-15" v-if="item.dbl_sale_price != null && item.dbl_sale_price != 0">₱{{item.dbl_sale_price}}</label>
+                        <label class="font-15" v-bind:style="item.dbl_sale_price != null && item.dbl_sale_price != 0 ? 'text-decoration: line-through;' : ''">₱{{item.dbl_price}}</label>
                     </div>
                 </a>
                 <button v-on:click="Menu().PostCart(item.str_code)" :disabled="item.int_amount == null || item.int_amount == 0">

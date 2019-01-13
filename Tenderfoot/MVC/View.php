@@ -21,12 +21,16 @@ class View extends BaseView
     }
     private function CompileView() : void
     {
-        $controllerName =  str_replace("Controller", "", get_class($this->Controller));
+        $controllerName = "";
+        if (_::HasValue($this->Controller))
+        {
+            $controllerName = str_replace("Controller", "", get_class($this->Controller));
+        }
         $this->View = 
             file_exists("Views/$this->ViewFile.html") ? 
             file_get_contents("Views/$this->ViewFile.html") :
             "";
-        if (!_::HasValue($this->View))
+        if (!_::HasValue($this->View) && _::HasValue($controllerName))
         {
             $this->View = 
                 file_exists("Views/$controllerName/$this->ViewFile.html") ?

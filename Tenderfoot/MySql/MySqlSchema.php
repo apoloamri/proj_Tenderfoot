@@ -98,10 +98,17 @@ class MySqlSchema extends BaseMySqlSchema
      */
     function Join($schema, string $joinColumn, string $parentColumn)
     {
-        $parentColumn = 
-            _::StringContains("-", $parentColumn) ? "'$parentColumn'" : 
-            _::StringContains(".", $parentColumn) ? "$parentColumn" : 
-            "$this->TableName.$parentColumn";
+        if (_::StringContains("->", $parentColumn))
+        {
+            $parentColumn = str_replace("->", ".", $parentColumn);
+        }
+        else
+        {
+            $parentColumn = 
+                _::StringContains("-", $parentColumn) ? 
+                "'$parentColumn'" : 
+                "$this->TableName.$parentColumn";
+        }
         $this->Join[] = "LEFT JOIN $schema->TableName ON $parentColumn = $schema->TableName.$joinColumn";
         $this->JoinSchema[] = $schema;
     }

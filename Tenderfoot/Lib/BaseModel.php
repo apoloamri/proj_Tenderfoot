@@ -1,11 +1,18 @@
 <?php 
 class BaseModel 
 {
+    public $IsValid = true;
+    public $Messages = null;
+    public $URI = null;
+    public $Environment = "";
+    public $Deployment = "";
+    public $InvalidFields = array();
     public function __construct()
     {
         $this->BindModel();
+        $this->MetaKeywords = Settings::MetaKeywords();
+        $this->MetaDescription = Settings::MetaDescription();
     }
-
     private function BindModel() : void
     {
         $reflect = new ReflectionClass($this);
@@ -34,6 +41,19 @@ class BaseModel
                 }
             }
         }   
+    }
+    public $MetaKeywords = "";
+    public $MetaDescription = "";
+    function AddMetaKeywords(string ...$keywords) : void
+    {
+        $this->MetaKeywords = "$this->MetaKeywords, ".join(", ", $keywords);
+    }
+    function AddMetaDescription(string $description) : void
+    {
+        if (_::HasValue($description))
+        {
+            $this->MetaDescription = _::StringClip($description, 300);
+        }
     }
 }
 ?>

@@ -1,8 +1,8 @@
 var index = new Vue({
     el: "#mainContent",
     data: { 
-        Search: "",
-        SearchTag: "",
+        Search: Param("search"),
+        SearchTag: Param("tag"),
         Store: {},
         Page: 1,
         Result: [],

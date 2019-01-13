@@ -82,6 +82,13 @@
 #detailsContent p {
     width: 440px;
 }
+#detailsContent .price h1 {
+    display: inline-block;
+}
+#detailsContent .price h3 {
+    display: inline-block;
+    text-decoration: line-through;
+}
 /* ----------------- */
 /* ITEM DETAIL - END */
 /* ----------------- */

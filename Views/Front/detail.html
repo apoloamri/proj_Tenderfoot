@@ -20,7 +20,14 @@
             <Result>
                 <h2><Result.str_name/></h2>
                 <h3><Result.str_brand/></h3>
-                <h1>₱<Result.dbl_price/></h1>
+                <div class="price">
+                    <if.Result.dbl_sale_price equals="0">
+                        <h1>₱<Result.dbl_price/></h1>
+                        <else.Result.dbl_sale_price/>
+                        <h1>₱<Result.dbl_sale_price/></h1>
+                        <strike><h3>₱<Result.dbl_price/></h3></strike>
+                    </if.Result.dbl_sale_price>
+                </div>
                 <p><Result.txt_description/></p>
                 <if.Result.int_amount notEquals="0">
                     <button v-on:click="PostCart('<Result.str_code/>')">Add to cart</button>    

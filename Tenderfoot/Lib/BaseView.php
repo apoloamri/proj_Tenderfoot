@@ -18,87 +18,84 @@ class BaseView
             {
                 $view = str_replace("<$property/>", "$value", $view);
             }
-            else
+            $ifResult = preg_match_all("/<if\.$property([\s\S]*?)>([\s\S]*?)<\/if\.$property>/", $view, $ifMatch);
+            if ($ifResult)
             {
-                $ifResult = preg_match_all("/<if\.$property([\s\S]*?)>([\s\S]*?)<\/if\.$property>/", $view, $ifMatch);
-                if ($ifResult)
+                foreach ($ifMatch[0] as $match)
                 {
-                    foreach ($ifMatch[0] as $match)
+                    $equals = $this->GetEqualsValue($match);
+                    $notEquals = $this->GetNotEqualsValue($match);
+                    if (is_bool($model->$name) && $model->$name)
                     {
-                        $equals = $this->GetEqualsValue($match);
-                        $notEquals = $this->GetNotEqualsValue($match);
-                        if (is_bool($model->$name) && $model->$name)
+                        $value = $this->GetIfValue($view, $property, $match);
+                        if (_::HasValue($value))
                         {
-                            $value = $this->GetIfValue($view, $property, $match);
-                            if (_::HasValue($value))
-                            {
-                                $view = $value;
-                            }
+                            $view = $value;
+                        }
+                        continue;
+                    }
+                    else if (
+                        !is_bool($model->$name) && 
+                        _::HasValue($equals) && 
+                        $model->$name == $equals)
+                    {
+                        $value = $this->GetIfValue($view, $property, $match);
+                        if (_::HasValue($value))
+                        {
+                            $view = $value;
+                        }
+                        continue;
+                    }
+                    else if (
+                        !is_bool($model->$name) && 
+                        _::HasValue($notEquals) && 
+                        $model->$name != $notEquals)
+                    {
+                        $value = $this->GetIfValue($view, $property, $match);
+                        if (_::HasValue($value))
+                        {
+                            $view = $value;
+                        }
+                        continue;
+                    }
+                    else if (_::StringContains("<else.$property/>", $match))
+                    {
+                        $result = preg_match_all("/<else\.$property\/>([\s\S]*?)<\/if\.$property>/", $match, $elseMatch);
+                        if (!$result)
+                        {
                             continue;
                         }
-                        else if (
-                            !is_bool($model->$name) && 
-                            _::HasValue($equals) && 
-                            $model->$name == $equals)
-                        {
-                            $value = $this->GetIfValue($view, $property, $match);
-                            if (_::HasValue($value))
-                            {
-                                $view = $value;
-                            }
-                            continue;
-                        }
-                        else if (
-                            !is_bool($model->$name) && 
-                            _::HasValue($notEquals) && 
-                            $model->$name != $notEquals)
-                        {
-                            $value = $this->GetIfValue($view, $property, $match);
-                            if (_::HasValue($value))
-                            {
-                                $view = $value;
-                            }
-                            continue;
-                        }
-                        else if (_::StringContains("<else.$property/>", $match))
-                        {
-                            $result = preg_match_all("/<else\.$property\/>([\s\S]*?)<\/if\.$property>/", $match, $elseMatch);
-                            if (!$result)
-                            {
-                                continue;
-                            }
-                            $view = str_replace($match, $elseMatch[1][0], $view);
-                        }
+                        $view = str_replace($match, $elseMatch[1][0], $view);
                     }
                 }
-                $objResult = preg_match_all("/<$property>([\s\S]*?)<\/$property>/", $view, $objMatch);
-                if ($objResult)
+            }
+            $objResult = preg_match_all("/<$property>([\s\S]*?)<\/$property>/", $view, $objMatch);
+            if ($objResult)
+            {
+                foreach ($objMatch[0] as $match)
                 {
-                    foreach ($objMatch[0] as $match)
-                    {
-                        $objView = $this->GetValues($model->$name, $property, $match);
-                        $view = str_replace($match, _::StringBetween($objView, "<$property>", "</$property>"), $view);
-                    }
+                    $objView = $this->GetValues($model->$name, $property, $match);
+                    $view = str_replace($match, _::StringBetween($objView, "<$property>", "</$property>"), $view);
                 }
-                $foreachResult = preg_match_all("/<foreach\.$property>([\s\S]*?)<\/foreach\.$property>/", $view, $foreachMatch);
-                if ($foreachResult)
+            }
+            $foreachResult = preg_match_all("/<foreach\.$property>([\s\S]*?)<\/foreach\.$property>/", $view, $foreachMatch);
+            if ($foreachResult)
+            {
+                foreach ($foreachMatch[1] as $index => $match)
                 {
-                    foreach ($foreachMatch[1] as $index => $match)
+                    $subViews = array();
+                    foreach ($model->$name as $subModel)
                     {
-                        $subViews = array();
-                        foreach ($model->$name as $subModel)
+                        if (is_object($subModel))
                         {
-                            if (is_object($subModel))
-                            {
-                                $subViews[] = $this->GetValues($subModel, $name, $match);
-                            }
-                            else
-                            {
-                                $subViews[] = str_replace("<$property.$name/>", $subModel, $match);
-                            }
+                            $subViews[] = $this->GetValues($subModel, $name, $match);
                         }
-                        $view = str_replace($foreachMatch[0][$index], join(" ", $subViews), $view);   
+                        else
+                        {
+                            $subViews[] = str_replace("<$property.$name/>", $subModel, $match);
+                        }
                     }
+                    $view = str_replace($foreachMatch[0][$index], join(" ", $subViews), $view);   
                 }
             }
         }

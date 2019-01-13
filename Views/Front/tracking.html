@@ -3,21 +3,40 @@
 <div id="mainContent">
     <div id="breadCrumbs">
         <a href="/">Home</a> › 
-        Tacking: <?php echo $this->URI[2]; ?>
+        Tacking › 
+        <OrderNumber/>
     </div>
     <hr/>
     <div id="tracking">
         <div>
             <center>
-                <h1><?php echo $this->Result->str_order_status ?></h1>
+                <h1><Result><Result.str_order_status/></Result></h1>
                 <br/>
-                <img src="/Resources/images/tracking-1<?php if ($this->Status->NewOrder) echo "-active" ?>.png" <?php if (!$this->Status->NewOrder) echo "class='hideOnMobile'" ?> />
-                <div class="hideOnMobile progress">🡆 🡆</div>
-                <img src="/Resources/images/tracking-2<?php if ($this->Status->Processed) echo "-active" ?>.png" <?php if (!$this->Status->Processed) echo "class='hideOnMobile'" ?> />
-                <div class="hideOnMobile progress">🡆 🡆</div>
-                <img src="/Resources/images/tracking-3<?php if ($this->Status->OnDelivery) echo "-active" ?>.png" <?php if (!$this->Status->OnDelivery) echo "class='hideOnMobile'" ?> />
-                <div class="hideOnMobile progress">🡆 🡆</div>
-                <img src="/Resources/images/tracking-4<?php if ($this->Status->Delivered) echo "-active" ?>.png" <?php if (!$this->Status->Delivered) echo "class='hideOnMobile'" ?> />
+                <Status>
+                    <if.Status.NewOrder>
+                        <img src="/Resources/images/tracking-1-active.png" />
+                        <else.Status.NewOrder/>
+                        <img src="/Resources/images/tracking-1.png" class="hideOnMobile" />
+                    </if.Status.NewOrder>
+                    <div class="hideOnMobile progress">🡆 🡆</div>
+                    <if.Status.Processed>
+                        <img src="/Resources/images/tracking-2-active.png" />
+                        <else.Status.Processed/>
+                        <img src="/Resources/images/tracking-2.png" class="hideOnMobile" />
+                    </if.Status.Processed>
+                    <div class="hideOnMobile progress">🡆 🡆</div>
+                    <if.Status.OnDelivery>
+                        <img src="/Resources/images/tracking-3-active.png" />
+                        <else.Status.OnDelivery/>
+                        <img src="/Resources/images/tracking-3.png" class="hideOnMobile" />
+                    </if.Status.OnDelivery>
+                    <div class="hideOnMobile progress">🡆 🡆</div>
+                    <if.Status.Delivered>
+                        <img src="/Resources/images/tracking-4-active.png" />
+                        <else.Status.Delivered/>
+                        <img src="/Resources/images/tracking-4.png" class="hideOnMobile" />
+                    </if.Status.Delivered>
+                </Status>
             </center>
         </div>
     </div>
@@ -29,17 +48,17 @@
                     <th width="60%">Item brand / name</th>
                     <th width="30%">Price</th>
                 </tr>
-                <?php foreach ($this->CartItems as $item) { ?>
-                <tr>
-                    <td><div class="cartImage" style="background-image:url('<?php echo $item->str_path ?>')"></div></td>
-                    <td><a href="/detail/<?php echo $item->str_code ?>"><?php echo $item->str_brand ?> - <?php echo $item->str_name ?></a></td>
-                    <td>₱<?php echo $item->dbl_price ?> x <?php echo $item->int_amount ?></td>
-                </tr>
-                <?php } ?>
+                <foreach.CartItems>
+                    <tr>
+                        <td><div class="cartImage" style="background-image:url('<CartItems.str_path/>')"></div></td>
+                        <td><a href="/detail/<CartItems.str_code/>"><CartItems.str_brand/> - <CartItems.str_name/></a></td>
+                        <td>₱<CartItems.dbl_price/> x <CartItems.int_amount/></td>
+                    </tr>
+                </foreach.CartItems>
                 <tr>
                     <td></td>
                     <td>Total price:</td>
-                    <td>₱<?php echo $this->Result->dbl_total ?></td>
+                    <td>₱<Result><Result.dbl_total/></Result></td>
                 </tr>
             </table>
         </center>
@@ -47,10 +66,12 @@
     <div id="contactInformation"> 
         <h3>Delivery Address</h3>
         <p>
-            <?php echo $this->Result->str_address ?>, 
-            <?php echo $this->Result->str_barangay ?>, 
-            <?php echo $this->Result->str_city ?>, 
-            <?php echo $this->Result->str_postal ?>
+            <Result>
+                <Result.str_address/>,
+                <Result.str_barangay/>,
+                <Result.str_city/>,
+                <Result.str_postal/>
+            </Result>
         </p>
     </div>
 </div>

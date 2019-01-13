@@ -31,6 +31,11 @@ class DetailModel extends Model
         $products->Join(new ProductInventory(), "int_product_id", "id");
         $products->str_code = $this->Code;
         $this->Result = $products->SelectSingle();
+        $this->AddMetaKeywords(
+            $this->Result->str_code,
+            $this->Result->str_brand,
+            $this->Result->str_name);
+        $this->AddMetaDescription($this->Result->txt_description);
     }
     function GetImages() : void
     {

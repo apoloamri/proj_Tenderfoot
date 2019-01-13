@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Thank you for shopping at ShopPin [FirstName]!</title>
+    <title>Thank you for shopping at ShopPin <FirstName/>!</title>
 </head>
 <body>
-    Hello there [FirstName] [LastName]!<br/>
+    Hello there <FirstName/> <LastName/>!<br/>
     Thank you for trusting ShopPin!<br/>
     <br/>
     Below is your order details. Please wait 1-3 days for your order to be delivered.<br/>
     <br/>
     <h3>Items</h3>
-    [foreach.start.CartItems]
-        [.CartItems.str_brand] [.CartItems.str_name] - [.CartItems.dbl_price]<br/>
-    [foreach.end.CartItems]
+    <foreach.CartItems>
+        <CartItems.str_brand/> <CartItems.str_name/> - <CartItems.dbl_price/> (x <CartItems.int_amount/>)<br/>
+    </foreach.CartItems>
     <hr/>
-    Order number: [OrderNumber]<br/>
-    Total price: [Total]<br/>
+    Order number: <OrderNumber/><br/>
+    Total price: <Total/><br/>
     <br/>
-    You can track your order at [Url]/tracking/[OrderNumber].<br/>
+    You can track your order at <Url/>/tracking/<OrderNumber/>.<br/>
     Have a nice day!
 </body>
 </html>

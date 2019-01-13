@@ -59,7 +59,7 @@
         <center><h2>Order Completed!</h2></center>
         <p>Congratulations {{LastName}}, {{FirstName}}!</p>
         <p>Your order is now being processed. Please wait for a text message for your order fulfillment and shipping status.</p>
-        <p>Your order number: <b>{{OrderNumber}}</b>. When there are problems, please use this order number when you contact us.</p>
+        <p>Your order number: <b><a v-bind:href="'/tracking/' + OrderNumber">{{OrderNumber}}</a></b>. When there are problems, please use this order number when you contact us.</p>
         <center><button onclick="window.location='/';">Return to homepage.</button></center>
     </div>
 </div>

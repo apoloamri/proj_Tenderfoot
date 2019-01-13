@@ -12,6 +12,10 @@ var menu = new Vue({
             .post("/api/cart", { "Code": itemCode })
             .then(function () {
                 self.GetCart();
+                $("#addedCartModal")
+                    .show()
+                    .delay(2000)
+                    .fadeOut();
             })
             .catch(function (error) {
                 console.log(error);
@@ -39,10 +43,15 @@ var menu = new Vue({
             });
         },
         GetSearch() {
-            index.Search = this.Search;
-            index.SearchTag = "";
-            index.Count = 10;
-            index.GetProducts();
+            if (typeof index != "undefined") {
+                index.Search = this.Search;
+                index.SearchTag = "";
+                index.Count = 10;
+                index.GetProducts();
+            }
+            else {
+                window.location = "/?search=" + this.Search;
+            }
         }
     },
     created() {

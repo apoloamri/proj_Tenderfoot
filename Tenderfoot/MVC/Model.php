@@ -2,12 +2,6 @@
 require_once "Tenderfoot/Lib/BaseModel.php";
 class Model extends BaseModel
 {
-    public $IsValid = true;
-    public $Messages = null;
-    public $URI = null;
-    public $Environment = "";
-    public $Deployment = "";
-    public $InvalidFields = array();
     function SiteUrl() : string { return Settings::SiteUrl(); }
     function SiteUrlSSL() : string { return Settings::SiteUrlSSL(); }
     function Get() : bool { return ($_SERVER['REQUEST_METHOD'] == "GET"); }
@@ -69,7 +63,8 @@ class Model extends BaseModel
         }
         return true;
     }
-    private $Controller, $ViewName;
+    private $Controller;
+    private $ViewName;
     function InitiatePage($controller, string $viewName) : void
     {
         $this->Controller = $controller;
@@ -80,12 +75,7 @@ class Model extends BaseModel
         $view = new View($this->Controller, $this, $this->ViewName);
         if ($view->NotFound)
         {
-            // $view = "Views/$this->Controller/$this->ViewName.php";
-            // if (file_exists($view))
-            // {
-            //     header("Content-Type: text/html");
-            //     require_once $view;
-            // }
+            //Fix notfound page here.
         }
         else
         {
@@ -98,21 +88,7 @@ class Model extends BaseModel
         $view = new View($this->Controller, $this, $partialView);
         if ($view->NotFound)
         {
-            // $view = "Views/$this->Controller/$partialView.php";
-            // if (file_exists($view))
-            // {
-            //     header("Content-Type: text/html");
-            //     require_once $view;
-            // }
-            // else
-            // {
-            //     $view = "Views/Partial/$partialView.php";
-            //     if (file_exists($view))
-            //     {
-            //         header("Content-Type: text/html");
-            //         require_once $view;
-            //     }
-            // }
+            //Fix notfound page here.
         }
         else
         {

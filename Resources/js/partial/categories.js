@@ -14,10 +14,15 @@ new Vue({
             });
         },
         GetSearchTag(searchTag) {
-            index.Search = "";
-            index.SearchTag = searchTag;
-            index.Count = 10;
-            index.GetProducts();
+            if (typeof index != "undefined") {
+                index.Search = "";
+                index.SearchTag = searchTag;
+                index.Count = 10;
+                index.GetProducts();
+            }
+            else {
+                window.location = "/?tag=" + searchTag;    
+            }
         },
         GetTracking() {
             window.location = "/tracking/" + this.Tracking;

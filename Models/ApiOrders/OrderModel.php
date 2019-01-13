@@ -141,6 +141,10 @@ class OrderModel extends Model
             {
                 $orderRecords = new OrderRecords();
                 $orderRecords->OverwriteWithModel($cartItem);
+                $orderRecords->dbl_price = 
+                    $cartItem->dbl_sale_price != 0 ? 
+                    $cartItem->dbl_sale_price : 
+                    $cartItem->dbl_price;
                 $orderRecords->int_order_id = $orders->id;
                 $orderRecords->int_product_id = $cartItem->{'products-id'};
                 $orderRecords->dbl_total_price = (int)$orderRecords->int_amount * (int)$orderRecords->dbl_price;
@@ -203,7 +207,10 @@ class OrderModel extends Model
         $price = 0;
         foreach ($cartItems as $item)
         {
-            $price += $item->int_amount * $item->dbl_price;
+            $price += $item->int_amount * (
+                $item->dbl_sale_price != 0 ? 
+                $item->dbl_sale_price : 
+                $item->dbl_price);
         }
         return $price;
     }

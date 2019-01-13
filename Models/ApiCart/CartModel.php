@@ -34,7 +34,7 @@ class CartModel extends Model
         $products = new Products();
         $productImages = new ProductImages();
         $carts->Join($products, "str_code", "str_code");
-        $carts->Join($productImages, "int_product_id", "products.id");
+        $carts->Join($productImages, "int_product_id", "products->id");
         $carts->str_session_id = GetSession()->SessionId;
         $carts->GroupBy("id");
         $this->Result = $carts->Select();
@@ -43,7 +43,10 @@ class CartModel extends Model
         foreach ($this->Result as $item)
         {
             $amount += $item->int_amount;
-            $price += $item->int_amount * $item->dbl_price;
+            $price += $item->int_amount * (
+                $item->dbl_sale_price != null && $item->dbl_sale_price != 0 ? 
+                $item->dbl_sale_price : 
+                $item->dbl_price);
         }
         $this->Count = $amount;
         $this->Total = $price;

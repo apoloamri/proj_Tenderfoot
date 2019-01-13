@@ -28,6 +28,7 @@ var order = new Vue({
             })
             .catch(function (error) {
                 self.Messages = error.response.data.Messages;
+                $("html, body").animate({ scrollTop: 0 }, "slow");
                 Loading(false);
             });
         }

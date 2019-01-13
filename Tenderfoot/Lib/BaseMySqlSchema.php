@@ -1,8 +1,12 @@
 <?php 
 class BaseMySqlSchema
 {
-    public $id, $dat_insert_time, $dat_update_time;
-    protected $Columns, $Connect, $TableName;
+    public $id; 
+    public $dat_insert_time;
+    public $dat_update_time;
+    protected $Columns;
+    protected $Connect;
+    protected $TableName;
     protected function InitializeConnection()
     {
         $connection = Settings::ConnectionString();

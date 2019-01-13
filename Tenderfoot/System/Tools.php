@@ -27,6 +27,14 @@ class _
         }
         return (substr($haystack, -$length) === $needle);
     }
+    static function StringClip(string $subject, int $count) : string
+    {
+        if (strlen($subject) > $count)
+        {
+            return substr($subject, 0, $count);
+        }
+        return $subject;
+    }
     static function GenerateRandomString(int $length = 10) : string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

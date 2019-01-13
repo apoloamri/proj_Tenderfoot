@@ -22,6 +22,7 @@ class ProductsModel extends Model
     public $Description;
     public $Tags;
     public $Price;
+    public $SalePrice;
     public $ImagePaths;
     function Validate() : iterable
     {
@@ -108,6 +109,7 @@ class ProductsModel extends Model
             $products->str_name = $this->Name;
             $products->txt_description = $this->Description;
             $products->dbl_price = $this->Price;
+            $products->dbl_sale_price = $this->SalePrice;
             if ($this->Post())
             {
                 $products->Insert();

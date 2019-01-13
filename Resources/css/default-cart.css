@@ -31,6 +31,14 @@
 /* ------------------ */
 /* ORDER MENU - START */
 /* ------------------ */
+#addedCartModal {
+    background-color: #E6E6E6;
+    box-shadow: 0px 0px 20px -2px black;
+    padding: 10px 50px;
+    position: fixed;
+    right: 5px;
+    top: 5px;
+}
 #contactInformation,
 #cartInformation {
     width: 45%;
@@ -112,5 +120,10 @@
     }
     #contactInformation .short {
         width: 60% !important;
+    }
+    .cartTable {
+        width: 100%;
+        padding: unset;
+        margin: unset !important;
     }
 }

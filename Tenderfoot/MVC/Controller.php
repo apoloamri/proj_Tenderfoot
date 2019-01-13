@@ -45,7 +45,7 @@ class Controller extends BaseController
 	}
 	protected function View(string $viewName) : void
 	{
-		$layout = "Views/app.php";
+		$layout = "Views/app.html";
 		if ($this->Model == null)
 		{
 			$model = new Model();

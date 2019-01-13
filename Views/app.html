@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="<MetaKeywords/>"/>
+    <meta name="description" content="<MetaDescription/>"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ShopPin</title>
     
@@ -36,13 +38,15 @@
     <div id="container">
         <renderPage/>
     </div>
-
     <if.Environment equals="admin">
         <div id="loading" style="display:none;">
             <div class="display">Please wait...</div>
         </div>
         <else.Environment/>
         <div id="loading" style="display:none;"></div>
+        <div id="addedCartModal" class="modal">
+            <h2>Item added to cart!</h2>
+        </div>
     </if.Environment>
 </body>
 </html>
