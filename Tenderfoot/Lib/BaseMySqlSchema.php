@@ -48,6 +48,7 @@ class BaseMySqlSchema
             $columns = join(", ", $columns);
             $query = "CREATE TABLE $this->TableName ($columns);";
             $this->Execute($query);
+            $this->Migration($query);
         }
     }
     protected function UpdateColumns() : void
@@ -69,7 +70,8 @@ class BaseMySqlSchema
         {
             foreach ($alterColumns as $query)
             {
-                $this->Execute($query);   
+                $this->Execute($query);
+                $this->Migration($query);
             }
         }
     }
@@ -238,6 +240,11 @@ class BaseMySqlSchema
     protected function Sanitize($value) : string 
     {
         return mysqli_escape_string($this->Connect, $value);
+    }
+    private function Migration(string $query)
+    {
+        $migrationLog = "--"._::Now()."\r\n$query\r\n";
+        file_put_contents("migrations.txt", $migrationLog.PHP_EOL , FILE_APPEND | LOCK_EX);   
     }
 }
 class DB

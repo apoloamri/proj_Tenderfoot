@@ -1,0 +1,6 @@
+--2019/01/13 14:16:41
+CREATE TABLE sessions (str_session_id VARCHAR(255), str_session_key VARCHAR(255), dat_session_time DATETIME, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+--2019/01/13 14:16:43
+CREATE TABLE carts (str_session_id VARCHAR(255), str_code VARCHAR(255), int_amount INT, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
