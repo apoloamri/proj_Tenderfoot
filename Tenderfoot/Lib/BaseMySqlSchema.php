@@ -245,7 +245,7 @@ class BaseMySqlSchema
     }
     private function Migration(string $query)
     {
-        $migrationLog = "--"._::Now()."\r\n$query\r\n";
+        $migrationLog = "-- "._::Now()."\r\n$query\r\n";
         file_put_contents("migrations.txt", $migrationLog.PHP_EOL , FILE_APPEND | LOCK_EX);   
     }
 }
