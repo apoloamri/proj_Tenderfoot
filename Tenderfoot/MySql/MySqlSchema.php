@@ -250,8 +250,8 @@ class InformationSchemaTables extends MySqlSchema
     {
         parent::__construct("INFORMATION_SCHEMA.TABLES", false);
     }
-    public $SCHEMA_NAME;
     public $TABLE_NAME;
+    public $TABLE_SCHEMA;
     public $COLUMN_NAME;
 }
 class InformationSchemaColumns extends MySqlSchema
@@ -260,8 +260,8 @@ class InformationSchemaColumns extends MySqlSchema
     {
         parent::__construct("INFORMATION_SCHEMA.COLUMNS", false);
     }
-    public $SCHEMA_NAME;
     public $TABLE_NAME;
+    public $TABLE_SCHEMA;
     public $COLUMN_NAME;
 }
 class Sessions extends MySqlSchema

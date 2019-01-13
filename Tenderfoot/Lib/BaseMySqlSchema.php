@@ -37,6 +37,7 @@ class BaseMySqlSchema
     protected function CreateTable() : void
     {
         $table = new InformationSchemaTables();
+        $table->TABLE_SCHEMA = Settings::Database();
         $table->TABLE_NAME = $this->TableName;
         if ($table->Count("TABLE_NAME") == 0)
         {
@@ -58,6 +59,7 @@ class BaseMySqlSchema
         {
             $columnName = $property->getName();
             $table = new InformationSchemaColumns();
+            $table->TABLE_SCHEMA = Settings::Database();
             $table->TABLE_NAME = $this->TableName;
             $table->COLUMN_NAME = $columnName;
             if ($table->Count("COLUMN_NAME") == 0)

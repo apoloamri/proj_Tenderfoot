@@ -46,6 +46,7 @@ class ProductsModel extends Model
             yield "Description" => $this->CheckInput("Description", false, Type::All, 1000);
             yield "Tags" => $this->CheckInput("Tags", false, Type::All, 255);
             yield "Price" => $this->CheckInput("Price", true, Type::Currency, 25);
+            yield "SalePrice" => $this->CheckInput("SalePrice", true, Type::Currency, 25);
             if ($this->IsValid("Code"))
             {
                 $products = new Products();
