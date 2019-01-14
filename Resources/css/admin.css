@@ -7,6 +7,7 @@ body {
     background-color: #35393E;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     margin: auto;
+    min-width: 1300px;
 }
 
 button {
@@ -189,7 +190,6 @@ textarea {
     float: left;
     width: 15%;
     min-height: 100vh;
-    position: fixed;
 }
 #adminNavigation a {
     color: white;

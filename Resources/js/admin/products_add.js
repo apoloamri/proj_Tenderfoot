@@ -58,6 +58,7 @@ var productAdd = new Vue({
             axios
             .put("/api/products", self.$data)
             .then(function () { 
+                self.Messages = [];
                 alert("Product Updated");
                 Loading(false);
             })

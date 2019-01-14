@@ -116,6 +116,11 @@
         width: 100%;
         float: unset;
     }
+    #completeModal {
+        width: unset;
+        height: unset;
+        top: 0;
+    }
     #contactInformation input {
         width: 80%;
     }
