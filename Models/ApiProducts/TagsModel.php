@@ -28,7 +28,7 @@ class TagsModel extends Model
         }
         $tags->OrderBy("str_tag");
         $tags->GroupBy("str_tag");
-        $result = $tags->Select("product_tags.id", "product_tags.str_tag", "str_image_path");
+        $result = $tags->Select("id", "str_tag", "product_tag_images->str_image_path");
         foreach ($result as $item)
         {
             $subTags = new ProductTags();

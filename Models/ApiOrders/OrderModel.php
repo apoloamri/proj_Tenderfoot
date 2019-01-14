@@ -146,11 +146,11 @@ class OrderModel extends Model
                     $cartItem->dbl_sale_price : 
                     $cartItem->dbl_price;
                 $orderRecords->int_order_id = $orders->id;
-                $orderRecords->int_product_id = $cartItem->{'products-id'};
+                $orderRecords->int_product_id = $cartItem->{'products->id'};
                 $orderRecords->dbl_total_price = (int)$orderRecords->int_amount * (int)$orderRecords->dbl_price;
                 $orderRecords->Insert();
                 $this->UpdateInventory((int)$orderRecords->int_product_id, -(int)$orderRecords->int_amount);
-                $this->AddPurchase((int)$cartItem->{'products-id'});
+                $this->AddPurchase((int)$cartItem->{'products->id'});
                 
             }
             $this->OrderNumber = $orders->str_order_number;

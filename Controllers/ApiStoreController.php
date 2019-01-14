@@ -9,6 +9,13 @@ class ApiStoreController extends BaseAdminController
         $this->Json("Store");
     }
 
+    function GetStoreTrending() : void
+    {
+        $this->Initiate("StoreTrendingModel");
+        $this->Execute(Http::Get);
+        $this->Json("Result", "PageCount");
+    }
+
     function PostStoreHeader() : void
     {
         $this->CheckAuthNotFound();

@@ -17,8 +17,8 @@
                 <tr v-for="item in Result">
                     <td><div class="cartImage" v-bind:style="'background-image: url(' + item.str_path + ')'"></div></td>
                     <td><a v-bind:href="'/detail/' + item.str_code">{{item.str_brand}} - {{item.str_name}}</a></td>
-                    <td v-if="item.dbl_sale_price != null && item.dbl_sale_price != 0">₱{{item.dbl_sale_price}}</td>
-                    <td v-else>₱{{item.dbl_price}}</td>
+                    <td v-if="item.dbl_sale_price != null && item.dbl_sale_price != 0">₱{{item.dbl_sale_price}} x {{item.int_amount}}</td>
+                    <td v-else>₱{{item.dbl_price}} x {{item.int_amount}}</td>
                 </tr>
                 <tr>
                     <td></td>

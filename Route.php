@@ -52,6 +52,7 @@ $router->Map("DELETE /api/products/tags", "ApiProducts", "DeleteTags");
 
 //ApiStoreController
 $router->Map("GET /api/store", "ApiStore", "GetStore");
+$router->Map("GET /api/store/trending", "ApiStore", "GetStoreTrending");
 $router->Map("POST /api/store/header", "ApiStore", "PostStoreHeader");
 $router->Map("DELETE /api/store/header", "ApiStore", "DeleteStoreHeader");
 

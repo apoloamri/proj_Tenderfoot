@@ -121,9 +121,9 @@ class MySqlSchema extends BaseMySqlSchema
      */
     function Where(string $column, string $expression = DB::Equal, $value = null, string $condition = DB::AND) : void
     {
-        if (_::StringContains(".", $column))
+        if (_::StringContains("->", $column))
         {
-            $this->Where[] = "$column $expression '".$this->Sanitize($value)."' $condition";    
+            $this->Where[] = str_replace("->", ".", $column)." $expression '".$this->Sanitize($value)."' $condition";    
         }
         else
         {
@@ -146,11 +146,25 @@ class MySqlSchema extends BaseMySqlSchema
     }
     function GroupBy(string $group)
     {
-        $this->Group[] = "$this->TableName.$group";
+        if (_::StringContains("->", $group))
+        {
+            $this->Group[] = str_replace("->", ".", $column).$group;
+        }
+        else
+        {
+            $this->Group[] = "$this->TableName.$group";
+        }
     }
     function OrderBy(string $column, string $order = DB::ASC) : void
     {
-        $this->Order[] = "$this->TableName.$column $order";
+        if (_::StringContains("->", $column))
+        {
+            $this->Order[] = str_replace("->", ".", $column)." $order";
+        }
+        else
+        {
+            $this->Order[] = "$this->TableName.$column $order";
+        }
     }
     function Limit(int $limit) : void
     {

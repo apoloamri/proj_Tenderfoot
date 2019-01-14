@@ -121,40 +121,46 @@ class BaseMySqlSchema
     }
     function GetQuery(array $columns) : string
     {
-        $compiledColumns = "$this->TableName.*";
+        $compiledColumns = array();
         if (count($columns) > 0)
         {
-            $getColumns = array();
             foreach ($columns as $column)
             {
-                $getColumns[] = 
-                    _::StringContains("-", $column) ?
-                    "'$column'" :
-                    $column;
+                $compiledColumns[] = 
+                    _::StringContains("->", $column) ?
+                    str_replace("->", ".", $column) :
+                    "$this->TableName.$column";
             }
-            $compiledColumns = join(", ", $getColumns);
         }
-        if (count($columns) == 0 && count($this->JoinSchema) > 0)
+        else
         {
-            foreach ($this->JoinSchema as $schema)
+            foreach ($this->Columns as $property)
             {
-                $joinColumns = array();
-                foreach ($schema->Columns as $column)
+                $columnName = $property->getName();
+                $compiledColumns[] = "$this->TableName.$columnName";
+            }
+            if (count($this->JoinSchema) > 0)
+            {
+                foreach ($this->JoinSchema as $schema)
                 {
-                    $columnName = $column->getName();
-                    $joinColumns[] = 
-                        $schema->TableName.".".$columnName.
-                        ($columnName == "id" ? " AS '$schema->TableName-$columnName'" : "");
+                    foreach ($schema->Columns as $column)
+                    {
+                        $columnName = $column->getName();
+                        $compiledColumns[] = 
+                            $columnName == "id" || in_array($columnName, $compiledColumns) ?
+                            "$schema->TableName.$columnName AS '$schema->TableName"."->$columnName'" :
+                            "$schema->TableName.$columnName";
+                    }
                 }
-                $compiledColumns = $compiledColumns.", ".join(", ", $joinColumns);
             }
         }
+        $select = join(", ", $compiledColumns);
         $join = $this->GetJoin();
         $where = $this->GetWhere(true);
         $order = $this->GetOrder();
         $group = $this->GetGroup();
         $limit = $this->GetLimit();
-        return "SELECT $compiledColumns FROM $this->TableName $join $where $group $order $limit";
+        return "SELECT $select FROM $this->TableName $join $where $group $order $limit";
     }
     protected $Where = array();
     protected $Wheres = array();
