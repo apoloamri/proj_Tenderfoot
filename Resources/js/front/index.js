@@ -3,11 +3,11 @@ var index = new Vue({
     data: { 
         Search: Param("search"),
         SearchTag: Param("tag"),
+        Count: 10,
         Store: {},
         Page: 1,
-        Result: [],
-        PageCount: 0,
-        Count: 5,
+        NewProducts: [],
+        Trending: []
     },
     methods: {
         Menu() { return menu; },
@@ -28,16 +28,31 @@ var index = new Vue({
             axios
             .get("/api/products", { params: self.$data })
             .then(function (response) {
-                self.Result = response.data.Result;
-                self.PageCount = response.data.PageCount;
+                self.NewProducts = response.data.Result;
             })
             .catch(function (error) {
                 console.log(error);
             });
+        },
+        GetTrending() {
+            var self = this;
+            axios
+            .get("/api/store/trending", { params: { Page: 1, Count: 10 } })
+            .then(function (response) {
+                self.Trending = response.data.Result;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        AddCount() {
+            this.Count = this.Count + 10;
+            this.GetProducts();
         }
     },
     created() {
         this.GetStore();
         this.GetProducts();
+        this.GetTrending();
     }
 });
