@@ -20,8 +20,10 @@ class StoreTrendingModel extends Model
         $products->Join(new ProductImages(), "int_product_id", "id");
         $products->Join(new ProductInventory(), "int_product_id", "id");
         $products->Join(new ProductViews(), "int_product_id", "id");
+        $products->Where("product_views->dat_update_time", DB::GreaterThanEqual, _::Now(-10080));
         $products->OrderBy("product_views->int_purchase", DB::DESC);
         $products->OrderBy("product_views->int_cart", DB::DESC);
+        $products->OrderBy("product_views->int_view", DB::DESC);
         $products->GroupBy("id");
         $products->Page((int)$this->Page, (int)$this->Count);
         $this->Result = $products->Select();
