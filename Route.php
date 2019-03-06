@@ -56,7 +56,10 @@ $router->Map("GET /api/store/trending", "ApiStore", "GetStoreTrending");
 $router->Map("POST /api/store/header", "ApiStore", "PostStoreHeader");
 $router->Map("DELETE /api/store/header", "ApiStore", "DeleteStoreHeader");
 
-$router->Map("GET /api/test", "Test", "Test");
+if (Settings::Migrate())
+{
+    $router->Map("GET /migrate/update", "", "Migrate.php");
+}
 
 //Errors
 $router->Map("GET /err/404", "Errors", "Error404");

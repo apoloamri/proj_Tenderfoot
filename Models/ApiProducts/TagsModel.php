@@ -22,7 +22,7 @@ class TagsModel extends Model
     {
         $tags = new ProductTags();
         $tags->Join(new ProductTagImages(), "str_tag", "str_tag");
-        if (_::HasValue($this->TagName))
+        if (Obj::HasValue($this->TagName))
         {
             $tags->Where("str_tag", DB::Like, "%$this->TagName%");
         }

@@ -14,7 +14,7 @@ class Model extends BaseModel
     function CheckInput(string $propertyName, bool $required = false, string $type = Type::All, int $length = 255) : string
     {
         $property = $this->$propertyName;
-        if ($required && !_::HasValue($property))
+        if ($required && !Obj::HasValue($property))
         {
             $this->InvalidFields[] = $propertyName;
             return GetMessage("RequiredField", $propertyName);

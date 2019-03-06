@@ -19,11 +19,11 @@ class Orders extends MySqlSchema
     function CreateOrderNumber() : void
     {
         $order = new Orders();
-        $order->str_order_number = _::GenerateRandomString(10);
+        $order->str_order_number = Chars::Random(10);
         while ($order->Count() != 0)
         {
             $order->Clear();
-            $order->str_order_number = _::GenerateRandomString(10);
+            $order->str_order_number = Chars::Random(10);
         }
         $this->str_order_number = $order->str_order_number;
     }

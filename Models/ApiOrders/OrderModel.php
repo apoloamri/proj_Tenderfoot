@@ -39,7 +39,7 @@ class OrderModel extends Model
         else if ($this->Post())
         {
             $sessionId = GetSession()->SessionId;
-            if (_::HasValue($sessionId))
+            if (Obj::HasValue($sessionId))
             {
                 $carts = new Carts();
                 $carts->str_session_id = $sessionId;
@@ -85,7 +85,7 @@ class OrderModel extends Model
     function Map() : void
     {
         $orders = new Orders();
-        if (_::HasValue($this->Id))
+        if (Obj::HasValue($this->Id))
         {
             $orders->id = $this->Id;
             $this->Result = $orders->SelectSingle();
@@ -99,11 +99,11 @@ class OrderModel extends Model
             $orders->Where("str_last_name", DB::Like, "%".$this->Search."%", DB::OR);
             $orders->Where("str_first_name", DB::Like, "%".$this->Search."%");
             $orders->Combine(DB::AND);
-            if (_::HasValue($this->OrderStatus))
+            if (Obj::HasValue($this->OrderStatus))
             {
                 $orders->Where("str_order_status", DB::Equal, $this->OrderStatus, DB::AND);
             }
-            else if (!_::HasValue($this->Search))
+            else if (!Obj::HasValue($this->Search))
             {
                 $orders->Where("str_order_status", DB::NotEqual, OrderStatus::Fulfilled, DB::AND);
                 $orders->Where("str_order_status", DB::NotEqual, OrderStatus::Cancelled, DB::AND);
@@ -117,7 +117,7 @@ class OrderModel extends Model
     }
     function Handle() : void
     {
-        $now = _::Now();
+        $now = Date::Now();
         $orders = new Orders();
         if ($this->Post())
         {

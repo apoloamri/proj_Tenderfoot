@@ -8,7 +8,7 @@ class View extends BaseView
         $this->Model = $model;
         $this->ViewFile = $view;
         $this->CompileView();
-        if (_::HasValue($this->View))
+        if (Obj::HasValue($this->View))
         {
             $this->GetRenders();
             $this->GetValues($this->Model);
@@ -22,7 +22,7 @@ class View extends BaseView
     private function CompileView() : void
     {
         $controllerName = "";
-        if (_::HasValue($this->Controller))
+        if (Obj::HasValue($this->Controller))
         {
             $controllerName = str_replace("Controller", "", get_class($this->Controller));
         }
@@ -30,21 +30,21 @@ class View extends BaseView
             file_exists("Views/$this->ViewFile.html") ? 
             file_get_contents("Views/$this->ViewFile.html") :
             "";
-        if (!_::HasValue($this->View) && _::HasValue($controllerName))
+        if (!Obj::HasValue($this->View) && Obj::HasValue($controllerName))
         {
             $this->View = 
                 file_exists("Views/$controllerName/$this->ViewFile.html") ?
                 file_get_contents("Views/$controllerName/$this->ViewFile.html") :
                 "";
         }
-        if (!_::HasValue($this->View))
+        if (!Obj::HasValue($this->View))
         {
             $this->View = 
                 file_exists("Views/Partial/$this->ViewFile.html") ?
                 file_get_contents("Views/Partial/$this->ViewFile.html") :
                 "";
         }
-        if (!_::HasValue($this->View))
+        if (!Obj::HasValue($this->View))
         {
             $this->View = 
                 file_exists("Emails/$this->ViewFile.html") ?

@@ -6,7 +6,7 @@ class ProductsModel extends Model
     public $PageTitle;
     function Validate() : iterable
     {
-        if (_::HasValue($this->Id))
+        if (Obj::HasValue($this->Id))
         {
             $products = new Products();
             if (!$products->IdExists($this->Id))

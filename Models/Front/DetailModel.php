@@ -53,7 +53,7 @@ class DetailModel extends Model
     function AddView() : void
     {
         $cookie = Cookie("History");
-        if (!_::StringContains($this->Code, $cookie))
+        if (!Chars::Contains($this->Code, $cookie))
         {
             NewCookie("History", $cookie.$this->Code." ");
             $views = new ProductViews();

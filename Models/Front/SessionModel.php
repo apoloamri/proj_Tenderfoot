@@ -5,7 +5,7 @@ class SessionModel extends Model
     {
         $valid = false;
         $sessionId = GetSession()->SessionId;
-        if (_::HasValue($sessionId))
+        if (Obj::HasValue($sessionId))
         {
             $sessions = new Sessions();
             $sessions->str_session_id = $sessionId;

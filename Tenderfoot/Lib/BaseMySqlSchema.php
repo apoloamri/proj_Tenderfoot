@@ -9,12 +9,20 @@ class BaseMySqlSchema
     protected $TableName;
     protected function InitializeConnection()
     {
-        $connection = Settings::ConnectionString();
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         if (!array_key_exists(".settings.connection", $GLOBALS))
 		{
-			$cachedConnection = mysqli_connect(Settings::Host(), Settings::User(), Settings::Password(), Settings::Database());
-			$GLOBALS[".settings.connection"] = $cachedConnection;
-			$this->Connect = $cachedConnection;
+            try
+            {
+                $cachedConnection = mysqli_connect(Settings::Host(), Settings::User(), Settings::Password(), Settings::Database());
+                $GLOBALS[".settings.connection"] = $cachedConnection;
+                $this->Connect = $cachedConnection;
+            }
+            catch (exception $ex)
+            {
+                echo "Database <b>".Settings::Database()."</b> is not ready yet.";
+                die();
+            }
 		}
 		else
 		{
@@ -127,7 +135,7 @@ class BaseMySqlSchema
             foreach ($columns as $column)
             {
                 $compiledColumns[] = 
-                    _::StringContains("->", $column) ?
+                    Chars::Contains("->", $column) ?
                     str_replace("->", ".", $column) :
                     "$this->TableName.$column";
             }
@@ -235,11 +243,11 @@ class BaseMySqlSchema
     protected $Limit;
     protected function GetLimit() : string
     {
-        if (_::HasValue($this->Page))
+        if (Obj::HasValue($this->Page))
         {
             return "LIMIT $this->Page";
         }
-        else if (_::HasValue($this->Limit))
+        else if (Obj::HasValue($this->Limit))
         {
             return "LIMIT $this->Limit";
         }
@@ -251,7 +259,7 @@ class BaseMySqlSchema
     }
     private function Migration(string $query)
     {
-        $migrationLog = "-- "._::Now()."\r\n$query\r\n";
+        $migrationLog = "-- ".Date::Now()."\r\n$query\r\n";
         file_put_contents("migrations.txt", $migrationLog.PHP_EOL , FILE_APPEND | LOCK_EX);   
     }
 }

@@ -4,7 +4,6 @@ class Controller extends BaseController
 {
 	protected function Initiate(string $model = null, string $modelLocation = null) : void
 	{
-		$this->SetTimeZone();
 		if ($model == null)
 		{
 			$this->Model = new Model();
@@ -12,7 +11,7 @@ class Controller extends BaseController
 		else
 		{
 			$controller = str_replace("Controller", "", get_class($this));
-			if (_::HasValue($modelLocation))
+			if (Obj::HasValue($modelLocation))
 			{
 				$controller = $modelLocation;
 			}

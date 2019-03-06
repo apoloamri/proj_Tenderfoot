@@ -50,9 +50,9 @@ class BaseModel
     }
     function AddMetaDescription(string $description) : void
     {
-        if (_::HasValue($description))
+        if (Obj::HasValue($description))
         {
-            $this->MetaDescription = _::StringClip($description, 300);
+            $this->MetaDescription = Chars::Clip($description, 300);
         }
     }
 }

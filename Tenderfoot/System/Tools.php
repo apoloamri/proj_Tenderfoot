@@ -1,7 +1,7 @@
 <?php
-class _
+class Chars
 {
-    static function StringBetween(string $string, string $start, string $end) : string
+    static function Between(string $string, string $start, string $end) : string
     {
         $string = ' ' . $string;
         $ini = strpos($string, $start);
@@ -10,16 +10,16 @@ class _
         $len = strpos($string, $end, $ini) - $ini;
         return substr($string, $ini, $len);
     }
-    static function StringContains(string $needle, string $haystack) : bool
+    static function Contains(string $needle, string $haystack) : bool
     {
         return strpos($haystack, $needle) !== false;
     }
-    static function StringStartsWith(string $needle, string $haystack) : bool
+    static function StartsWith(string $needle, string $haystack) : bool
     {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
     }
-    static function StringEndsWith(string $needle, string $haystack) : bool
+    static function EndsWith(string $needle, string $haystack) : bool
     {
         $length = strlen($needle);
         if ($length == 0) {
@@ -27,7 +27,7 @@ class _
         }
         return (substr($haystack, -$length) === $needle);
     }
-    static function StringClip(string $subject, int $count) : string
+    static function Clip(string $subject, int $count) : string
     {
         if (strlen($subject) > $count)
         {
@@ -35,7 +35,7 @@ class _
         }
         return $subject;
     }
-    static function GenerateRandomString(int $length = 10) : string
+    static function Random(int $length = 10) : string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -46,6 +46,18 @@ class _
         }
         return $randomString;
     }
+}
+class Date
+{
+    static function Now(int $minutes = 0) : string
+    {
+        date_default_timezone_set(Settings::TimeZone());
+        $minutes = $minutes * 60;
+        return date("Y/m/d H:i:s", time() + $minutes);
+    }
+}
+class Obj
+{
     static function HasValue($value) : bool
     {
         if (!isset($value))
@@ -73,12 +85,7 @@ class _
             return true;
         }
     }
-    static function Now(int $minutes = 0) : string
-    {
-        $minutes = $minutes * 60;
-        return date("Y/m/d H:i:s", time() + $minutes);
-    }
-    static function ModelOverwrite($model, $values) : void
+    static function Overwrite($model, $values) : void
     {
         $modelReflect = new ReflectionClass($model);
         foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
@@ -90,17 +97,25 @@ class _
             }
         }
     }
-    static function ArrayOverwrite($model, $values) : void
+}
+class TempData
+{
+    public static function Get($key) 
     {
-        $modelReflect = new ReflectionClass($model);
-        foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
+        if (!array_key_exists($key, $_SESSION))
         {
-            $name = $property->getName();
-            if (array_key_exists($name, $values))
-            {
-                $property->setValue($model, $values[$name]);
-            }
+            return null;
         }
+        else
+        {
+            $value = $_SESSION[$key];
+            unset($_SESSION[$key]);
+            return $value;
+        }
+    }
+    public static function Set($key, $value) : void
+    {
+        $_SESSION[$key] = $value;
     }
 }
 ?>

@@ -52,16 +52,27 @@ class Routing
 				{
 					$_REQUEST[$key] = $value;
 				}
-				$controllerPath = "Controllers/".$controller."Controller.php";
-				if (file_exists($controllerPath))
+				if (Obj::HasValue($controller))
 				{
-					require_once $controllerPath;
-					$controllerName = $controller."Controller";
-					$controllerBase = new $controllerName;
-					if (method_exists($controllerBase, $action))
+					$controllerPath = "Controllers/".$controller."Controller.php";
+					if (file_exists($controllerPath))
+					{
+						require_once $controllerPath;
+						$controllerName = $controller."Controller";
+						$controllerBase = new $controllerName;
+						if (method_exists($controllerBase, $action))
+						{
+							$this->Routed = true;
+							$controllerBase->{$action}();
+						}
+					}
+				}
+				else
+				{
+					if (file_exists($action))
 					{
 						$this->Routed = true;
-						$controllerBase->{$action}();
+						require_once $action;
 					}
 				}
 			}

@@ -1,0 +1,46 @@
+<?php
+class Migration
+{
+    function __construct()
+    {
+        $this->Migrate("Accesses");
+        $this->Migrate("Sessions");
+    }
+    function Migrate(string $schemaName)
+    {
+        TempData::Set("migrate", true);
+        $path = "Schemas/$schemaName.php";
+        if (file_exists($path))
+        {
+            require_once $path;
+            $schema = new $schemaName();
+            echo "<b>$schemaName table</b> ==into==> <b>database: ".Settings::Database()."</b> migration completed -- ".Date::Now()."<br/>";
+        }
+        else if ($schemaName == "Sessions" || $schemaName == "Accesses")
+        {
+            $schema = new $schemaName();
+            echo "DEFAULT <b>$schemaName table</b> ==into==> <b>database: ".Settings::Database()."</b> migration completed -- ".Date::Now()."<br/>";
+        }
+    }
+    function Seed(string $schemaName, $object)
+    {
+        $path = "Schemas/$schemaName.php";
+        if (file_exists($path))
+        {
+            require_once $path;
+            $schema = new $schemaName();
+            Obj::Overwrite($schema, $object);
+            if ($schema->Exists())
+            {
+                $schema->Where("id", DB::Equal, $object->id);
+                $schema->Update();
+            }
+            else
+            {
+                $schema->Insert();
+            }
+            echo "Seeded an item into <b>$schemaName table</b> -- ".Date::Now()."<br/>";
+        }
+    }
+}
+?>

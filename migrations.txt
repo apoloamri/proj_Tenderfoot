@@ -1,42 +1,42 @@
--- 2019/01/13 16:02:54
-CREATE TABLE sessions (str_session_id VARCHAR(255), str_session_key VARCHAR(255), dat_session_time DATETIME, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:02:55
-CREATE TABLE product_tags (int_product_id INT, str_tag VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:02:56
-CREATE TABLE product_tag_images (str_tag VARCHAR(255), str_image_path VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:02:56
-CREATE TABLE store (str_announcement VARCHAR(255), str_header VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:02:57
-CREATE TABLE products (str_code VARCHAR(255), str_brand VARCHAR(255), str_name VARCHAR(255), txt_description TEXT, dbl_price DOUBLE, dbl_sale_price DOUBLE, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:02:57
-CREATE TABLE product_inventory (int_product_id INT, int_amount INT, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:02:57
-CREATE TABLE product_images (int_product_id INT, str_path VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:02:58
-CREATE TABLE carts (str_session_id VARCHAR(255), str_code VARCHAR(255), int_amount INT, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:03:21
+-- 2019/03/06 08:12:45
 CREATE TABLE admins (str_username VARCHAR(255), str_password VARCHAR(255), str_last_name VARCHAR(255), str_first_name VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
 
--- 2019/01/13 16:04:20
+-- 2019/03/06 08:12:45
+CREATE TABLE carts (str_session_id VARCHAR(255), str_code VARCHAR(255), int_amount INT, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:12:46
 CREATE TABLE logs (str_admin_user VARCHAR(255), str_action VARCHAR(255), str_code VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
 
--- 2019/01/13 16:10:19
-CREATE TABLE orders (str_order_number VARCHAR(255), str_phonenumber VARCHAR(255), str_email VARCHAR(255), str_last_name VARCHAR(255), str_first_name VARCHAR(255), str_address VARCHAR(255), str_barangay VARCHAR(255), str_city VARCHAR(255), str_postal VARCHAR(255), dbl_total DOUBLE, str_order_status VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:11:46
-CREATE TABLE product_views (int_product_id INT, int_view INT, int_cart INT, int_purchase INT, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
-
--- 2019/01/13 16:12:12
+-- 2019/03/06 08:12:46
 CREATE TABLE order_records (int_order_id INT, int_product_id INT, str_session_id VARCHAR(255), str_code VARCHAR(255), int_amount INT, dbl_price DOUBLE, dbl_total_price DOUBLE, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
 
--- 2019/01/13 16:12:14
-CREATE TABLE emails (txt_subject TEXT, txt_message TEXT, str_email VARCHAR(255), str_cc VARCHAR(255), str_email_sent VARCHAR(255), dat_insert_time DATETIME, id SERIAl PRIMARY KEY, dat_update_time DATETIME);
+-- 2019/03/06 08:12:46
+CREATE TABLE orders (str_order_number VARCHAR(255), str_phonenumber VARCHAR(255), str_email VARCHAR(255), str_last_name VARCHAR(255), str_first_name VARCHAR(255), str_address VARCHAR(255), str_barangay VARCHAR(255), str_city VARCHAR(255), str_postal VARCHAR(255), dbl_total DOUBLE, str_order_status VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:12:46
+CREATE TABLE product_images (int_product_id INT, str_path VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:12:46
+CREATE TABLE product_inventory (int_product_id INT, int_amount INT, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:12:47
+CREATE TABLE products (str_code VARCHAR(255), str_brand VARCHAR(255), str_name VARCHAR(255), txt_description TEXT, dbl_price DOUBLE, dbl_sale_price DOUBLE, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:12:47
+CREATE TABLE product_tag_images (str_tag VARCHAR(255), str_image_path VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:12:47
+CREATE TABLE product_tags (int_product_id INT, str_tag VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:12:47
+CREATE TABLE product_views (int_product_id INT, int_view INT, int_cart INT, int_purchase INT, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:12:47
+CREATE TABLE store (str_announcement VARCHAR(255), str_header VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:44:35
+CREATE TABLE sessions (str_session_id VARCHAR(255), str_session_key VARCHAR(255), dat_session_time DATETIME, id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
+
+-- 2019/03/06 08:45:58
+CREATE TABLE accesses (str_key VARCHAR(255), str_password VARCHAR(255), id SERIAl PRIMARY KEY, dat_insert_time DATETIME, dat_update_time DATETIME);
 

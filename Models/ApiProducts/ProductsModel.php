@@ -67,7 +67,7 @@ class ProductsModel extends Model
         $inventory = new ProductInventory();
         $images = new ProductImages();
         $tags = new ProductTags();
-        if (_::HasValue($this->Id))
+        if (Obj::HasValue($this->Id))
         {
             $products->id = $this->Id;
             $products->Join($inventory, "int_product_id", "id");
@@ -82,7 +82,7 @@ class ProductsModel extends Model
             $products->Join($images, "int_product_id", "id");
             $products->Join($inventory, "int_product_id", "id");
             $products->Join($tags, "int_product_id", "id");
-            if (_::HasValue($this->SearchTag))
+            if (Obj::HasValue($this->SearchTag))
             {
                 $products->Where("product_tags.str_tag", DB::Equal, $this->SearchTag);
             }
@@ -164,7 +164,7 @@ class ProductsModel extends Model
         $tags = array_map("trim", $tags);
         foreach ($tags as $tag)
         {
-            if (_::HasValue($tag))
+            if (Obj::HasValue($tag))
             {
                 $productTags->str_tag = $tag;
                 $productTags->Insert();

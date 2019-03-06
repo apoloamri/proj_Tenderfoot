@@ -9,12 +9,12 @@ class BaseView
     protected $ViewFile;
     protected function GetValues($model, string $modelName = "", string $view = "") : string
     {
-        $subView = _::HasValue($view);
-        $view = _::HasValue($view) ? $view : $this->View;
+        $subView = Obj::HasValue($view);
+        $view = Obj::HasValue($view) ? $view : $this->View;
         foreach ($model as $name => $value)
         {
-            $property = (_::HasValue($modelName) ? "$modelName." : "").$name;
-            if (_::StringContains("<$property/>", $view))
+            $property = (Obj::HasValue($modelName) ? "$modelName." : "").$name;
+            if (Chars::Contains("<$property/>", $view))
             {
                 $view = str_replace("<$property/>", "$value", $view);
             }
@@ -28,7 +28,7 @@ class BaseView
                     if (is_bool($model->$name) && $model->$name)
                     {
                         $value = $this->GetIfValue($view, $property, $match);
-                        if (_::HasValue($value))
+                        if (Obj::HasValue($value))
                         {
                             $view = $value;
                         }
@@ -36,11 +36,11 @@ class BaseView
                     }
                     else if (
                         !is_bool($model->$name) && 
-                        _::HasValue($equals) && 
+                        Obj::HasValue($equals) && 
                         $model->$name == $equals)
                     {
                         $value = $this->GetIfValue($view, $property, $match);
-                        if (_::HasValue($value))
+                        if (Obj::HasValue($value))
                         {
                             $view = $value;
                         }
@@ -48,17 +48,17 @@ class BaseView
                     }
                     else if (
                         !is_bool($model->$name) && 
-                        _::HasValue($notEquals) && 
+                        Obj::HasValue($notEquals) && 
                         $model->$name != $notEquals)
                     {
                         $value = $this->GetIfValue($view, $property, $match);
-                        if (_::HasValue($value))
+                        if (Obj::HasValue($value))
                         {
                             $view = $value;
                         }
                         continue;
                     }
-                    else if (_::StringContains("<else.$property/>", $match))
+                    else if (Chars::Contains("<else.$property/>", $match))
                     {
                         $result = preg_match_all("/<else\.$property\/>([\s\S]*?)<\/if\.$property>/", $match, $elseMatch);
                         if (!$result)
@@ -75,7 +75,7 @@ class BaseView
                 foreach ($objMatch[0] as $match)
                 {
                     $objView = $this->GetValues($model->$name, $property, $match);
-                    $view = str_replace($match, _::StringBetween($objView, "<$property>", "</$property>"), $view);
+                    $view = str_replace($match, Chars::Between($objView, "<$property>", "</$property>"), $view);
                 }
             }
             $foreachResult = preg_match_all("/<foreach\.$property>([\s\S]*?)<\/foreach\.$property>/", $view, $foreachMatch);
@@ -111,7 +111,7 @@ class BaseView
     }
     protected function GetRenders() : void
     {
-        if (_::StringContains("<renderPage/>", $this->View))
+        if (Chars::Contains("<renderPage/>", $this->View))
         {
             $this->View = str_replace("<renderPage/>", $this->Model->RenderPage(), $this->View);
         }
@@ -123,7 +123,7 @@ class BaseView
             {
                 foreach ($renderMatch[0] as $match)
                 {
-                    $partial = _::StringBetween($match, ".", "/");
+                    $partial = Chars::Between($match, ".", "/");
                     $this->View = str_replace($match, $this->Model->Partial($partial), $this->View);
                 }
             }
@@ -141,7 +141,7 @@ class BaseView
     }
     private function GetIfValue(string $view, string $property, string $match) : string
     {
-        if (_::StringContains("<else.$property/>", $match))
+        if (Chars::Contains("<else.$property/>", $match))
         {
             $result = preg_match_all("/<if\.$property([\s\S]*?)>([\s\S]*?)<else\.$property\/>/", $match, $ifInnerMatch);
             if (!$result)

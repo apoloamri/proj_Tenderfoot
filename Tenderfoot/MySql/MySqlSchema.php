@@ -2,13 +2,13 @@
 require_once "Tenderfoot/Lib/BaseMySqlSchema.php";
 class MySqlSchema extends BaseMySqlSchema
 {
-    function __construct(string $tableName, bool $createTable = true)
+    function __construct(string $tableName)
     {
         $reflect = new ReflectionClass($this);
         $this->InitializeConnection();
         $this->Columns = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
         $this->TableName = $tableName;
-        if (Settings::Migrate() && $createTable)
+        if (TempData::Get("migrate"))
         {
             $this->CreateTable();
             $this->UpdateColumns();
@@ -51,7 +51,7 @@ class MySqlSchema extends BaseMySqlSchema
         $result = $this->Select(...$columns);
         if (count($result) == 1)
         {
-            _::ModelOverwrite($this, $result[0]);
+            Obj::Overwrite($this, $result[0]);
             return $result[0];
         }
         return new stdClass();
@@ -96,16 +96,16 @@ class MySqlSchema extends BaseMySqlSchema
      ** $joinColumn - Column of the joint table used for comparison.
      ** $parentColumn - Column of the current schema used for comparison with $joinColumn.
      */
-    function Join($schema, string $joinColumn, string $parentColumn)
+    function Join($schema, string $joinColumn, string $parentColumn) : void
     {
-        if (_::StringContains("->", $parentColumn))
+        if (Chars::Contains("->", $parentColumn))
         {
             $parentColumn = str_replace("->", ".", $parentColumn);
         }
         else
         {
             $parentColumn = 
-                _::StringContains("-", $parentColumn) ? 
+                Chars::Contains("-", $parentColumn) ? 
                 "'$parentColumn'" : 
                 "$this->TableName.$parentColumn";
         }
@@ -121,7 +121,7 @@ class MySqlSchema extends BaseMySqlSchema
      */
     function Where(string $column, string $expression = DB::Equal, $value = null, string $condition = DB::AND) : void
     {
-        if (_::StringContains("->", $column))
+        if (Chars::Contains("->", $column))
         {
             $this->Where[] = str_replace("->", ".", $column)." $expression '".$this->Sanitize($value)."' $condition";    
         }
@@ -146,7 +146,7 @@ class MySqlSchema extends BaseMySqlSchema
     }
     function GroupBy(string $group)
     {
-        if (_::StringContains("->", $group))
+        if (Chars::Contains("->", $group))
         {
             $this->Group[] = str_replace("->", ".", $column).$group;
         }
@@ -157,7 +157,7 @@ class MySqlSchema extends BaseMySqlSchema
     }
     function OrderBy(string $column, string $order = DB::ASC) : void
     {
-        if (_::StringContains("->", $column))
+        if (Chars::Contains("->", $column))
         {
             $this->Order[] = str_replace("->", ".", $column)." $order";
         }
@@ -193,7 +193,7 @@ class MySqlSchema extends BaseMySqlSchema
     {
         $columns = array();
         $values = array();
-        $this->dat_insert_time = _::Now();
+        $this->dat_insert_time = Date::Now();
         $this->dat_update_time = null;
         foreach ($this->Columns as $column)
         {
@@ -216,7 +216,7 @@ class MySqlSchema extends BaseMySqlSchema
     {
         $updateValues = array();
         $this->dat_insert_time = null;
-        $this->dat_update_time = _::Now();
+        $this->dat_update_time = Date::Now();
         foreach ($this->Columns as $column)
         {
             $name = $column->getName();
@@ -293,13 +293,13 @@ class Sessions extends MySqlSchema
         {
             return $this->str_session_id;
         }
-        $this->str_session_id = _::GenerateRandomString(50);
+        $this->str_session_id = Chars::Random(50);
         while ($this->Count() != 0)
         {
             $this->Clear();
-            $this->str_session_id = _::GenerateRandomString(50);
+            $this->str_session_id = Chars::Random(50);
         }
-        $this->dat_session_time = _::Now();
+        $this->dat_session_time = Date::Now();
         $this->Insert();
         return $this->str_session_id;
     }
@@ -308,21 +308,21 @@ class Sessions extends MySqlSchema
      */
     function CheckSession(string $sessionKey = "") : bool 
     {
-        if (!_::HasValue($this->str_session_id))
+        if (!Obj::HasValue($this->str_session_id))
         {
             return false;
         }
-        $this->Where("dat_session_time", DB::GreaterThan, _::Now(-Settings::Session()));
+        $this->Where("dat_session_time", DB::GreaterThan, Date::Now(-Settings::Session()));
         if ($this->Count() == 0)
         {
             return false;
         }
         $this->Clear();
-        if (_::HasValue($sessionKey))
+        if (Obj::HasValue($sessionKey))
         {
             $this->str_session_key = $sessionKey;
         }
-        $this->dat_session_time = _::Now();
+        $this->dat_session_time = Date::Now();
         $this->Where("str_session_id", DB::Equal, $this->str_session_id);
         $this->Update();
         return true;
