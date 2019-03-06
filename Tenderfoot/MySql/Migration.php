@@ -29,14 +29,15 @@ class Migration
         {
             require_once $path;
             $schema = new $schemaName();
-            Obj::Overwrite($schema, $object);
+            $schema->Where("id", DB::Equal, $object->id);
             if ($schema->Exists())
             {
-                $schema->Where("id", DB::Equal, $object->id);
+                Obj::Overwrite($schema, $object);
                 $schema->Update();
             }
             else
             {
+                Obj::Overwrite($schema, $object);
                 $schema->Insert();
             }
             echo "Seeded an item into <b>$schemaName table</b> -- ".Date::Now()."<br/>";

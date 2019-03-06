@@ -2,11 +2,12 @@
 class BaseMySqlSchema
 {
     public $id; 
-    public $dat_insert_time;
-    public $dat_update_time;
+    public $insert_time;
+    public $update_time;
     protected $Columns;
     protected $Connect;
     protected $TableName;
+    protected $Properties;
     protected function InitializeConnection()
     {
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -49,10 +50,12 @@ class BaseMySqlSchema
         $table->TABLE_NAME = $this->TableName;
         if ($table->Count("TABLE_NAME") == 0)
         {
-            $columns;
-            foreach ($this->Columns as $property)
+            $columns[] = $this->GetColumnType(new Column("id", ColumnProp::NumberBig));
+            $columns[] = $this->GetColumnType(new Column("insert_time", ColumnProp::DateTime, true));
+            $columns[] = $this->GetColumnType(new Column("update_time", ColumnProp::DateTime));
+            foreach ($this->Columns as $column)
             {
-                $columns[] = $this->GetColumnType($property);
+                $columns[] = $this->GetColumnType($column);
             }
             $columns = join(", ", $columns);
             $query = "CREATE TABLE $this->TableName ($columns);";
@@ -63,16 +66,15 @@ class BaseMySqlSchema
     protected function UpdateColumns() : void
     {
         $alterColumns = array();
-        foreach ($this->Columns as $property)
+        foreach ($this->Columns as $column)
         {
-            $columnName = $property->getName();
             $table = new InformationSchemaColumns();
             $table->TABLE_SCHEMA = Settings::Database();
             $table->TABLE_NAME = $this->TableName;
-            $table->COLUMN_NAME = $columnName;
+            $table->COLUMN_NAME = $column->Name;
             if ($table->Count("COLUMN_NAME") == 0)
             {
-                $column = $this->GetColumnType($property);
+                $column = $this->GetColumnType($column);
                 $alterColumns[] = "ALTER TABLE $this->TableName ADD COLUMN $column;";
             }
         }
@@ -85,47 +87,47 @@ class BaseMySqlSchema
             }
         }
     }
-    protected function GetColumnType(ReflectionProperty $column) : string
+    protected function GetColumnType(Column $column) : string
     {
-        $returnString;
-        $name = $column->getName();
-        $value = $column->getValue($this);
-        $isArray = is_array($value) ? "[]" : "";
+        $returnString = "";
+        $name = $column->Name;
+        $length = Obj::HasValue($column->Length) ? "($column->Length)" : "(255)";
+        $notNull = $column->NotNull ? " NOT NULL" : "";
         if ($name == "id")
         {
-            return "id SERIAl PRIMARY KEY";
+            return "id SERIAL PRIMARY KEY";
         }
         else
         {
-            switch (substr($name, 0, 4))
+            switch ($column->Type)
             {
-                case "str_":
-                    $returnString =  "$name VARCHAR(255)";
+                case ColumnProp::VaryingChars:
+                    $returnString =  "$name VARCHAR $length";
                     break;
-                case "int_":
+                case ColumnProp::Number:
                     $returnString =  "$name INT";
                     break;
-                case "dbl_":
+                case ColumnProp::NumberDouble:
                     $returnString =  "$name DOUBLE";
                     break;
-                case "sml_":
+                case ColumnProp::NumberSmall:
                     $returnString =  "$name SMALLINT";
                     break;
-                case "big_":
+                case ColumnProp::NumberBig:
                     $returnString =  "$name BIGINT";
                     break;
-                case "dat_":
+                case ColumnProp::DateTime:
                     $returnString =  "$name DATETIME";
                     break;
-                case "txt_":
+                case ColumnProp::Text:
                     $returnString =  "$name TEXT";
                     break;
                 default:
-                    $returnString = "$name VARCHAR(255)";
+                    $returnString = "$name VARCHAR (255)";
                     break;
             }
         }
-        return $returnString.$isArray;
+        return $returnString.$notNull;
     }
     function GetQuery(array $columns) : string
     {
@@ -142,7 +144,7 @@ class BaseMySqlSchema
         }
         else
         {
-            foreach ($this->Columns as $property)
+            foreach ($this->Properties as $property)
             {
                 $columnName = $property->getName();
                 $compiledColumns[] = "$this->TableName.$columnName";
@@ -177,7 +179,7 @@ class BaseMySqlSchema
         $entityValues = array();
         if ($isSelect)
         {
-            foreach ($this->Columns as $column)
+            foreach ($this->Properties as $column)
             {
                 $value = $column->getValue($this);
                 if ($value != null)
@@ -263,6 +265,20 @@ class BaseMySqlSchema
         file_put_contents("migrations.txt", $migrationLog.PHP_EOL , FILE_APPEND | LOCK_EX);   
     }
 }
+class Column
+{
+    public $Name;
+    public $Type;
+    public $NotNull;
+    public $Length;
+    function __construct(string $name, string $type, bool $notNull = false, ?int $length = null)
+    {
+        $this->Name = $name;
+        $this->Type = $type;
+        $this->NotNull = $notNull;
+        $this->Length = $length;
+    }
+}
 class DB
 {
     const AND = "AND";
@@ -277,5 +293,15 @@ class DB
     const NotLike = "NOT LIKE";
     const ASC = "ASC";
     const DESC = "DESC";
+}
+class ColumnProp
+{
+    const VaryingChars = "VARCHAR(255)";
+    const Number = "INT";
+    const NumberDouble = "DOUBLE";
+    const NumberSmall = "SMALLINT";
+    const NumberBig = "BIGINT";
+    const DateTime = "DATETIME";
+    const Text = "TEXT";
 }
 ?>

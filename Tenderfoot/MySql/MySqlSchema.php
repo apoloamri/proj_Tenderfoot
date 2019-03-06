@@ -2,17 +2,19 @@
 require_once "Tenderfoot/Lib/BaseMySqlSchema.php";
 class MySqlSchema extends BaseMySqlSchema
 {
-    function __construct(string $tableName)
+    function __construct(string $tableName, ?Column ...$columns)
     {
-        $reflect = new ReflectionClass($this);
         $this->InitializeConnection();
-        $this->Columns = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
+        $this->Columns = $columns;
         $this->TableName = $tableName;
         if (TempData::Get("migrate"))
         {
             $this->CreateTable();
             $this->UpdateColumns();
         }
+        $reflect = new ReflectionClass($this);
+        $properties = $reflect->getProperties(ReflectionProperty::IS_PUBLIC);
+        $this->Properties = $properties;
     }
     /**
      * Executes SELECT statement. 
@@ -193,9 +195,9 @@ class MySqlSchema extends BaseMySqlSchema
     {
         $columns = array();
         $values = array();
-        $this->dat_insert_time = Date::Now();
-        $this->dat_update_time = null;
-        foreach ($this->Columns as $column)
+        $this->insert_time = Date::Now();
+        $this->update_time = null;
+        foreach ($this->Properties as $column)
         {
             $name = $column->getName();
             $value = $column->getValue($this);
@@ -215,9 +217,9 @@ class MySqlSchema extends BaseMySqlSchema
     function Update() : void
     {
         $updateValues = array();
-        $this->dat_insert_time = null;
-        $this->dat_update_time = Date::Now();
-        foreach ($this->Columns as $column)
+        $this->insert_time = null;
+        $this->update_time = Date::Now();
+        foreach ($this->Properties as $column)
         {
             $name = $column->getName();
             $value = $column->getValue($this);
@@ -262,7 +264,7 @@ class InformationSchemaTables extends MySqlSchema
 {
     function __construct()
     {
-        parent::__construct("INFORMATION_SCHEMA.TABLES", false);
+        parent::__construct("INFORMATION_SCHEMA.TABLES");
     }
     public $TABLE_NAME;
     public $TABLE_SCHEMA;
@@ -272,7 +274,7 @@ class InformationSchemaColumns extends MySqlSchema
 {
     function __construct()
     {
-        parent::__construct("INFORMATION_SCHEMA.COLUMNS", false);
+        parent::__construct("INFORMATION_SCHEMA.COLUMNS");
     }
     public $TABLE_NAME;
     public $TABLE_SCHEMA;
@@ -282,37 +284,42 @@ class Sessions extends MySqlSchema
 {
     function __construct()
     {
-        parent::__construct("sessions");
+        parent::__construct(
+            "sessions",
+            new Column("session_id", ColumnProp::VaryingChars, true, 255),
+            new Column("session_key", ColumnProp::VaryingChars, true, 255),
+            new Column("session_time", ColumnProp::DateTime, true)
+        );
     }
-    public $str_session_id;
-    public $str_session_key;
-    public $dat_session_time;
+    public $session_id;
+    public $session_key;
+    public $session_time;
     function GetSession() : string
     {
         if ($this->CheckSession())
         {
-            return $this->str_session_id;
+            return $this->session_id;
         }
-        $this->str_session_id = Chars::Random(50);
+        $this->session_id = Chars::Random(50);
         while ($this->Count() != 0)
         {
             $this->Clear();
-            $this->str_session_id = Chars::Random(50);
+            $this->session_id = Chars::Random(50);
         }
-        $this->dat_session_time = Date::Now();
+        $this->session_time = Date::Now();
         $this->Insert();
-        return $this->str_session_id;
+        return $this->session_id;
     }
     /**
      * Populate $sessionKey to add / update a new key for the current session.
      */
-    function CheckSession(string $sessionKey = "") : bool 
+    function CheckSession(?string $sessionKey) : bool 
     {
-        if (!Obj::HasValue($this->str_session_id))
+        if (!Obj::HasValue($this->session_id))
         {
             return false;
         }
-        $this->Where("dat_session_time", DB::GreaterThan, Date::Now(-Settings::Session()));
+        $this->Where("session_time", DB::GreaterThan, Date::Now(-Settings::Session()));
         if ($this->Count() == 0)
         {
             return false;
@@ -320,10 +327,10 @@ class Sessions extends MySqlSchema
         $this->Clear();
         if (Obj::HasValue($sessionKey))
         {
-            $this->str_session_key = $sessionKey;
+            $this->session_key = $sessionKey;
         }
-        $this->dat_session_time = Date::Now();
-        $this->Where("str_session_id", DB::Equal, $this->str_session_id);
+        $this->session_time = Date::Now();
+        $this->Where("session_id", DB::Equal, $this->session_id);
         $this->Update();
         return true;
     }
@@ -340,10 +347,14 @@ class Accesses extends MySqlSchema
 {
     function __construct()
     {
-        parent::__construct("accesses");
+        parent::__construct(
+            "accesses",
+            new Column("access_key", ColumnProp::VaryingChars, true, 255),
+            new Column("password", ColumnProp::VaryingChars, true, 255)
+        );
     }
-    public $str_key;
-    public $str_password;
+    public $access_key;
+    public $password;
     function ValidateAccess() : string
     {
         if ($this->Count() == 0)
