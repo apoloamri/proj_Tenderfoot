@@ -1,24 +1,22 @@
 <?php
 Model::AddSchema("Admins");
-Model::AddSchema("Logs");
+// Model::AddSchema("Logs");
 class LoginModel extends Model
 {   
-    public $Username;
-    public $Password;
+    public $username;
+    public $password;
     function Validate() : iterable
     {
         if ($this->Post())
         {
-            yield "Username" => $this->CheckInput("Username", true);
-            yield "Password" => $this->CheckInput("Password", true);
-            if ($this->IsValid("Username", "Password"))
+            yield "username" => $this->CheckInput("username", true);
+            yield "password" => $this->CheckInput("password", true);
+            if ($this->IsValid("username", "password"))
             {
-                $admins = new Admins();
-                $admins->str_username = $this->Username;
-                $admins->str_password = $this->Password;
+                $admins = Obj::Overwrite(new Admins(), $this);
                 if (!$admins->HasAdmin())
                 {
-                    yield "Username" => GetMessage("InvalidUsernamePassword");
+                    yield "username" => GetMessage("InvalidUsernamePassword");
                 }
             }
         }
@@ -26,30 +24,28 @@ class LoginModel extends Model
         {
             if (GetSession("admin")->SessionKey == null)
             {
-                yield "Session" => GetMessage("InvalidAccess");
+                yield "session" => GetMessage("InvalidAccess");
             }
         }
     }
     function Handle() : void 
     {
-        $logs = new Logs();
+        // $logs = new Logs();
         $sessions = new Sessions();
         if ($this->Post())
         {
-            $admins = new Admins();
-            $admins->str_username = $this->Username;
-            $admins->str_password = $this->Password;
+            $admins = Obj::Overwrite(new Admins(), $this);
             $admins->SelectSingle();
-            SetSession($admins->str_username, "admin");
-            $logs->str_action = Action::LogIn;
-            $logs->LogAction();
+            SetSession($admins->username, "admin");
+            // $logs->action = Action::LogIn;
+            // $logs->LogAction();
         }
         else if ($this->Delete())
         {
-            $sessions->str_session_key = GetSession("admin")->SessionKey;
+            $sessions->session_key = GetSession("admin")->SessionKey;
             $sessions->Delete();
-            $logs->str_action = Action::LogOut;
-            $logs->LogAction();
+            // $logs->str_action = Action::LogOut;
+            // $logs->LogAction();
             DeleteSession("admin");
         }
     }

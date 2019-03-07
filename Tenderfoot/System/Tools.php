@@ -85,7 +85,7 @@ class Obj
             return true;
         }
     }
-    static function Overwrite($model, $values) : void
+    static function Overwrite($model, $values)
     {
         $modelReflect = new ReflectionClass($model);
         foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
@@ -96,6 +96,7 @@ class Obj
                 $property->setValue($model, $values->$name);
             }
         }
+        return $model;
     }
 }
 class TempData

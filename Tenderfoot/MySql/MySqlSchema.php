@@ -2,11 +2,14 @@
 require_once "Tenderfoot/Lib/BaseMySqlSchema.php";
 class MySqlSchema extends BaseMySqlSchema
 {
-    function __construct(string $tableName, ?Column ...$columns)
+    /**
+     * $column - Add column properties for the table. Use 'new Column(name, type, notNull, length)'.
+     */
+    function __construct(?Column ...$columns)
     {
         $this->InitializeConnection();
         $this->Columns = $columns;
-        $this->TableName = $tableName;
+        $this->TableName = $this->TableName ?? strtolower(get_class($this));
         if (TempData::Get("migrate"))
         {
             $this->CreateTable();
@@ -241,20 +244,6 @@ class MySqlSchema extends BaseMySqlSchema
         $query = "DELETE FROM $this->TableName $where;";
         $this->Execute($query);
     }
-    function OverwriteWithModel($model) : void
-    {
-        $modelReflect = new ReflectionClass($this);
-        $valuesReflect = new ReflectionClass($model);
-        foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
-        {
-            $name = $property->getName();
-            $value = null;
-            if (property_exists($model, $name))
-            {
-                $property->setValue($this, $model->$name);
-            }
-        }
-    }
     static function AddSchema(string $schemaName) : void
     {
         require_once "Schemas/$schemaName.php";
@@ -264,7 +253,8 @@ class InformationSchemaTables extends MySqlSchema
 {
     function __construct()
     {
-        parent::__construct("INFORMATION_SCHEMA.TABLES");
+        $this->TableName = "INFORMATION_SCHEMA.TABLES";
+        parent::__construct();
     }
     public $TABLE_NAME;
     public $TABLE_SCHEMA;
@@ -274,7 +264,8 @@ class InformationSchemaColumns extends MySqlSchema
 {
     function __construct()
     {
-        parent::__construct("INFORMATION_SCHEMA.COLUMNS");
+        $this->TableName = "INFORMATION_SCHEMA.COLUMNS";
+        parent::__construct();
     }
     public $TABLE_NAME;
     public $TABLE_SCHEMA;
@@ -285,9 +276,8 @@ class Sessions extends MySqlSchema
     function __construct()
     {
         parent::__construct(
-            "sessions",
-            new Column("session_id", ColumnProp::VaryingChars, true, 255),
-            new Column("session_key", ColumnProp::VaryingChars, true, 255),
+            new Column("session_id", ColumnProp::VaryingChars, true, 50),
+            new Column("session_key", ColumnProp::VaryingChars, true, 50),
             new Column("session_time", ColumnProp::DateTime, true)
         );
     }
@@ -334,34 +324,17 @@ class Sessions extends MySqlSchema
         $this->Update();
         return true;
     }
-    function ValidateSession() : string
-    {
-        if (!$this->CheckSession())
-        {
-            return GetMessage("InvalidAccess");
-        }
-        return "";
-    }
 }
 class Accesses extends MySqlSchema
 {
     function __construct()
     {
         parent::__construct(
-            "accesses",
             new Column("access_key", ColumnProp::VaryingChars, true, 255),
             new Column("password", ColumnProp::VaryingChars, true, 255)
         );
     }
     public $access_key;
     public $password;
-    function ValidateAccess() : string
-    {
-        if ($this->Count() == 0)
-        {
-            return GetMessage("InvalidAccess");
-        }
-        return "";
-    }
 }
 ?>

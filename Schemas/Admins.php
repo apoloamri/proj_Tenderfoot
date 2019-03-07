@@ -4,9 +4,8 @@ class Admins extends MySqlSchema
     function __construct()
     {
         parent::__construct(
-            "admins",
             new Column("username", ColumnProp::VaryingChars, true, 50),
-            new Column("password", ColumnProp::VaryingChars, true, 100),
+            new Column("password", ColumnProp::VaryingChars, true, 255),
             new Column("last_name", ColumnProp::VaryingChars, true, 100),
             new Column("first_name", ColumnProp::VaryingChars, true, 100)
         );

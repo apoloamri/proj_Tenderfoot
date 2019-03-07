@@ -68,7 +68,7 @@ class Settings
 	static function Email() : string { return self::GetSettings("Email"); }
 	static function EmailAdmin() : string { return self::GetSettings("EmailAdmin"); }
 }
-function GetMessage(string $tag, string $value = "") : string
+function GetMessage(string $tag, ...$value) : string
 {
 	$message = parse_ini_file(".messages.ini");
 	if (array_key_exists($tag, $message))
