@@ -10,7 +10,7 @@ class Logs extends MySqlSchema
     public $str_code;
     function LogAction() : void
     {
-        $session = GetSession("admin");
+        $session = Session::Get("admin");
         if (Obj::HasValue($session->SessionKey))
         {
             $this->str_admin_user = $session->SessionKey;

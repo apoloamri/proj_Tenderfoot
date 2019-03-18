@@ -1,0 +1,14 @@
+<div id="app">
+    <partial.navigation/>
+    <router-view></router-view>
+</div>
+<script src="/Resources/js/backoffice/router.js"></script>
+<script>
+    function Logout() {
+        axios
+        .delete("/api/v1/login/backoffice")
+        .then(function () {
+            location.reload();
+        });
+    }
+</script>

@@ -284,9 +284,9 @@ class Sessions extends MySqlSchema
     public $session_id;
     public $session_key;
     public $session_time;
-    function GetSession() : string
+    function Set() : string
     {
-        if ($this->CheckSession())
+        if ($this->Check())
         {
             return $this->session_id;
         }
@@ -303,7 +303,7 @@ class Sessions extends MySqlSchema
     /**
      * Populate $sessionKey to add / update a new key for the current session.
      */
-    function CheckSession(?string $sessionKey) : bool 
+    function Check(string $sessionKey = null) : bool 
     {
         if (!Obj::HasValue($this->session_id))
         {

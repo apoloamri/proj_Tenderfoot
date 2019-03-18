@@ -38,7 +38,7 @@ class OrderModel extends Model
         }
         else if ($this->Post())
         {
-            $sessionId = GetSession()->SessionId;
+            $sessionId = Session::Get()->SessionId;
             if (Obj::HasValue($sessionId))
             {
                 $carts = new Carts();
@@ -133,7 +133,7 @@ class OrderModel extends Model
             $orders->str_order_status = OrderStatus::NewOrder;
             $carts = new Carts();
             $carts->Join(new Products(), "str_code", "str_code");
-            $carts->str_session_id = GetSession()->SessionId;
+            $carts->str_session_id = Session::Get()->SessionId;
             $cartItems = $carts->Select();
             $orders->dbl_total = $this->GetTotal($cartItems);
             $orders->Insert();

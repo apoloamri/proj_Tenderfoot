@@ -1,11 +1,11 @@
 new Vue({
-    el: "#adminNavigation",
+    el: "#navigation",
     methods: {
         Logout() {
             axios
-            .delete("/admin/api/logout")
+            .delete("/api/v1/logout/backoffice")
             .then(function () {
-                location.reload(); 
+                location.reload();
             })
             .catch(function (error) {
                 console.log(error);

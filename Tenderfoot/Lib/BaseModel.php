@@ -3,7 +3,7 @@ class BaseModel
 {
     public $IsValid = true;
     public $Messages = null;
-    public $URI = null;
+    public $Uri = null;
     public $Environment = "";
     public $Deployment = "";
     public $InvalidFields = array();
@@ -43,16 +43,16 @@ class BaseModel
         }   
     }
     public $MetaKeywords = "";
-    public $MetaDescription = "";
+    public $MetaDiscription = "";
     function AddMetaKeywords(string ...$keywords) : void
     {
-        $this->MetaKeywords = "$this->MetaKeywords, ".join(", ", $keywords);
+        $this->metaKeywords = "$this->MetaKeywords, ".join(", ", $keywords);
     }
     function AddMetaDescription(string $description) : void
     {
         if (Obj::HasValue($description))
         {
-            $this->MetaDescription = Chars::Clip($description, 300);
+            $this->metaDiscription = Chars::Clip($description, 300);
         }
     }
 }

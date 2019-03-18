@@ -9,75 +9,81 @@ foreach ($_SESSION as $key => $value)
         setcookie($newKey, $value->value, $value->expiration, $value->path);
     }
 }
-function NewCookie(string $key, $value, string $path = "/") : void
+class Cookie
 {
-    $cookie = new stdClass();
-    $cookie->key = $key;
-    $cookie->value = $value;
-    $cookie->expiration = 0;
-    $cookie->path = $path;
-    $_SESSION["cookie.".$key] = $cookie;
-}
-function Cookie(string $key) : string
-{
-    if (array_key_exists("cookie.".$key, $_SESSION))
+    static function New(string $key, $value, string $path = "/") : void
     {
-        $cookie = $_SESSION["cookie.".$key];
-        return 
-            is_null($cookie->value) ?
-            "" :
-            $cookie->value;
+        $cookie = new stdClass();
+        $cookie->key = $key;
+        $cookie->value = $value;
+        $cookie->expiration = 0;
+        $cookie->path = $path;
+        $_SESSION["cookie.".$key] = $cookie;
     }
-    else if (array_key_exists($key, $_COOKIE))
+    static function Get(string $key) : string
     {
-        unset($_SESSION["cookie.$key"]);
-        return $_COOKIE[$key];
-    }
-    return "";
-}
-function DeleteCookie(string $key, string $path) : void
-{
-    $cookie = new stdClass();
-    $cookie->key = $key;
-    $cookie->value = "";
-    $cookie->expiration = -1;
-    $cookie->path = $path;
-    $_SESSION["cookie.".$key] = $cookie;
-}
-function SetSession($value = null, string $environment = null) : string
-{
-    $sessions = new Sessions();
-    $sessions->str_session_key = $value;
-    $sessionId = $sessions->GetSession();
-    NewCookie("$environment.SessionId", $sessionId, "/$environment");
-    NewCookie("$environment.SessionKey", $value, "/$environment");
-    return $sessionId;
-}
-function CheckSession(string $environment = null) : bool
-{
-    if (Cookie("$environment.SessionId") != null)
-    {
-        $sessionValue = GetSession("admin");
-        $sessions = new Sessions();
-        $sessions->str_session_id = $sessionValue->SessionId;
-        if (Obj::HasValue($sessionValue->SessionKey))
+        if (array_key_exists("cookie.".$key, $_SESSION))
         {
-            $sessions->str_session_key = $sessionValue->SessionKey;
+            $cookie = $_SESSION["cookie.".$key];
+            return 
+                is_null($cookie->value) ?
+                "" :
+                $cookie->value;
         }
-        return $sessions->CheckSession();
+        else if (array_key_exists($key, $_COOKIE))
+        {
+            unset($_SESSION["cookie.$key"]);
+            return $_COOKIE[$key];
+        }
+        return "";
     }
-    return false;
+    static function Delete(string $key, string $path) : void
+    {
+        $cookie = new stdClass();
+        $cookie->key = $key;
+        $cookie->value = "";
+        $cookie->expiration = -1;
+        $cookie->path = $path;
+        $_SESSION["cookie.".$key] = $cookie;
+    }
 }
-function GetSession(string $environment = null) : object
+class Session
 {
-    $returnValue = new stdClass();;
-    $returnValue->SessionId = Cookie("$environment.SessionId");
-    $returnValue->SessionKey = Cookie("$environment.SessionKey");
-    return $returnValue;
-}
-function DeleteSession(string $environment = null) : void
-{
-    DeleteCookie("$environment.SessionId", "/$environment");
-    DeleteCookie("$environment.SessionKey", "/$environment");
+    static function Set($value = null, string $environment = null) : string
+    {
+        $sessions = new Sessions();
+        $sessions->session_key = $value;
+        $sessionId = $sessions->Set();
+        Cookie::New("$environment.SessionId", $sessionId, "/$environment");
+        Cookie::New("$environment.SessionKey", $value, "/$environment");
+        return $sessionId;
+    }
+    static function Check(string $environment = null) : bool
+    {
+        if (Cookie::Get("$environment.SessionId") != null)
+        {
+            $sessionValue = Session::Get($environment);
+            $sessions = new Sessions();
+            $sessions->session_id = $sessionValue->SessionId;
+            if (Obj::HasValue($sessionValue->SessionKey))
+            {
+                $sessions->session_key = $sessionValue->SessionKey;
+            }
+            return $sessions->Check();
+        }
+        return false;
+    }
+    static function Get(string $environment = null) : object
+    {
+        $returnValue = new stdClass();;
+        $returnValue->SessionId = Cookie::Get("$environment.SessionId");
+        $returnValue->SessionKey = Cookie::Get("$environment.SessionKey");
+        return $returnValue;
+    }
+    static function Delete(string $environment = null) : void
+    {
+        Cookie::Delete("$environment.SessionId", "/$environment");
+        Cookie::Delete("$environment.SessionKey", "/$environment");
+    }
 }
 ?>

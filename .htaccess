@@ -6,8 +6,11 @@ php_flag output_buffering on
 
 # REWRITE
 RewriteEngine on
-RewriteCond %{THE_REQUEST} .*
-RewriteRule .* index.php [L,QSA]
+# RewriteCond %{THE_REQUEST} .*
+# RewriteRule .* index.php [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php [L,QSA]
 
 # UPLOAD LIMIT
 php_value upload_max_filesize 25M

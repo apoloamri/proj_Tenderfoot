@@ -73,7 +73,7 @@ function GetMessage(string $tag, ...$value) : string
 	$message = parse_ini_file(".messages.ini");
 	if (array_key_exists($tag, $message))
 	{
-		return sprintf($message[$tag], $value);	
+		return vsprintf($message[$tag], $value);	
 	}
 	return $tag;
 }

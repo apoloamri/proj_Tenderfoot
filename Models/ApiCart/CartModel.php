@@ -12,7 +12,7 @@ class CartModel extends Model
     public $Total = 0;
     function Validate() : iterable
     {
-        $sessionId = GetSession()->SessionId;
+        $sessionId = Session::Get()->SessionId;
         if (Obj::HasValue($sessionId))
         {
             $sessions = new Sessions();
@@ -35,7 +35,7 @@ class CartModel extends Model
         $productImages = new ProductImages();
         $carts->Join($products, "str_code", "str_code");
         $carts->Join($productImages, "int_product_id", "products->id");
-        $carts->str_session_id = GetSession()->SessionId;
+        $carts->str_session_id = Session::Get()->SessionId;
         $carts->GroupBy("id");
         $this->Result = $carts->Select();
         $amount = 0;
@@ -53,7 +53,7 @@ class CartModel extends Model
     }
     function Handle() : void
     {
-        $sessionId = GetSession()->SessionId;
+        $sessionId = Session::Get()->SessionId;
         $carts = new Carts();
         if ($this->Post() || $this->Put())
         {

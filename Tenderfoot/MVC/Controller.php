@@ -60,7 +60,7 @@ class Controller extends BaseController
 			$view = new View($this, $model, "app");
 			if ($view->NotFound)
 			{
-				// require_once $layout;
+				echo "View not ready...";
 			}
 			else
 			{
@@ -70,20 +70,21 @@ class Controller extends BaseController
 	}
 	protected function Redirect(string $url) : void
 	{
-		header('Location: '.$url);
+		header("Location: ".$url, true, 303);
 		die();
 	}
 	protected function Json(string ...$fields) : void
 	{
-		array_push($fields, "IsValid");
-		array_push($fields, "Messages");
+		array_push($fields, "isValid");
+		array_push($fields, "messages");
 		$reflect = new ReflectionClass($this->Model);
 		$jsonArray = array();
 		foreach ($fields as $field)
 		{
-			if (property_exists($this->Model, $field))
+			$fieldName = ucfirst($field);
+			if (property_exists($this->Model, $fieldName))
 			{
-				$jsonArray[$field] = $reflect->getProperty($field)->getValue($this->Model);
+				$jsonArray[$field] = $reflect->getProperty($fieldName)->getValue($this->Model);
 			}
 		}
 		header("Content-Type: application/json");

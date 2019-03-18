@@ -1,9 +1,14 @@
 <?php
-class BaseAdminController extends Controller
+class BaseBackOfficeController extends Controller
 {
+    function __construct()
+    {
+        $this->Environment = "BackOffice";
+    }
+
     function CheckAuth() : bool 
     {
-        $this->Initiate("CheckAuthModel", "Admin");
+        $this->Initiate("AuthorizeModel", "BackOffice");
         $this->Execute(Http::Get);
         return $this->Model->IsValid;
     }
@@ -12,7 +17,7 @@ class BaseAdminController extends Controller
     {
         if (!$this->CheckAuth())
         {
-            $this->Redirect("/admin/login");
+            $this->Redirect("/backoffice/login");
         }
     }
 
