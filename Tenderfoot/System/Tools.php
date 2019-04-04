@@ -98,6 +98,18 @@ class Obj
         }
         return $model;
     }
+    static function Select($model, string ...$properties) : object
+    {
+        $return = new stdClass();
+        foreach ($properties as $property)
+        {
+            if (property_exists($model, $property))
+            {
+                $return->$property = $model->$property;
+            }
+        }
+        return $return;
+    }
 }
 class TempData
 {

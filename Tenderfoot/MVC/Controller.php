@@ -2,6 +2,23 @@
 require_once "Tenderfoot/Lib/BaseController.php";
 class Controller extends BaseController
 {
+	protected function Authenticate() : void
+	{
+		$authorization = Headers::Get("Authorization");
+		if (Chars::Contains("Bearer ", $authorization))
+		{
+			$authorization = str_replace("Bearer ", "", $authorization);
+			$sessions = new Sessions();
+			$token = $sessions->Get($authorization);
+			if ($token->IsValid)
+			{
+				$this->SessionName = $token->Name;
+				return;
+			}
+		}
+		http_response_code(403);
+		die();
+	}
 	protected function Initiate(string $model = null, string $modelLocation = null) : void
 	{
 		if ($model == null)
@@ -10,6 +27,7 @@ class Controller extends BaseController
 		}
 		else
 		{
+			$model = $model."Model";
 			$controller = str_replace("Controller", "", get_class($this));
 			if (Obj::HasValue($modelLocation))
 			{
@@ -18,9 +36,10 @@ class Controller extends BaseController
 			require_once "Models/$controller/$model.php";
 			$this->Model = new $model;
 		}
-		$this->Model->URI = explode("/", $_SERVER["REQUEST_URI"]);
+		$this->Model->Uri = explode("/", $_SERVER["REQUEST_URI"]);
 		$this->Model->Environment = $this->Environment;
 		$this->Model->Deployment = Settings::Deploy();
+		$this->Model->SessionName = $this->SessionName;
 		$this->Validate();
 	}
 	protected function Execute(string $method) : void
@@ -77,14 +96,13 @@ class Controller extends BaseController
 	{
 		array_push($fields, "isValid");
 		array_push($fields, "messages");
-		$reflect = new ReflectionClass($this->Model);
 		$jsonArray = array();
 		foreach ($fields as $field)
 		{
 			$fieldName = ucfirst($field);
 			if (property_exists($this->Model, $fieldName))
 			{
-				$jsonArray[$field] = $reflect->getProperty($fieldName)->getValue($this->Model);
+				$jsonArray[$field] = $this->Model->$fieldName;
 			}
 		}
 		header("Content-Type: application/json");

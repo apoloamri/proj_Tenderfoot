@@ -2,10 +2,11 @@
 class BaseModel 
 {
     public $IsValid = true;
-    public $Messages = null;
-    public $Uri = null;
+    public $Messages = [];
+    public $Uri = "";
     public $Environment = "";
     public $Deployment = "";
+    public $SessionName = "";
     public $InvalidFields = array();
     public function __construct()
     {
@@ -15,32 +16,45 @@ class BaseModel
     }
     private function BindModel() : void
     {
-        $reflect = new ReflectionClass($this);
         foreach ($_REQUEST as $key => $value)
         {
-            if (property_exists($this, $key))
-            {
-                $reflect->getProperty($key)->setValue($this, $value);
-            }
+            $this->SetValue($key, $value);
         }
         foreach ($_FILES as $key => $value)
         {
-            if (property_exists($this, $key))
-            {
-                $reflect->getProperty($key)->setValue($this, $value);
-            }
+            $this->SetValue($key, $value);
         }
         $json = json_decode(file_get_contents('php://input'), true);
         if ($json != null)
         {
             foreach ($json as $key => $value)
             {
-                if (property_exists($this, $key))
-                {
-                    $reflect->getProperty($key)->setValue($this, $value);
-                }
+                $this->SetValue($key, $value);
             }
         }   
+    }
+    private $SkipProperties = [
+        "IsValid", 
+        "Messages", 
+        "Uri", 
+        "Environment", 
+        "Deployment", 
+        "SessionName", 
+        "InvalidFields"];
+    private function SetValue(string $key, $value)
+    {
+        $fieldName = ucfirst($key);
+        if (!in_array($fieldName, $this->SkipProperties))
+        {
+            if (property_exists($this, $fieldName))
+            {
+                $property = new ReflectionProperty($this, $fieldName);
+                if ($property->isPublic())
+                {
+                    $this->$fieldName = $value;   
+                }
+            }
+        }
     }
     public $MetaKeywords = "";
     public $MetaDiscription = "";

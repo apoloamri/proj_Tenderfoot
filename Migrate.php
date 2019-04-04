@@ -1,17 +1,7 @@
 <?php
 $migration = new Migration();
 $migration->Migrate("Admins");
-// $migration->Migrate("Carts");
-// $migration->Migrate("Logs");
-// $migration->Migrate("OrderRecords");
-// $migration->Migrate("Orders");
-// $migration->Migrate("ProductImages");
-// $migration->Migrate("ProductInventory");
-// $migration->Migrate("Products");
-// $migration->Migrate("ProductTagImages");
-// $migration->Migrate("ProductTags");
-// $migration->Migrate("ProductViews");
-// $migration->Migrate("Store");
+$migration->Migrate("Members");
 
 $admin1 = new stdClass();
 $admin1->id = 1;

@@ -3,6 +3,7 @@ class BaseController
 {
     public $Model = null;
     public $Environment = "";
+    public $SessionName = "";
     protected function Validate() : void
     {
         $errorList = $this->Model->Validate();

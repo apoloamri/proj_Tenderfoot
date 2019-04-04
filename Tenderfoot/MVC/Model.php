@@ -2,8 +2,6 @@
 require_once "Tenderfoot/Lib/BaseModel.php";
 class Model extends BaseModel
 {
-    function SiteUrl() : string { return Settings::SiteUrl(); }
-    function SiteUrlSSL() : string { return Settings::SiteUrlSSL(); }
     function Get() : bool { return ($_SERVER['REQUEST_METHOD'] == "GET"); }
     function Post() : bool { return ($_SERVER['REQUEST_METHOD'] == "POST"); }
     function Put() : bool { return ($_SERVER['REQUEST_METHOD'] == "PUT"); }

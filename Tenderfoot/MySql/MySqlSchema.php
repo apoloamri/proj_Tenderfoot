@@ -276,65 +276,55 @@ class Sessions extends MySqlSchema
     function __construct()
     {
         parent::__construct(
-            new Column("session_id", ColumnProp::VaryingChars, true, 50),
-            new Column("session_key", ColumnProp::VaryingChars, true, 50),
-            new Column("session_time", ColumnProp::DateTime, true)
+            new Column("name", ColumnProp::VaryingChars, true, 255),
+            new Column("token", ColumnProp::VaryingChars, true, 64)
         );
     }
-    public $session_id;
-    public $session_key;
-    public $session_time;
-    function Set() : string
+    public $name;
+    public $token;
+    function New() : string
     {
-        if ($this->Check())
+        $sessions = new Sessions();
+        $sessions->name = $this->name;
+        $sessions->Delete();
+        $sessions->Clear();
+        do
         {
-            return $this->session_id;
+            $sessions->token = Chars::Random(64);
         }
-        $this->session_id = Chars::Random(50);
-        while ($this->Count() != 0)
-        {
-            $this->Clear();
-            $this->session_id = Chars::Random(50);
-        }
-        $this->session_time = Date::Now();
-        $this->Insert();
-        return $this->session_id;
+        while ($sessions->Exists("token"));
+        $sessions->name = $this->name;
+        $sessions->Insert();
+        return base64_encode($sessions->name.":".$sessions->token);
     }
-    /**
-     * Populate $sessionKey to add / update a new key for the current session.
-     */
-    function Check(string $sessionKey = null) : bool 
+    function Get(string $authenticationToken) : object
     {
-        if (!Obj::HasValue($this->session_id))
+        $return = new stdClass();
+        $return->IsValid = false;
+        $return->Name = "";
+        $authenticationToken = base64_decode($authenticationToken);
+        $authArray = explode(":", $authenticationToken);
+        if (count($authArray) == 2)
         {
-            return false;
+            $sessions = new Sessions();
+            $sessions->name = $authArray[0];
+            $sessions->token = $authArray[1];
+            if ($sessions->Exists("token"))
+            {
+                $sessions->SelectSingle();
+                $timeZone = new DateTimeZone(Settings::TimeZone());
+                $sessionTime = new DateTime($sessions->update_time ?? $sessions->insert_time, $timeZone);
+                $sessionExpiration = new DateTime(Date::Now(-Settings::Session()), $timeZone);
+                if ($sessionTime > $sessionExpiration)
+                {
+                    $sessions->Where("token", DB::Equal, $sessions->token);
+                    $sessions->Update();
+                    $return->IsValid = true;
+                    $return->Name = $sessions->name;
+                }
+            }
         }
-        $this->Where("session_time", DB::GreaterThan, Date::Now(-Settings::Session()));
-        if ($this->Count() == 0)
-        {
-            return false;
-        }
-        $this->Clear();
-        if (Obj::HasValue($sessionKey))
-        {
-            $this->session_key = $sessionKey;
-        }
-        $this->session_time = Date::Now();
-        $this->Where("session_id", DB::Equal, $this->session_id);
-        $this->Update();
-        return true;
+        return $return;
     }
-}
-class Accesses extends MySqlSchema
-{
-    function __construct()
-    {
-        parent::__construct(
-            new Column("access_key", ColumnProp::VaryingChars, true, 255),
-            new Column("password", ColumnProp::VaryingChars, true, 255)
-        );
-    }
-    public $access_key;
-    public $password;
 }
 ?>

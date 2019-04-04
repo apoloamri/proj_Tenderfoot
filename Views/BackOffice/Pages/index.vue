@@ -3,6 +3,7 @@
         {{someData}}
     </div>
 </template>
+
 <script>
 module.exports = {
     name: "index",

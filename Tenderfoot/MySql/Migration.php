@@ -3,7 +3,6 @@ class Migration
 {
     function __construct()
     {
-        $this->Migrate("Accesses");
         $this->Migrate("Sessions");
     }
     function Migrate(string $schemaName)

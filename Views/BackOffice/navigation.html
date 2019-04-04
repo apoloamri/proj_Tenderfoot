@@ -1,5 +1,9 @@
 <div id="navigation">
-    <router-link to="/">Home</router-link>
-    <router-link to="/orders">Orders</router-link>
-    <a href="#" onclick="Logout()">Logout</a>
+    <a onclick="ShowHideSubMenu('menu')">Menu</a>
+    <a onclick="Logout()">Logout</a>
+</div>
+<div id="menu" class="subMenu window absolute hide" style="width:80px;">
+    <router-link to="/"><a onclick="ShowHideSubMenu('menu')">Dashboard</a></router-link><hr>
+    <router-link to="/products"><a onclick="ShowHideSubMenu('menu')">Products</a></router-link><br>
+    <router-link to="/orders"><a onclick="ShowHideSubMenu('menu')">Orders</a></router-link>
 </div>
