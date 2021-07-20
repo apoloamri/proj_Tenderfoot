@@ -282,20 +282,19 @@ class Sessions extends MySqlSchema
     }
     public $name;
     public $token;
-    function New() : string
+    function New(string $sessionName) : string
     {
-        $sessions = new Sessions();
-        $sessions->name = $this->name;
-        $sessions->Delete();
-        $sessions->Clear();
+        $this->name = $sessionName;
+        $this->Delete();
+        $this->Clear();
         do
         {
-            $sessions->token = Chars::Random(64);
+            $this->token = Chars::Random(64);
         }
-        while ($sessions->Exists("token"));
-        $sessions->name = $this->name;
-        $sessions->Insert();
-        return base64_encode($sessions->name.":".$sessions->token);
+        while ($this->Exists("token"));
+        $this->name = $sessionName;
+        $this->Insert();
+        return base64_encode($this->name.":".$this->token);
     }
     function Get(string $authenticationToken) : object
     {
@@ -306,21 +305,20 @@ class Sessions extends MySqlSchema
         $authArray = explode(":", $authenticationToken);
         if (count($authArray) == 2)
         {
-            $sessions = new Sessions();
-            $sessions->name = $authArray[0];
-            $sessions->token = $authArray[1];
-            if ($sessions->Exists("token"))
+            $this->name = $authArray[0];
+            $this->token = $authArray[1];
+            if ($this->Exists("token"))
             {
-                $sessions->SelectSingle();
+                $this->SelectSingle();
                 $timeZone = new DateTimeZone(Settings::TimeZone());
-                $sessionTime = new DateTime($sessions->update_time ?? $sessions->insert_time, $timeZone);
+                $sessionTime = new DateTime($this->update_time ?? $this->insert_time, $timeZone);
                 $sessionExpiration = new DateTime(Date::Now(-Settings::Session()), $timeZone);
                 if ($sessionTime > $sessionExpiration)
                 {
-                    $sessions->Where("token", DB::Equal, $sessions->token);
-                    $sessions->Update();
+                    $this->Where("token", DB::Equal, $this->token);
+                    $this->Update();
                     $return->IsValid = true;
-                    $return->Name = $sessions->name;
+                    $return->Name = $this->name;
                 }
             }
         }

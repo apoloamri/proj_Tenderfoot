@@ -28,12 +28,8 @@ class Controller extends BaseController
 		else
 		{
 			$model = $model."Model";
-			$controller = str_replace("Controller", "", get_class($this));
-			if (Obj::HasValue($modelLocation))
-			{
-				$controller = $modelLocation;
-			}
-			require_once "Models/$controller/$model.php";
+			$path = $modelLocation ?? str_replace("Controller", "", get_class($this));
+			require_once "Models/$path/$model.php";
 			$this->Model = new $model;
 		}
 		$this->Model->Uri = explode("/", $_SERVER["REQUEST_URI"]);
@@ -64,14 +60,7 @@ class Controller extends BaseController
 	protected function View(string $viewName) : void
 	{
 		$layout = "Views/app.html";
-		if ($this->Model == null)
-		{
-			$model = new Model();
-		}
-		else
-		{
-			$model = $this->Model;
-		}
+		$model = $this->Model ?? new Model();
 		if (file_exists($layout))
 		{
 			header("Content-Type: text/html");
@@ -94,15 +83,14 @@ class Controller extends BaseController
 	}
 	protected function Json(string ...$fields) : void
 	{
-		array_push($fields, "isValid");
-		array_push($fields, "messages");
+		array_push($fields, "IsValid");
+		array_push($fields, "Messages");
 		$jsonArray = array();
 		foreach ($fields as $field)
 		{
-			$fieldName = ucfirst($field);
-			if (property_exists($this->Model, $fieldName))
+			if (property_exists($this->Model, $field))
 			{
-				$jsonArray[$field] = $this->Model->$fieldName;
+				$jsonArray[lcfirst($field)] = $this->Model->$field;
 			}
 		}
 		header("Content-Type: application/json");

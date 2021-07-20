@@ -4,7 +4,11 @@ class Headers
     static function Get(string $key) : string
     {
         $headers = apache_request_headers();
-        return $headers[$key];
+        if (array_key_exists($key, $headers))
+        {
+            return $headers[$key];
+        }
+        return null;
     }
 }
 ?>

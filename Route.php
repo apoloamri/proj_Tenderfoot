@@ -1,11 +1,9 @@
 <?php
 $router = new Routing();
-
-$router->Map("GET /", "Client", "Index");
-$router->Map("GET /api/v1/member", "ApiMember", "MemberInfo");
-
-$router->Map("POST /api/v1/member/login", "ApiMember", "Login");
-$router->Map("POST /api/v1/member/register", "ApiMember", "Register");
+$router->Map("GET /market/login", "MarketView", "Login");
+$router->Map("GET /market/dashboard", "MarketView", "Dashboard");
+$router->Map("GET /api/v1/market/userinfo", "MarketApiV1", "UserInfo");
+$router->Map("POST /api/v1/market/login", "MarketApiV1", "Login");
 
 if (Settings::Migrate())
 {

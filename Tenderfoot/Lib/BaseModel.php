@@ -41,9 +41,8 @@ class BaseModel
         "Deployment", 
         "SessionName", 
         "InvalidFields"];
-    private function SetValue(string $key, $value)
+    private function SetValue(string $fieldName, $value)
     {
-        $fieldName = ucfirst($key);
         if (!in_array($fieldName, $this->SkipProperties))
         {
             if (property_exists($this, $fieldName))

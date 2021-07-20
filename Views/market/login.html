@@ -1,0 +1,36 @@
+<div id="content" class="window" style="width:400px;">
+    <input type="text" placeholder="Username" v-model="username"><label for="" class="red">{{messages['username']}}</label><br/>
+    <input type="password" placeholder="Password" v-model="password"><label for="" class="red">{{messages['password']}}</label><br/>
+    <button v-on:click="Login">Login</button>
+</div>
+
+<script>
+    new Vue({
+        el: "#content",
+        data: { 
+            username: "",
+            password: "",
+            messages: []
+        },
+        methods: {
+            Login() {
+                var self = this;
+                axios.post(
+                    "/api/v1/market/login", 
+                    self.$data
+                )
+                .then(
+                    function (response) {
+                        Cookies.set("sessionID", response.data.token);
+                        window.location = "/market/dashboard";
+                    }
+                )
+                .catch(
+                    function (ex) {
+                        self.messages = ex.response.data.messages;
+                    }
+                );
+            }
+        }
+    });
+</script>

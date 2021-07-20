@@ -1,0 +1,41 @@
+<div id="content">
+    Dashboard
+</div>
+
+<script>
+    new Vue({
+        el: "#content",
+        data: {
+            sessionId: Cookies.get("sessionID"),
+            userInfo: null
+        },
+        methods: {
+            UserInfo() {
+                var self = this;
+                axios.get(
+                    "/api/v1/market/userinfo", 
+                    {
+                        headers: {
+                            "Authorization": "Bearer " + self.sessionId
+                        }
+                    }
+                )
+                .then(
+                    function (response) {
+                        self.userInfo = response.data.userInfo;
+                    }
+                )
+                .catch(
+                    function (error) {
+                        window.location = "/market/login";
+                    }
+                );
+            }
+        },
+        mounted() {
+            window.addEventListener("load", () => {
+                this.UserInfo();
+            });
+        }
+    });
+</script>

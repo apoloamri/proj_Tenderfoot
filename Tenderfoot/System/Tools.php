@@ -91,7 +91,7 @@ class Obj
         foreach ($modelReflect->getProperties(ReflectionProperty::IS_PUBLIC) as $property)
         {
             $name = $property->getName();
-            if (array_key_exists($name, $values))
+            if (property_exists($values, $name))
             {
                 $property->setValue($model, $values->$name);
             }
